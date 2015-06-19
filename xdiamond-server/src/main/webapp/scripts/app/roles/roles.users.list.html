@@ -1,0 +1,44 @@
+<form name="addRoleUserForm"
+      ng-submit="addUser(selected.user.id, selected.access)"
+      role="form">
+
+    <div class="form-group">
+        <p>加入用户: {{selected.user}}</p>
+        <ui-select ng-model="selected.user" ng-change=""
+                   theme="bootstrap" ng-disabled="disabled"
+                   style="width: 300px;">
+            <ui-select-match placeholder="Select User">{{$select.selected.name}}</ui-select-match>
+            <ui-select-choices repeat="user in allUsers">
+                <span ng-bind-html="user.name"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+
+    <input type="submit"
+           class="btn btn-success"
+           ng-disabled="addRoleUserForm.$invalid">
+</form>
+
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>name</th>
+        <th>nickName</th>
+        <th>email</th>
+        <th>provider</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="user in users">
+        <td>{{user.name}}</td>
+        <td>{{user.nickName}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.provider}}</td>
+
+        <td>
+            <button class="btn btn-danger danger" ng-really-click="deleteUser(user.id)">Delete</button>
+        </td>
+
+    </tr>
+</table>

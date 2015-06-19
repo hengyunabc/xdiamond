@@ -1,0 +1,37 @@
+<included>
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<charset>utf-8</charset>
+			<Pattern>[%p] %c - %m%n</Pattern>
+		</encoder>
+	</appender>
+
+	<!-- <logger name="io.github.xidamond" level="DEBUG" /> -->
+
+	<!-- <logger name="javax.activation" level="WARN"/> -->
+	<!-- <logger name="javax.mail" level="WARN"/> -->
+	<!-- <logger name="javax.xml.bind" level="WARN"/> -->
+	<!-- <logger name="ch.qos.logback" level="WARN"/> -->
+	<!-- <logger name="com.codahale.metrics" level="WARN"/> -->
+	<!-- <logger name="com.ryantenney" level="WARN"/> -->
+	<!-- <logger name="com.sun.xml.internal.bind" level="WARN"/> -->
+	<!-- <logger name="net.sf.ehcache" level="WARN"/> -->
+	<!-- <logger name="org.apache" level="WARN"/> -->
+	<!-- <logger name="org.hibernate.validator" level="WARN"/> -->
+	<!-- <logger name="org.hibernate" level="WARN"/> -->
+	<!-- <logger name="org.springframework" level="WARN"/> -->
+	<!-- <logger name="org.springframework.web" level="WARN"/> -->
+	<!-- <logger name="org.springframework.security" level="WARN"/> -->
+	<!-- <logger name="org.springframework.cache" level="WARN"/> -->
+	<!-- <logger name="com.mangofactory.swagger" level="WARN"/> -->
+	<!-- <logger name="com.wordnik.swagger" level="WARN"/> -->
+
+	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+		<resetJUL>true</resetJUL>
+	</contextListener>
+
+	<root level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</root>
+</included>

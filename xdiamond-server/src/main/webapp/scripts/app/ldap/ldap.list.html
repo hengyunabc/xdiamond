@@ -1,0 +1,16 @@
+
+<h3>LDAP的组和用户</h3>
+
+<div ng-repeat="ldapGroup in ldapGroups">
+    <a ng-click="show = !show" data-placement="left">
+        <span ng-show="!show">展开</span>
+        <span ng-show="show">收起</span>
+    </a>
+    <span class="text-primary">{{ ldapGroup.cn }}</span>
+    <button class="btn btn-danger" ng-really-click="addGroupAndUser(ldapGroup)">同步组和用户到数据库中</button>
+    <ul ng-repeat="ldapUser in ldapGroup.users" ng-show="show">
+        <li>{{ ldapUser.cn }}</li>
+    </ul>
+
+
+</div>

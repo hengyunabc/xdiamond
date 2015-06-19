@@ -1,0 +1,96 @@
+<h4>
+    <a ui-sref="projects.list">Projects:</a>
+    <span class="label label-default">{{project.groupId}}</span>/
+    <span class="label label-default">{{project.artifactId}}</span>/
+    <span class="label label-default">{{project.version}}</span>
+</h4>
+
+<button class="btn btn-default" ng-init="isAddFormCollapsed = true" ng-click="isAddFormCollapsed = !isAddFormCollapsed">
+    Add Profile
+</button>
+
+<form name="newProfileForm"
+      ng-submit="create()"
+      role="form" collapse="isAddFormCollapsed">
+
+    <div class="form-group">
+        <label>profile name</label>
+        <input type="text"
+               ng-model="profile.name"
+               class="form-control"
+               required="">
+    </div>
+
+    <div class="form-group">
+        <p>Profile Access: {{profile.access}}</p>
+        <ui-select ng-model="profile.access" ng-change=""
+                   theme="bootstrap" ng-disabled="disabled"
+                   style="width: 300px;">
+            <ui-select-match placeholder="Select Access">{{$select.selected | accessFilter}}</ui-select-match>
+            <ui-select-choices repeat="access in accessArray">
+                <span ng-bind-html="access | accessFilter"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+
+    <div class="form-group">
+        <label>profile secretKey，如果为空，则可以直接获取到配置</label>
+        <button class="btn btn-normal" ng-click="randomSecretKey()">生成随机字符串</button>
+        <input type="text"
+               ng-model="profile.secretKey"
+               class="form-control">
+    </div>
+
+
+    <div class="form-group">
+        <label>description</label>
+        <input type="text"
+               ng-model="profile.description"
+               class="form-control"
+               required="">
+    </div>
+
+    <input type="submit"
+           class="btn btn-success btn-lg"
+           ng-disabled="newProfileForm.$invalid">
+</form>
+
+<h3>Profile</h3>
+<pre class="text-primary">base profile里放公共的配置，比如某个服务的端口号。所有的非base profile都会继承base profile里的Config</pre>
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <!--<th>projectId</th>-->
+        <th>profile</th>
+        <th>access</th>
+        <th>secretKey</th>
+        <th>description</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="profile in profiles">
+        <!--<td>{{profile.projectId}} </td>-->
+        <td>{{profile.name}}
+            <span ng-show="profile.name === 'base'" class="glyphicon glyphicon-question-sign"
+                  tooltip="所有的非base profile都会继承base profile里的Config"
+                  tooltip-placement="top"
+                  tooltip-trigger="mouseenter"></span>
+        </td>
+        <td>{{profile.access | accessFilter}}</td>
+        <td>{{profile.secretKey}}</td>
+        <td>{{profile.description}}</td>
+        <td>
+            <a ui-sref="projects.profiles.configs.list({projectId:profile.projectId, profileId:profile.id})">查看Config</a>
+        </td>
+
+        <td>
+            <button class="btn btn-default" ng-click="popUpdateProfileModal(profile)">修改
+            </button>
+        </td>
+
+        <td>
+            <button class="btn btn-danger danger" ng-really-click="delete(profile.id)">Delete</button>
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,40 @@
+<form name="addRolePermissionForm"
+      ng-submit="addPermission(selected.permission.id)"
+      role="form">
+
+    <div class="form-group">
+        <p>加入Permission: {{selected.permission}}</p>
+        <ui-select ng-model="selected.permission" ng-change=""
+                   theme="bootstrap" ng-disabled="disabled"
+                   style="width: 300px;">
+            <ui-select-match placeholder="Select Permission">{{$select.selected.permissionStr}}</ui-select-match>
+            <ui-select-choices repeat="permission in allPermissions">
+                <span ng-bind-html="permission.permissionStr"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+
+    <input type="submit"
+           class="btn btn-success"
+           ng-disabled="addRolePermissionForm.$invalid">
+</form>
+
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>permissionStr</th>
+        <th>description</th>
+
+    </tr>
+    </thead>
+
+    <tr ng-repeat="permission in permissions">
+        <td>{{permission.permissionStr}}</td>
+        <td>{{permission.description}}</td>
+        <td>
+            <button class="btn btn-danger danger" ng-really-click="deletePermission(permission.id)">Delete</button>
+        </td>
+
+    </tr>
+</table>

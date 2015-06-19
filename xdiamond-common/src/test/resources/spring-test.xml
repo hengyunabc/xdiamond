@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean name="rejectListener" class="com.example.PrintRejectListener"/>
+	<bean name="shutdownListener" class="com.example.PrintShutdownListener"/>
+	<bean name="feedbackListener" class="com.example.PrintFeedbackListener"/>
+	
+	<bean name="pushManager" class="com.zpush.PushManagerImpl" init-method="start" destroy-method="shutdownGracefully">
+		<property name="keystore" value="/home/hengyunabc/test/apptype/app_type_1/productAPNS.p12"/>
+		<property name="password" value="123456"/>
+		<property name="environment">
+			<util:constant static-field="com.zpush.config.Environment.Product"></util:constant>
+		</property>
+		
+		<property name="rejectedListener" ref="rejectListener"/>
+		<property name="shutdownListener" ref="shutdownListener"/>
+		
+		<!-- 如果不需要启用Feedback服务，则不要配置这个 -->
+		<property name="feedBackListener" ref="feedbackListener"/>
+	</bean>
+
+</beans>

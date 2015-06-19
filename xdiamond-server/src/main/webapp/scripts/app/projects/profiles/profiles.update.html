@@ -1,0 +1,54 @@
+
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">修改Profile</h3>
+    </div>
+    <div class="modal-body">
+        <form name="updateProfileForm"
+              ng-submit="update()"
+              role="form">
+            <div class="form-group">
+                <label>name</label>
+                <input type="text"
+                       ng-model="profile.name"
+                       class="form-control"
+                       required="">
+            </div>
+
+            <div class="form-group">
+                <p>Profile Access: {{profile.access}}</p>
+                <ui-select ng-model="profile.access" ng-change=""
+                           theme="bootstrap" ng-disabled="disabled"
+                           style="width: 300px;">
+                    <ui-select-match placeholder="Select Access">{{$select.selected | accessFilter}}</ui-select-match>
+                    <ui-select-choices repeat="access in accessArray">
+                        <span ng-bind-html="access | accessFilter"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+
+            <div class="form-group">
+                <label>secretKey</label>
+                <button class="btn btn-normal" ng-click="randomSecretKey()">生成随机字符串</button>
+                <input type="text"
+                       ng-model="profile.secretKey"
+                       class="form-control"
+                       required="">
+            </div>
+            <div class="form-group">
+                <label>description</label>
+                <input type="text"
+                       ng-model="profile.description"
+                       class="form-control"
+                       required="">
+            </div>
+
+            <input type="submit"
+                   class="btn btn-success btn-lg"
+                   ng-disabled="updateProfileForm.$invalid">
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+{
+  "name": "xdiamond-server",
+  "version": "0.0.0",
+  "directory": "app/bower_components",
+  "authors": [
+    "hengyunabc <hengyunabc@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.4.1",
+    "bootstrap": "3.2.0",
+    "angular-animate": "1.4.1",
+    "angular-aria": "1.4.1",
+    "angular-cookies": "1.4.1",
+    "angular-messages": "1.4.1",
+    "angular-resource": "1.4.1",
+    "angular-sanitize": "1.4.1",
+    "angular-touch": "1.4.1",
+    "swagger-ui": "2.0.24",
+    "angular-ui-router": "0.2.14",
+    "angular-bootstrap": "0.13.0",
+    "angular-ui-select": "0.11.2",
+    "angular-ui-utils": "0.2.3",
+    "angularjs-toaster": "0.4.14"
+  },
+  "devDependencies": {
+    "angular-mocks": "1.4.1"
+  }
+}

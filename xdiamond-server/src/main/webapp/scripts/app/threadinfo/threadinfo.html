@@ -1,0 +1,52 @@
+<h3>ThreadDump</h3>
+
+<span class="label label-primary"
+      ng-click="threadFilter = {}">{{'all' }}&nbsp;<span class="badge">{{threadAll}}</span></span>&nbsp;
+<span class="label label-success" ng-click="threadFilter = {threadState: 'RUNNABLE'}">{{'runnable' }}&nbsp;<span
+        class="badge">{{threadRunnable}}</span></span>&nbsp;
+<span class="label label-info" ng-click="threadFilter = {threadState: 'WAITING'}">{{'waiting' }}&nbsp;<span
+        class="badge">{{threadWaiting}}</span></span>&nbsp;
+<span class="label label-warning"
+      ng-click="threadFilter = {threadState: 'TIMED_WAITING'}">{{'timedwaiting' }}&nbsp;<span
+        class="badge">{{threadTimedWaiting}}</span></span>&nbsp;
+<span class="label label-danger" ng-click="threadFilter = {threadState: 'BLOCKED'}">{{'blocked' }}&nbsp;<span
+        class="badge">{{threadBlocked}}</span></span>&nbsp;
+
+<a class="btn btn-default" href="api/threaddump" target="_blank">Plain ThreadDump</a>
+
+<div class="row" ng-repeat="(k, v) in threadInfos | filter:threadFilter">
+    <h5><span class="label" ng-class="getLabelClass(v.threadState)">&nbsp;</span>&nbsp;{{v.threadName}}
+        ({{'dump.id' }} {{v.threadId}})</h5>
+
+    <table class="table table-condensed">
+        <thead>
+        <tr>
+            <th>StarckTrace</th>
+            <th>Blocked Time</th>
+            <th>Blocked Count</th>
+            <th>Waited Time</th>
+            <th>Waited Count</th>
+            <th>Lock Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <a ng-click="show = !show" data-placement="left">
+                    <span ng-show="!show">show</span>
+                    <span ng-show="show">hide</span>
+                </a>
+            </td>
+            <td>{{v.blockedTime}}</td>
+            <td>{{v.blockedCount}}</td>
+            <td>{{v.waitedTime}}</td>
+            <td>{{v.waitedCount}}</td>
+            <td>{{v.lockName}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div ng-repeat="(stK, stV) in v.stackTrace" ng-show="show" class="bg-info">
+        {{stV.className}}.{{stV.methodName}}({{stV.fileName}}:{{stV.lineNumber}})
+    </div>
+</div>

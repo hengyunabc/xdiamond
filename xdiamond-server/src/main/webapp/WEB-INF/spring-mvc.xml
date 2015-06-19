@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/task
+		http://www.springframework.org/schema/task/spring-task.xsd		
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<import resource="classpath:config/spring-profile-properties.xml" />
+	
+	<!-- load web config, like controller aop -->
+	<context:component-scan base-package="io.github.xdiamond.config.web" />
+
+	<context:component-scan base-package="io.github.xdiamond.web"
+		use-default-filters="false">
+		<context:include-filter expression="org.springframework.stereotype.Controller"
+			type="annotation" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+
+	<mvc:annotation-driven />
+
+	<!-- <mvc:interceptors> -->
+	<!-- <mvc:interceptor> -->
+	<!-- <mvc:mapping path="/api/**" /> -->
+	<!-- <ref bean="testInterceptor" /> -->
+	<!-- </mvc:interceptor> -->
+	<!-- </mvc:interceptors> -->
+
+	<mvc:resources location="/scripts/" mapping="/scripts/**"
+		cache-period="3600" />
+
+	<mvc:resources location="/bower_components/" mapping="/bower_components/**"
+		cache-period="3600" />
+
+	<!-- <bean -->
+	<!-- class="org.springframework.web.servlet.view.InternalResourceViewResolver"> -->
+	<!-- <property name="prefix" value="/" /> -->
+	<!-- <property name="suffix" value=".html" /> -->
+	<!-- </bean> -->
+
+	<mvc:default-servlet-handler />
+
+	<task:annotation-driven />
+</beans>

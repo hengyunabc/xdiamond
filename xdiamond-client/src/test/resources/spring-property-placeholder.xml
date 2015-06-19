@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+
+<!-- 	<context:property-placeholder order="1" /> -->
+
+	<context:component-scan base-package="io.github.xdiamond.client.net.test">
+		<context:exclude-filter expression="org.springframework.stereotype.Controller"
+			type="annotation" />
+	</context:component-scan>
+	
+	<bean id="xDiamondConfig"
+		class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
+		<property name="serverHost" value="${XDIAMOND_SERVERHOST:localhost}" />
+		<property name="serverPort" value="${XDIAMOND_SERVERPORT:5678}" />
+		<property name="groupId" value="testGroupId" />
+		<property name="artifactId" value="${projectArtifactId:testArtifactId}" />
+		<property name="version" value="${projectVersion}" />
+		<property name="profile" value="${projectProfile:pppppp}" />
+		<property name="locations" value="classpath:property-placeholder.properties"></property>
+	</bean>
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="properties">
+			<bean id="xDiamondProperties" class="java.util.Properties"
+				factory-bean="xDiamondConfig" factory-method="getProperties">
+			</bean>
+		</property>
+	</bean>
+
+
+	<bean id="testBean" class="io.github.xdiamond.client.net.test.TestBean">
+		<property name="name" value="${testBean.name}"></property>
+	</bean>
+
+</beans>

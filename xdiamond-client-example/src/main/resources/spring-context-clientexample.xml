@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="xDiamondConfig"
+		class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
+		<property name="serverHost" value="${XDIAMOND_SERVERHOST:192.168.66.61}" />
+		<property name="serverPort" value="${XDIAMOND_SERVERPORT:5678}" />
+		<property name="groupId" value="io.github.xdiamond" />
+		<property name="artifactId" value="xdiamond-client-example" />
+		<property name="version" value="0.0.1-SNAPSHOT" />
+		<property name="profile" value="dev" />
+		<property name="secretKey" value="123456"></property>
+	</bean>
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="properties">
+			<bean id="xDiamondProperties" class="java.util.Properties"
+				factory-bean="xDiamondConfig" factory-method="getProperties">
+			</bean>
+		</property>
+	</bean>
+
+
+	<bean id="memcachedConfig" class="io.github.xdiamond.example.MemcachedConfig">
+		<property name="host" value="${memcached.host}"></property>
+		<property name="port" value="${memcached.port}"></property>
+	</bean>
+
+</beans>

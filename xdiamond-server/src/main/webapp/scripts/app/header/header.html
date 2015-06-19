@@ -1,0 +1,22 @@
+<div id="header" class="row" ui-view="header">
+    <div>
+        <h1>
+            XDiamond配置中心
+            <small>--test</small>
+        </h1>
+    </div>
+    <div class="pull-right">
+
+      <span ng-hide="isLoggedIn()">
+          <a ui-sref="login">Login</a>
+      </span>
+
+        <span>{{ authenticateInfo.authc.principal }}</span>
+
+      <span ng-show="isLoggedIn()">
+        <!-- server-side route, not a client-side route -->
+        <a href="" ng-click="logout()">Logout</a>
+      </span>
+    </div>
+
+</div>

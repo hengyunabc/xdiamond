@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<import resource="classpath:config/spring-profile-properties.xml" />
+	<import resource="classpath:dozer/spring-dozer.xml" />
+
+	<import resource="classpath:spring-ldap.xml" />
+	<import resource="classpath:database/spring-database.xml" />
+
+	<!-- 使用ehcache缓存 -->
+	<bean id="ehCacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:my-ehcache.xml" />
+	</bean>
+
+	<import resource="classpath:mybatis/spring-mybatis.xml" />
+
+	<import resource="classpath:spring-shiro-web.xml" />
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+
+	<!-- JSR303 Validator定义 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<!-- transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- enable component scanning and autowire (beware that this does not enable 
+		mapper scanning!) -->
+	<context:component-scan base-package="io.github.xdiamond">
+		<context:exclude-filter expression="org.springframework.stereotype.Controller"
+			type="annotation" />
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+		<!-- exclude web config -->
+		<context:exclude-filter type="regex"
+			expression="io.github.xdiamond.config.web.*" />
+	</context:component-scan>
+
+	<!-- enable transaction demarcation with annotations -->
+	<tx:annotation-driven />
+</beans>

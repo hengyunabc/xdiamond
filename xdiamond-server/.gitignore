@@ -1,0 +1,9 @@
+
+*\.settings*
+*\.project
+*\.classpath
+*\target*
+.springBeans
+/target
+/node
+/node_modules

@@ -1,0 +1,38 @@
+<button class="btn btn-default" ng-click="popNewProjectModal('lg')">新建Project</button>
+
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>groupId</th>
+        <th>artifactId</th>
+        <th>version</th>
+        <th>description</th>
+        <th>ownerGroup</th>
+        <th>bPublic</th>
+        <th>bAllowDependency</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="project in projects">
+        <td>{{project.groupId}}</td>
+        <td>{{project.artifactId}}</td>
+        <td>{{project.version}}</td>
+        <td>{{project.description}}</td>
+        <td>{{project.ownerGroup}}</td>
+        <td>{{project.bPublic}}</td>
+        <td>{{project.bAllowDependency}}</td>
+
+        <td><a ui-sref="projects.profiles.list({projectId:project.id})">查看profile</a></td>
+        <td><a ui-sref="projects.dependencies.list({projectId:project.id})">查看Dependency</a></td>
+
+        <td>
+            <button class="btn btn-default" ng-click="popUpdateProjectModal(project)">修改
+            </button>
+        </td>
+        <td>
+            <button class="btn btn-danger danger" ng-really-click="delete(project.id)">Delete</button>
+        </td>
+
+    </tr>
+</table>

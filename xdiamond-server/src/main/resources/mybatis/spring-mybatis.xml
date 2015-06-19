@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- 使用ehcache缓存 -->
+	<bean id="mybatisCacheDefaultFactory"
+		class="io.github.hengyunabc.mybatis.MybatisMetricsEhcacheFactory">
+		<property name="cacheManager" ref="ehCacheManager"></property>
+		<property name="sharedMetricRegistryName" value="${metrics.registryName}"></property>
+	</bean>
+	<!-- This bean is important -->
+	<bean class="io.github.hengyunabc.mybatis.SharedSpringContextSetter">
+	</bean>
+
+	<!-- define the SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="typeAliasesPackage" value="io.github.xdiamond.domain" />
+	</bean>
+
+	<!-- scan for mappers and let them be autowired -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="io.github.xdiamond.persistence" />
+	</bean>
+</beans>

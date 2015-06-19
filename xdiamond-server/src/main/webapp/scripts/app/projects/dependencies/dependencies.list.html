@@ -1,0 +1,82 @@
+<h4>
+    <a ui-sref="projects.list">Projects:</a>
+    <span class="label label-default">{{project.groupId}}</span>/
+    <span class="label label-default">{{project.artifactId}}</span>/
+    <span class="label label-default">{{project.version}}</span>
+</h4>
+
+<button class="btn btn-default" ng-init="isAddFormCollapsed = true" ng-click="isAddFormCollapsed = !isAddFormCollapsed">
+    增加依赖
+</button>
+<form name="addDependencyForm"
+      ng-submit="addDependency()"
+      role="form" collapse="isAddFormCollapsed">
+    <div class="form-group">
+
+        <p>Selected: {{selected.byGroupId}}</p>
+        <ui-select ng-model="selected.byGroupId" ng-change="selected.byArtifactId=''; selected.byVersion=''"
+                   theme="bootstrap" ng-disabled="disabled"
+                   style="width: 300px;">
+            <ui-select-match placeholder="Select groupId">{{$select.selected.groupId}}</ui-select-match>
+            <ui-select-choices repeat="project in uniqueFilter(projects, 'groupId') | filter: $select.search  ">
+                <span ng-bind-html="project.groupId"></span>
+            </ui-select-choices>
+        </ui-select>
+
+        <p>Selected: {{selected.byArtifactId}}</p>
+        <ui-select ng-model="selected.byArtifactId" ng-change="selected.byVersion=''" theme="bootstrap"
+                   ng-disabled=" !selected.byGroupId"
+                   style="width: 300px;">
+            <ui-select-match placeholder="Select artifactId">{{$select.selected.artifactId}}</ui-select-match>
+            <ui-select-choices repeat="project in uniqueFilter(projects, 'artifactId')
+     | filter:{groupId: selected.byGroupId.groupId}:true | filter: $select.search">
+                <span ng-bind-html="project.artifactId"></span>
+            </ui-select-choices>
+        </ui-select>
+
+        <p>Selected: {{selected.byVersion}}</p>
+        <ui-select ng-model="selected.byVersion" theme="bootstrap" ng-disabled="!selected.byArtifactId"
+                   style="width: 300px;">
+            <ui-select-match placeholder="Select version">{{$select.selected.version}}</ui-select-match>
+            <ui-select-choices repeat="project in projects
+     | filter:{groupId: selected.byGroupId.groupId, artifactId: selected.byArtifactId.artifactId}:true
+     | filter: $select.search">
+                <span ng-bind-html="project.version"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+    <input type="submit"
+           class="btn btn-success"
+           ng-disabled="newProjectForm.$invalid || selected.byVersion === undefined || selected.byVersion === '' ">
+
+</form>
+
+<h4>已有依赖：</h4>
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>groupId</th>
+        <th>artifactId</th>
+        <th>version</th>
+        <th>description</th>
+        <th>ownerGroup</th>
+        <th>bPublic</th>
+        <th>bAllowDependency</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="project in dependencyProjects">
+        <td>{{project.groupId}}</td>
+        <td>{{project.artifactId}}</td>
+        <td>{{project.version}}</td>
+        <td>{{project.description}}</td>
+        <td>{{project.ownerGroup}}</td>
+        <td>{{project.bPublic}}</td>
+        <td>{{project.bAllowDependency}}</td>
+
+        <td><a ui-sref="projects.profiles.list({projectId:project.id})">查看profile</a></td>
+        <td><a ui-sref="projects.dependencies.list({projectId:project.id})">查看Dependency</a></td>
+
+    </tr>
+</table>

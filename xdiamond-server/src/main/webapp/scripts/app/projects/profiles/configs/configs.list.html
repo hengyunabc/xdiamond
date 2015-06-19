@@ -1,0 +1,127 @@
+<h4>
+    <a ui-sref="projects.list">Projects:</a>
+    <span class="label label-default">{{project.groupId}}</span>/
+    <span class="label label-default">{{project.artifactId}}</span>/
+    <span class="label label-default">{{project.version}}</span>
+    <a ui-sref="projects.profiles.list">Profiles:</a>
+    <span class="label label-default">{{profile.name}}</span>
+</h4>
+<button class="btn btn-default" ng-init="isAddFormCollapsed = true" ng-click="isAddFormCollapsed = !isAddFormCollapsed">
+    Add Config
+</button>
+
+<form name="newConfigForm"
+      ng-submit="create()"
+      role="form" collapse="isAddFormCollapsed">
+
+    <div class="form-group">
+        <label>config key</label>
+        <input type="text"
+               ng-model="config.key"
+               class="form-control"
+               required="">
+    </div>
+
+    <div class="form-group">
+        <label>config value</label>
+        <input type="text"
+               ng-model="config.value"
+               class="form-control"
+               required="">
+    </div>
+
+    <div class="form-group">
+        <label>description</label>
+        <input type="text"
+               ng-model="config.description"
+               class="form-control"
+               required="">
+    </div>
+
+    <input type="submit"
+           class="btn btn-success btn-lg"
+           ng-disabled="newConfigForm.$invalid">
+</form>
+
+<div ng-show="false">
+    <h3>Profile Configs</h3>
+    <table class="table table-striped">
+
+        <thead>
+        <tr>
+            <th>key</th>
+            <th>value</th>
+            <th>description</th>
+        </tr>
+        </thead>
+
+        <tr ng-repeat="config in configs">
+            <td>{{config.key}}</td>
+            <td>{{config.value}}</td>
+            <td>{{config.description}}</td>
+
+            <td>
+                <button class="btn btn-default" ng-click="popUpdateConfigModal(config)">修改</button>
+            </td>
+
+            <td>
+                <button class="btn btn-danger danger" ng-really-click="delete(config.id)">Delete</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<h3>Resolved Configs</h3>
+<a class="btn btn-success" target="_blank" href="{{propertiesUrl }}">以Properties格式查看</a>
+<a class="btn btn-success" target="_blank" href="{{jsonUrl }}">以JSON格式查看</a>
+
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>key</th>
+        <th>value</th>
+        <th>description</th>
+        <th>createUser</th>
+        <th>createTime</th>
+        <th>updateUser</th>
+        <th>updateTime</th>
+        <th></th>
+        <th>配置的来源</th>
+        <th>lastVersionValue</th>
+        <th>version</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="resolveConfig in resolvedConfigs">
+        <td>{{resolveConfig.config.key}}</td>
+        <td>{{resolveConfig.config.value}}</td>
+        <td>{{resolveConfig.config.description}}</td>
+        <td>{{resolveConfig.config.createUser}}</td>
+        <td>{{resolveConfig.config.createTime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+        <td>{{resolveConfig.config.updateUser}}</td>
+        <td>{{resolveConfig.config.updateTime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+
+        <td>
+            <div ng-hide="resolveConfig.config.profileId != profile.id">
+                <button class="btn btn-default" ng-click="popUpdateConfigModal(resolveConfig.config)">修改</button>
+                <button class="btn btn-danger danger" ng-really-click="delete(resolveConfig.config.id)">Delete</button>
+            </div>
+        </td>
+
+        <td>
+            <div ng-show="resolveConfig.config.profileId != profile.id">
+                Project:
+                <span class="label label-default">{{resolveConfig.fromProject.groupId}}</span>/
+                <span class="label label-default">{{resolveConfig.fromProject.artifactId}}</span>/
+                <span class="label label-default">{{resolveConfig.fromProject.version}}</span>
+                Profile:
+                <span class="label label-default">{{resolveConfig.fromProfile}}</span>
+            </div>
+        </td>
+
+        <td>{{resolveConfig.config.lastVersionValue}}</td>
+        <td>{{resolveConfig.config.version}}</td>
+    </tr>
+</table>

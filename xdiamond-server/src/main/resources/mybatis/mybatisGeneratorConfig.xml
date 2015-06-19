@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<classPathEntry
+		location="/home/hengyunabc/.m2/repository/mysql/mysql-connector-java/5.1.29/mysql-connector-java-5.1.29.jar" />
+
+	<context id="context1" targetRuntime="MyBatis3"
+		defaultModelType="flat">
+		<property name="autoDelimitKeywords" value="true" />
+		<property name="beginningDelimiter" value="`" />
+		<property name="endingDelimiter" value="`" />
+
+		<plugin type="org.mybatis.generator.plugins.CachePlugin">
+<!-- 			<property name="cache_type" value="org.mybatis.caches.ehcache.EhcacheCache" /> -->
+			<property name="cache_type" value="io.github.hengyunabc.mybatis.FacadeCache" />
+		</plugin>
+
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin">
+			<!-- <property name="suppressJavaInterface" value="true" /> -->
+		</plugin>
+
+
+		<commentGenerator>
+			<!-- <property name="suppressAllComments" value="true" /> -->
+			<property name="suppressDate" value="true" />
+		</commentGenerator>
+
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/xdiamond-server" userId="root"
+			password="12345" />
+		<javaModelGenerator targetPackage="io.github.xdiamond.domain"
+			targetProject="xdiamond-server" />
+		<sqlMapGenerator targetPackage="io.github.xdiamond.persistence"
+			targetProject="xdiamond-server/src/main/resources" />
+		<javaClientGenerator targetPackage="io.github.xdiamond.persistence"
+			targetProject="xdiamond-server" type="XMLMAPPER" />
+
+		<table tableName="config">
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		<table tableName="dependency">
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		<table tableName="group" delimitIdentifiers="true"
+			delimitAllColumns="true">
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		<table tableName="permission">
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		<table tableName="project">
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+			<columnOverride column="bPublic" javaType="java.lang.Boolean"></columnOverride>
+			<columnOverride column="bAllowDependency" javaType="java.lang.Boolean"></columnOverride>
+		</table>
+		<table tableName="role">
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		<table tableName="user">
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+
+		<table tableName="profile">
+			<property name="useActualColumnNames" value="true" />
+			<generatedKey column="id" sqlStatement="MySql" identity="true" />
+		</table>
+		<table tableName="user_roles" domainObjectName="UserRole">
+			<property name="useActualColumnNames" value="true" />
+		</table>
+		<table tableName="user_groups" domainObjectName="UserGroup">
+			<property name="useActualColumnNames" value="true" />
+		</table>
+		<table tableName="role_permissions" domainObjectName="RolePermission">
+			<property name="useActualColumnNames" value="true" />
+		</table>
+		<table tableName="group_roles" domainObjectName="GroupRole">
+			<property name="useActualColumnNames" value="true" />
+		</table>
+
+	</context>
+</generatorConfiguration>

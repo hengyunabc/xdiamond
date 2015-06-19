@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html ng-app="xdiamondApp">
+
+<head>
+    <meta charset="utf-8">
+    <title>XDiamond</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.css"/>
+    <link rel="stylesheet" href="bower_components/angularjs-toaster/toaster.css"/>
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+</head>
+<body class="container">
+
+<div ui-view="header"></div>
+
+<toaster-container toaster-options="{'time-out': 3000, 'close-button':true, 'animation-class': 'toast-top-center'}"></toaster-container>
+
+<div ui-view></div>
+
+    <pre>
+      <!-- Here's some values to keep an eye on in the sample in order to understand $state and $stateParams -->
+      $state = {{$state.current.name}}
+      $stateParams = {{$stateParams}}
+      $state full url = {{ $state.$current.url.source }}
+      <!-- $state.$current is not a public api, we are using it to
+           display the full url for learning purposes-->
+    </pre>
+
+</body>
+
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="bower_components/angular-ui-utils/ui-utils.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="bower_components/angular-messages/angular-messages.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/angular-touch/angular-touch.js"></script>
+
+<script src="bower_components/angular-ui-select/dist/select.js"></script>
+<script src="bower_components/angularjs-toaster/toaster.js"></script>
+
+<script src="scripts/app/app.js"></script>
+<!--components-->
+<script src="scripts/components/ReallyClick.directive.js"></script>
+<script src="scripts/components/BackButton.directive.js"></script>
+
+<!--header-->
+<script src="scripts/app/header/HeaderController.js"></script>
+<!--main-->
+<script src="scripts/app/main/MainController.js"></script>
+<!--auth-->
+<script src="scripts/app/auth/AuthService.js"></script>
+<!--filter-->
+<script src="scripts/app/common/AccessFilter.js"></script>
+
+<script src="scripts/app/users/Login.js"></script>
+<script src="scripts/app/users/LoginController.js"></script>
+<script src="scripts/app/users/Users.js"></script>
+<script src="scripts/app/users/UserService.js"></script>
+<script src="scripts/app/users/UserController.js"></script>
+
+<script src="scripts/app/groups/Groups.js"></script>
+<script src="scripts/app/groups/GroupService.js"></script>
+<script src="scripts/app/groups/GroupController.js"></script>
+
+<script src="scripts/app/permissions/Permissions.js"></script>
+<script src="scripts/app/permissions/PermissionService.js"></script>
+<script src="scripts/app/permissions/PermissionController.js"></script>
+
+<script src="scripts/app/roles/Roles.js"></script>
+<script src="scripts/app/roles/RoleController.js"></script>
+<script src="scripts/app/roles/RoleService.js"></script>
+
+<script src="scripts/app/projects/Projects.js"></script>
+<script src="scripts/app/projects/ProjectService.js"></script>
+<script src="scripts/app/projects/ProjectController.js"></script>
+
+<script src="scripts/app/projects/profiles/Profiles.js"></script>
+<script src="scripts/app/projects/profiles/ProfileController.js"></script>
+<script src="scripts/app/projects/profiles/ProfileService.js"></script>
+
+<script src="scripts/app/projects/profiles/configs/Configs.js"></script>
+<script src="scripts/app/projects/profiles/configs/ConfigController.js"></script>
+<script src="scripts/app/projects/profiles/configs/ConfigService.js"></script>
+
+<script src="scripts/app/projects/dependencies/Dependencies.js"></script>
+<script src="scripts/app/projects/dependencies/DependencyController.js"></script>
+<script src="scripts/app/projects/dependencies/DependencyService.js"></script>
+
+<script src="scripts/app/userprofile/UserProfile.js"></script>
+<script src="scripts/app/userprofile/UserProfileController.js"></script>
+
+<script src="scripts/app/metrics/metrics.js"></script>
+<script src="scripts/app/metrics/MetricsService.js"></script>
+<script src="scripts/app/metrics/MetricsController.js"></script>
+
+<script src="scripts/app/logger/logger.js"></script>
+<script src="scripts/app/logger/LoggerService.js"></script>
+<script src="scripts/app/logger/LoggerController.js"></script>
+
+<script src="scripts/app/druid/druid.js"></script>
+
+<script src="scripts/app/apidoc/apidoc.js"></script>
+
+<script src="scripts/app/connections/connections.js"></script>
+<script src="scripts/app/connections/ConnectionService.js"></script>
+<script src="scripts/app/connections/ConnectionController.js"></script>
+
+<script src="scripts/app/threadinfo/threadinfo.js"></script>
+<script src="scripts/app/threadinfo/ThreadInfoService.js"></script>
+<script src="scripts/app/threadinfo/ThreadInfoController.js"></script>
+
+<script src="scripts/app/ldap/Ldap.js"></script>
+<script src="scripts/app/ldap/LdapService.js"></script>
+<script src="scripts/app/ldap/LdapController.js"></script>
+</html>

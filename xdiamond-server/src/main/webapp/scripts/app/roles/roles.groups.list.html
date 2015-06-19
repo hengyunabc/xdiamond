@@ -1,0 +1,39 @@
+<form name="addRoleGroupForm"
+      ng-submit="addGroup(selected.group.id, selected.access)"
+      role="form">
+
+    <div class="form-group">
+        <p>加入组: {{selected.group}}</p>
+        <ui-select ng-model="selected.group" ng-change=""
+                   theme="bootstrap" ng-disabled="disabled"
+                   style="width: 300px;">
+            <ui-select-match placeholder="Select Group">{{$select.selected.name}}</ui-select-match>
+            <ui-select-choices repeat="group in allGroups">
+                <span ng-bind-html="group.name"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+
+    <input type="submit"
+           class="btn btn-success"
+           ng-disabled="addRoleGroupForm.$invalid">
+</form>
+
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>name</th>
+        <th>description</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="group in groups">
+        <td>{{group.name}}</td>
+        <td>{{group.description}}</td>
+        <td>
+            <button class="btn btn-danger danger" ng-really-click="deleteGroup(group.id)">Delete</button>
+        </td>
+
+    </tr>
+</table>

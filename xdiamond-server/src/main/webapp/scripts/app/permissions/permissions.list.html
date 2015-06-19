@@ -1,0 +1,49 @@
+<!--<button class="btn btn-default" ng-click="openNewProjectModal('lg')">新建Permission</button>-->
+
+<form name="newPermissionForm"
+      ng-submit="create()"
+      role="form">
+
+    <div class="form-group">
+        <label>permissionStr</label>
+        <input type="text"
+               ng-model="permission.permissionStr"
+               class="form-control"
+               required="">
+    </div>
+
+    <div class="form-group">
+        <label>description</label>
+        <input type="text"
+               ng-model="permission.description"
+               class="form-control"
+               required="">
+    </div>
+
+    <input type="submit"
+           class="btn btn-success btn-lg"
+           ng-disabled="newPermissionForm.$invalid">
+</form>
+
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>permissionStr</th>
+        <th>description</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="permission in permissions">
+        <td>{{permission.permissionStr}}</td>
+        <td>{{permission.description}}</td>
+
+        <!--<td>-->
+        <!--<button class="btn btn-default" ng-click="popUpdateModal($index)">修改-->
+        <!--</button>-->
+        <!--</td>-->
+        <td>
+            <button class="btn btn-danger danger" ng-really-click="delete(permission.id)">Delete</button>
+        </td>
+    </tr>
+</table>

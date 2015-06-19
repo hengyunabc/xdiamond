@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true">
+	<!-- default logback-dev.xml -->
+	<include resource="logback-${logback.env:-dev}.xml" />
+
+</configuration>

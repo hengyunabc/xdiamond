@@ -1,0 +1,32 @@
+<!--<button back-button class="btn btn-primary pull-right">返回</button>-->
+
+<div class="row" ng-show="isLoggedIn()">
+    <div class="col-md-2">
+
+        <ul class="nav nav-pills nav-stacked" ui-view="navbar">
+            <li><a ui-sref="main">Home</a></li>
+            <li ng-class="{ active: $state.includes('projects') }"><a ui-sref="projects.list">项目管理</a></li>
+            <li ng-class="{ active: $state.includes('users') }"><a ui-sref="users.list">用户管理</a></li>
+            <li ng-class="{ active: $state.includes('groups') }"><a ui-sref="groups.list">组管理</a></li>
+            <li ng-class="{ active: $state.includes('roles') }"><a ui-sref="roles.list">角色管理</a></li>
+            <li ng-class="{ active: $state.includes('permissions') }"><a ui-sref="permissions.list">权限管理</a></li>
+            <li ng-class="{ active: $state.includes('userprofile') }"><a ui-sref="userprofile">UserProfile</a></li>
+            <li ng-class="{ active: $state.includes('metrics') }"><a ui-sref="metrics">Metrics</a></li>
+            <li ng-class="{ active: $state.includes('threadinfo') }"><a ui-sref="threadinfo">ThreadDump</a></li>
+            <li ng-class="{ active: $state.includes('druid') }"><a ui-sref="druid">DruidStat</a></li>
+            <li ng-class="{ active: $state.includes('health') }"><a ui-sref="health">Health</a></li>
+            <li ng-class="{ active: $state.includes('logger') }"><a ui-sref="logger">Logger</a></li>
+            <li ng-class="{ active: $state.includes('apidoc') }"><a ui-sref="apidoc">Apidoc</a></li>
+            <li ng-class="{ active: $state.includes('connections') }"><a ui-sref="connections">Connections</a></li>
+            <li ng-class="{ active: $state.includes('ldap') }"><a ui-sref="ldap.list">LDAP</a></li>
+            <li class="disabled"><a href="##">Test</a></li>
+        </ul>
+    </div>
+
+    <div ui-view class="col-md-10">
+        <div id="main">
+        </div>
+    </div>
+
+    <hr>
+</div>

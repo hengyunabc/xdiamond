@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:property-placeholder order="1" />
+	
+	<!-- <bean id="sysProps" -->
+	<!-- class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"> -->
+	<!-- <property name="targetClass" value="java.lang.System" /> -->
+	<!-- <property name="targetMethod" value="getProperties" /> -->
+	<!-- </bean> -->
+
+	<!-- <bean id="javaVersion" -->
+	<!-- class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"> -->
+	<!-- <property name="targetObject" ref="sysProps" /> -->
+	<!-- <property name="targetMethod" value="getProperty" /> -->
+	<!-- <property name="arguments" value="java.version" /> -->
+	<!-- </bean> -->
+
+
+	<bean id="xDiamondConfig" class="io.github.xdiamond.client.XDiamondConfig"
+		init-method="init">
+		<property name="serverHost" value="${XDIAMOND_SERVERHOST:localhost}" />
+		<property name="serverPort" value="${XDIAMOND_SERVERPORT:5678}" />
+		<property name="groupId" value="testtt" />
+		<property name="artifactId" value="testtt" />
+		<property name="version" value="vvvvv" />
+		<property name="profile" value="${XDIAMOND_PROFILE:pppppp}" />
+	</bean>
+
+	<!-- <bean id="xDiamondProperties" -->
+	<!-- class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"> -->
+	<!-- <property name="targetObject" ref="xDiamondConfig" /> -->
+	<!-- <property name="targetMethod" value="getProperties" /> -->
+	<!-- </bean> -->
+
+
+	<bean id="xDiamondProperties2" class="java.util.Properties"
+		factory-bean="xDiamondConfig" factory-method="getProperties">
+	</bean>
+
+</beans>

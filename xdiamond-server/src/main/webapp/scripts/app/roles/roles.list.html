@@ -1,0 +1,53 @@
+<!--<button class="btn btn-default" ng-click="openNewProjectModal('lg')">新建Role</button>-->
+
+<form name="newPermissionForm"
+      ng-submit="create()"
+      role="form">
+
+    <div class="form-role">
+        <label>name</label>
+        <input type="text"
+               ng-model="role.name"
+               class="form-control"
+               required="">
+    </div>
+
+    <div class="form-role">
+        <label>description</label>
+        <input type="text"
+               ng-model="role.description"
+               class="form-control"
+               required="">
+    </div>
+
+    <input type="submit"
+           class="btn btn-success"
+           ng-disabled="newPermissionForm.$invalid">
+</form>
+
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>name</th>
+        <th>description</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="role in roles">
+        <td>{{role.name}}</td>
+        <td>{{role.description}}</td>
+
+        <!--<td>-->
+        <!--<button class="btn btn-default" ng-click="popUpdateModal($index)">修改-->
+        <!--</button>-->
+        <!--</td>-->
+        <td><a ui-sref="roles.permissions({roleId:role.id})">查看Permission</a></td>
+        <td><a ui-sref="roles.users({roleId:role.id})">查看用户</a></td>
+        <td><a ui-sref="roles.groups({roleId:role.id})">查看组</a></td>
+
+        <td>
+            <button class="btn btn-danger danger" ng-really-click="delete(role.id)">Delete</button>
+        </td>
+    </tr>
+</table>

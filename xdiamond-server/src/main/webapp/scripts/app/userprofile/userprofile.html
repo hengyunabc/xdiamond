@@ -1,0 +1,27 @@
+<span>principal: {{authenticateInfo.authc.principal}}</span>
+
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>role</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="role in authenticateInfo.authz.roles">
+        <td>{{role}}</td>
+    </tr>
+</table>
+
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>permission</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="permission in authenticateInfo.authz.permissions">
+        <td>{{permission}}</td>
+    </tr>
+</table>

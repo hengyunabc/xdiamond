@@ -1,0 +1,45 @@
+<div ng-controller="LoginController" class="login-container">
+    <div class="alert alert-danger"
+         ng-bind="errorMessage"
+         ng-show="errorMessage"></div>
+    <div class="card login-card">
+        <div class="login-form">
+            <form name="loginForm"
+                  ng-submit="login()"
+                  class="form-horizontal"
+                  role="form">
+                <div class="form-group">
+                    <label for="email">Username</label>
+                    <input type="text"
+                           ng-model="user.name"
+                           class="form-control"
+                           id="email"
+                           placeholder="Enter Username"
+                           required="">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password"
+                           ng-model="user.password"
+                           class="form-control"
+                           id="password"
+                           placeholder="Enter Password"
+                           required="">
+                </div>
+                <div class="form-group">
+
+                    <div class="btn-group">
+                        <label class="btn btn-primary" ng-model="user.provider" btn-radio="'ldap'">LDAP</label>
+                        <label class="btn btn-primary" ng-model="user.provider" btn-radio="'standard'">Standard</label>
+                    </div>
+                </div>
+
+
+                <input type="submit"
+                       class="btn btn-success btn-lg"
+                       value="Login"
+                       ng-disabled="loginForm.$invalid">
+            </form>
+        </div>
+    </div>
+</div>

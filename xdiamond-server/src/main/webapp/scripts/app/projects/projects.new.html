@@ -1,0 +1,80 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">Add Project</h3>
+    </div>
+    <div class="modal-body">
+        <form name="newProjectForm"
+              ng-submit="create()"
+              role="form">
+            <div class="form-group">
+                <label>groupId</label>
+                <input type="text"
+                       ng-model="project.groupId"
+                       class="form-control"
+                       required="">
+            </div>
+
+            <div class="form-group">
+                <label>artifactId</label>
+                <input type="text"
+                       ng-model="project.artifactId"
+                       class="form-control"
+                       required="">
+            </div>
+            <div class="form-group">
+                <label>version</label>
+                <input type="text"
+                       ng-model="project.version"
+                       class="form-control"
+                       required="">
+            </div>
+            <div class="form-group">
+                <label>description</label>
+                <input type="text"
+                       ng-model="project.description"
+                       class="form-control"
+                       required="">
+            </div>
+
+            <div class="form-group">
+                <label>ownerGroup</label>
+                <ui-select ng-model="project.ownerGroup" ng-change=""
+                           theme="bootstrap" ng-disabled="disabled"
+                           style="width: 300px;">
+                    <ui-select-match placeholder="Select Group">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="group.id as group in allGroups">
+                        <span ng-bind-html="group.name"></span>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+
+            <div class="form-group">
+                <label>bPublic</label>
+
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="project.bPublic"
+                           btn-radio="true">Yes</label>
+                    <label class="btn btn-primary" ng-model="project.bPublic"
+                           btn-radio="false">No</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>bAllowDependency</label>
+
+                <div class="btn-group">
+                    <label class="btn btn-primary" ng-model="project.bAllowDependency"
+                           btn-radio="true">Yes</label>
+                    <label class="btn btn-primary" ng-model="project.bAllowDependency"
+                           btn-radio="false">No</label>
+                </div>
+            </div>
+
+            <input type="submit"
+                   class="btn btn-success btn-lg"
+                   ng-disabled="newProjectForm.$invalid">
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</div>
