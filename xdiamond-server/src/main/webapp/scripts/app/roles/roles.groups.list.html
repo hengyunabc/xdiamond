@@ -6,7 +6,7 @@
         <p>加入组: {{selected.group}}</p>
         <ui-select ng-model="selected.group" theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select Group">{{$select.selected.name}}</ui-select-match>
-            <ui-select-choices repeat="group in allGroups">
+            <ui-select-choices repeat="group in allGroups | propsFilter: {name: $select.search}">
                 <span ng-bind-html="group.name"></span>
             </ui-select-choices>
         </ui-select>

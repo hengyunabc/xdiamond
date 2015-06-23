@@ -6,7 +6,7 @@
         <p>加入Permission: {{selected.permission}}</p>
         <ui-select ng-model="selected.permission" theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select Permission">{{$select.selected.permissionStr}}</ui-select-match>
-            <ui-select-choices repeat="permission in allPermissions">
+            <ui-select-choices repeat="permission in allPermissions | propsFilter: {permissionStr: $select.search}">
                 <span ng-bind-html="permission.permissionStr"></span>
             </ui-select-choices>
         </ui-select>

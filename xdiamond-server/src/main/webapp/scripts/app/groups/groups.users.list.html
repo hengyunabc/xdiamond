@@ -6,7 +6,7 @@
         <p>加入用户:</p>
         <ui-select ng-model="selected.user" theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select User">{{$select.selected.name}}</ui-select-match>
-            <ui-select-choices repeat="user in allUsers">
+            <ui-select-choices repeat="user in allUsers | propsFilter: {name: $select.search}">
                 <span ng-bind-html="user.name"></span>
             </ui-select-choices>
         </ui-select>

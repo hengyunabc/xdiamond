@@ -39,7 +39,7 @@
                 <label>ownerGroup</label>
                 <ui-select ng-model="project.ownerGroup" theme="bootstrap" style="width: 300px;">
                     <ui-select-match placeholder="Select Group">{{$select.selected.name}}</ui-select-match>
-                    <ui-select-choices repeat="group.id as group in allGroups">
+                    <ui-select-choices repeat="group.id as group in allGroups | propsFilter: {name: $select.search}">
                         <span ng-bind-html="group.name"></span>
                     </ui-select-choices>
                 </ui-select>

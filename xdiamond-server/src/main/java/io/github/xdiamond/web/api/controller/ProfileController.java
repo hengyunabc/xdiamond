@@ -5,7 +5,6 @@ import io.github.xdiamond.service.ProfileService;
 import io.github.xdiamond.web.RestResult;
 import io.github.xdiamond.web.shiro.PermissionHelper;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.validation.Valid;
