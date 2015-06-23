@@ -15,8 +15,7 @@
 
         <p>Selected: {{selected.byGroupId}}</p>
         <ui-select ng-model="selected.byGroupId" ng-change="selected.byArtifactId=''; selected.byVersion=''"
-                   theme="bootstrap" ng-disabled="disabled"
-                   style="width: 300px;">
+                   theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select groupId">{{$select.selected.groupId}}</ui-select-match>
             <ui-select-choices repeat="project in uniqueFilter(projects, 'groupId') | filter: $select.search  ">
                 <span ng-bind-html="project.groupId"></span>
@@ -47,7 +46,7 @@
     </div>
     <input type="submit"
            class="btn btn-success"
-           ng-disabled="newProjectForm.$invalid || selected.byVersion === undefined || selected.byVersion === '' ">
+           ng-disabled="newProjectForm.$invalid || !selected.byVersion">
 
 </form>
 

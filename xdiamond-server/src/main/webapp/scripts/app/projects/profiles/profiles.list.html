@@ -23,9 +23,7 @@
 
     <div class="form-group">
         <p>Profile Access: {{profile.access}}</p>
-        <ui-select ng-model="profile.access" ng-change=""
-                   theme="bootstrap" ng-disabled="disabled"
-                   style="width: 300px;">
+        <ui-select ng-model="profile.access" theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select Access">{{$select.selected | accessFilter}}</ui-select-match>
             <ui-select-choices repeat="access in accessArray">
                 <span ng-bind-html="access | accessFilter"></span>
@@ -52,7 +50,7 @@
 
     <input type="submit"
            class="btn btn-success btn-lg"
-           ng-disabled="newProfileForm.$invalid">
+           ng-disabled="newProfileForm.$invalid || !profile.access">
 </form>
 
 <h3>Profile</h3>

@@ -4,9 +4,7 @@
 
     <div class="form-group">
         <p>加入Permission: {{selected.permission}}</p>
-        <ui-select ng-model="selected.permission" ng-change=""
-                   theme="bootstrap" ng-disabled="disabled"
-                   style="width: 300px;">
+        <ui-select ng-model="selected.permission" theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select Permission">{{$select.selected.permissionStr}}</ui-select-match>
             <ui-select-choices repeat="permission in allPermissions">
                 <span ng-bind-html="permission.permissionStr"></span>
@@ -16,7 +14,7 @@
 
     <input type="submit"
            class="btn btn-success"
-           ng-disabled="addRolePermissionForm.$invalid">
+           ng-disabled="addRolePermissionForm.$invalid || !selected.permission">
 </form>
 
 <table class="table table-striped">

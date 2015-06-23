@@ -1,4 +1,3 @@
-
 <div>
     <div class="modal-header">
         <h3 class="modal-title">修改Project</h3>
@@ -38,9 +37,7 @@
             </div>
             <div class="form-group">
                 <label>ownerGroup</label>
-                <ui-select ng-model="project.ownerGroup" ng-change=""
-                           theme="bootstrap" ng-disabled="disabled"
-                           style="width: 300px;">
+                <ui-select ng-model="project.ownerGroup" theme="bootstrap" style="width: 300px;">
                     <ui-select-match placeholder="Select Group">{{$select.selected.name}}</ui-select-match>
                     <ui-select-choices repeat="group.id as group in allGroups">
                         <span ng-bind-html="group.name"></span>
@@ -71,7 +68,7 @@
 
             <input type="submit"
                    class="btn btn-success btn-lg"
-                   ng-disabled="updateProjectForm.$invalid">
+                   ng-disabled="updateProjectForm.$invalid || !project.ownerGroup">
         </form>
     </div>
     <div class="modal-footer">

@@ -3,10 +3,8 @@
       role="form">
 
     <div class="form-group">
-        <p>加入用户: {{selected.user}}</p>
-        <ui-select ng-model="selected.user" ng-change=""
-                   theme="bootstrap" ng-disabled="disabled"
-                   style="width: 300px;">
+        <p>加入用户:</p>
+        <ui-select ng-model="selected.user" theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select User">{{$select.selected.name}}</ui-select-match>
             <ui-select-choices repeat="user in allUsers">
                 <span ng-bind-html="user.name"></span>
@@ -16,9 +14,7 @@
 
     <div class="form-group">
         <p>用户Access: {{selected.access}}</p>
-        <ui-select ng-model="selected.access" ng-change=""
-                   theme="bootstrap" ng-disabled="disabled"
-                   style="width: 300px;">
+        <ui-select ng-model="selected.access" theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select Access">{{$select.selected | accessFilter}}</ui-select-match>
             <ui-select-choices repeat="access in accessArray">
                 <span ng-bind-html="access | accessFilter"></span>
@@ -28,7 +24,7 @@
 
     <input type="submit"
            class="btn btn-success"
-           ng-disabled="addGroupUserForm.$invalid">
+           ng-disabled="addGroupUserForm.$invalid || !selected.user || !selected.access">
 </form>
 
 <table class="table table-striped">
