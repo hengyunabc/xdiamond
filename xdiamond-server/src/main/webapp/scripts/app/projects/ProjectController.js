@@ -4,11 +4,23 @@
 
 'use strict';
 
-angular.module('xdiamondApp').controller("ProjectController", ['$scope', 'projects', 'ProjectService', '$modal', '$state',
-    function ($scope, projects, ProjectService, $modal, $state) {
+angular.module('xdiamondApp').controller("ProjectController", ['$scope', 'projects', 'ProjectService', '$modal', '$state', 'allGroups',
+    function ($scope, projects, ProjectService, $modal, $state, allGroups) {
         console.log('ProjectContoller....');
         //TODO project要排好序
         $scope.projects = projects;
+        $scope.allGroups = allGroups;
+
+        //获取到project的ownerGroup的名字
+        $scope.projects.forEach(function(project, index, projectArray){
+            $scope.allGroups.every(function(group, index, groupArray){
+                if(project.ownerGroup === group.id){
+                    project.ownerGroupName = group.name;
+                    return false;
+                }
+                return true;
+            });
+        });
 
         $scope.delete = function (projectId) {
             ProjectService.delete(projectId).then(function () {

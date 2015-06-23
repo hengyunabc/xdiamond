@@ -16,6 +16,9 @@ angular.module('xdiamondApp')
                 resolve: {
                     projects: ['ProjectService', function (ProjectService) {
                         return ProjectService.list();
+                    }],
+                    allGroups: ['GroupService', function (GroupService) {
+                        return GroupService.list();
                     }]
                 },
                 controller: 'ProjectController'
