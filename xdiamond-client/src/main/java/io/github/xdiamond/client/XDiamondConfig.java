@@ -109,7 +109,7 @@ public class XDiamondConfig {
           }
         }
       }
-      if(!future.isSuccess()){
+      if (!future.isSuccess()) {
         logger.error("can not load xdiamond config from server!", future.cause());
       }
     } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
@@ -366,6 +366,22 @@ public class XDiamondConfig {
 
   public String getSecretKey() {
     return secretKey;
+  }
+
+  public boolean isbPrintConfigWhenBoot() {
+    return bPrintConfigWhenBoot;
+  }
+
+  public void setbPrintConfigWhenBoot(boolean bPrintConfigWhenBoot) {
+    this.bPrintConfigWhenBoot = bPrintConfigWhenBoot;
+  }
+
+  public boolean isbSyncToSystemProperties() {
+    return bSyncToSystemProperties;
+  }
+
+  public void setbSyncToSystemProperties(boolean bSyncToSystemProperties) {
+    this.bSyncToSystemProperties = bSyncToSystemProperties;
   }
 
   public void setSecretKey(String secretKey) {

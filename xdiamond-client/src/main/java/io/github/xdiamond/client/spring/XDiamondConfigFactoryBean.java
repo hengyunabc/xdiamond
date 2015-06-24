@@ -64,6 +64,11 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
   String serverHost;
   String serverPort;
 
+  // 启动时，是否打印获取到的配置信息
+  boolean bPrintConfigWhenBoot = true;
+  // 获取到配置，是否同步到System Properties里
+  boolean bSyncToSystemProperties = false;
+
   XDiamondConfig xDiamondConfig;
 
   public void setOrder(int order) {
@@ -144,7 +149,7 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
       secretKey = helper.replacePlaceholders(secretKey, properties);
       xDiamondConfig.setSecretKey(secretKey);
     }
-    
+
     if (!StringUtils.isEmpty(serverHost)) {
       serverHost = helper.replacePlaceholders(serverHost, properties);
       xDiamondConfig.setServerHost(serverHost);
@@ -154,6 +159,9 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
       serverPort = helper.replacePlaceholders(serverPort, properties);
       xDiamondConfig.setServerPort(Integer.parseInt(serverPort));
     }
+    
+    xDiamondConfig.setbPrintConfigWhenBoot(bPrintConfigWhenBoot);
+    xDiamondConfig.setbSyncToSystemProperties(bSyncToSystemProperties);
 
     xDiamondConfig.init();
   }
@@ -285,6 +293,22 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
 
   public void setSecretKey(String secretKey) {
     this.secretKey = secretKey;
+  }
+
+  public boolean isbPrintConfigWhenBoot() {
+    return bPrintConfigWhenBoot;
+  }
+
+  public void setbPrintConfigWhenBoot(boolean bPrintConfigWhenBoot) {
+    this.bPrintConfigWhenBoot = bPrintConfigWhenBoot;
+  }
+
+  public boolean isbSyncToSystemProperties() {
+    return bSyncToSystemProperties;
+  }
+
+  public void setbSyncToSystemProperties(boolean bSyncToSystemProperties) {
+    this.bSyncToSystemProperties = bSyncToSystemProperties;
   }
 
   @Override
