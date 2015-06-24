@@ -7,6 +7,7 @@ import io.xdiamond.common.util.Native2ascii;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class ResolvedConfig {
   Config config;
@@ -51,10 +52,10 @@ public class ResolvedConfig {
     this.fromProfile = fromProfile;
   }
 
-
   @Override
   public String toString() {
-    return JSON.toJSONString(this);
+    return JSON.toJSONString(this, SerializerFeature.DisableCircularReferenceDetect,
+        SerializerFeature.PrettyFormat);
   }
 
   static public String toPropertiesString(List<ResolvedConfig> resolvedConfigs, boolean bComment) {
@@ -85,7 +86,8 @@ public class ResolvedConfig {
   }
 
   static public String toJSONString(List<ResolvedConfig> resolvedConfigs) {
-    return JSON.toJSONString(resolvedConfigs, true);
+    return JSON.toJSONString(resolvedConfigs, SerializerFeature.DisableCircularReferenceDetect,
+        SerializerFeature.PrettyFormat);
   }
 
 }
