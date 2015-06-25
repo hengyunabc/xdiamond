@@ -5,8 +5,8 @@
 'use strict';
 
 angular.module('xdiamondApp').controller("ConfigController",
-    ['$scope', '$state', 'ConfigService', 'configs', 'project', 'profile', '$modal', 'resolvedConfigs',
-        function ($scope, $state, ConfigService, configs, project, profile, $modal, resolvedConfigs) {
+    ['$scope', '$state', '$filter', 'ConfigService', 'configs', 'project', 'profile', '$modal', 'resolvedConfigs',
+        function ($scope, $state, $filter, ConfigService, configs, project, profile, $modal, resolvedConfigs) {
             console.log('ConfigController....')
             $scope.bShowAddConfigForm = 0;
 
@@ -29,11 +29,46 @@ angular.module('xdiamondApp').controller("ConfigController",
 
             $scope.config = {profileId: profile.id};
 
+            $scope.batchConfigs = [];
+            $scope.exampleBatchConfigs = JSON.stringify([
+                {
+                    "key": "key1",
+                    "value": "value1",
+                    "description": "key1"
+                },
+                {
+                    "key": "host",
+                    "value": "localhost",
+                    "description": "host"
+                }
+            ], undefined, 2);
+
+            $scope.checkBatchConfig = function (configArray) {
+                console.log(configArray);
+                if (Array.isArray(configArray) && configArray.length > 0) {
+                    //TODO 完善这里的判断
+                    $scope.batchConfigChecked = true;
+                } else {
+                    $scope.batchConfigChecked = false;
+                }
+                console.log("batchConfigChecked" + $scope.batchConfigChecked);
+            }
+
             $scope.create = function () {
                 ConfigService.create($scope.config).then(function () {
                     $state.reload();
                 })
                 $scope.config = {profileId: profile.id};
+            }
+
+            $scope.batch = function (batchConfigs) {
+                batchConfigs.forEach(function (config, index, array) {
+                    config.profileId = profile.id;
+                })
+                ConfigService.batch(batchConfigs).then(function () {
+                    $state.reload();
+                })
+                $scope.batchConfigs = [];
             }
 
             $scope.delete = function (configId) {
@@ -56,6 +91,20 @@ angular.module('xdiamondApp').controller("ConfigController",
                 });
             }
 
+            $scope.showConfigsJSONModal = function (size) {
+                var modalInstance = $modal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'scripts/app/projects/profiles/configs/configs.showConfigsJSON.html',
+                    controller: 'ShowConfigsJSONController',
+                    size: size,
+                    resolve: {
+                        configs: function () {
+                            return angular.copy(configs);
+                        }
+                    }
+                });
+            }
+
         }]);
 
 angular.module('xdiamondApp').controller("ConfigUpdateController",
@@ -69,6 +118,31 @@ angular.module('xdiamondApp').controller("ConfigUpdateController",
                 });
                 $modalInstance.close();
             }
+
+            $scope.ok = function () {
+                $modalInstance.close();
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+
+        }]);
+
+
+angular.module('xdiamondApp').controller("ShowConfigsJSONController",
+    ['$scope', '$state', '$modal', '$modalInstance', '$filter', 'configs',
+        function ($scope, $state, $modal, $modalInstance, $filter, configs) {
+            $scope.configs = [];
+
+            configs.forEach(function (config, index, array) {
+                var tempConfig = {};
+                tempConfig.key = config.key;
+                tempConfig.value = config.value;
+                tempConfig.description = config.description;
+                $scope.configs.push(tempConfig);
+            })
+            $scope.configsJSONString = $filter('json')($scope.configs);
 
             $scope.ok = function () {
                 $modalInstance.close();

@@ -27,6 +27,14 @@ angular.module('xdiamondApp')
             })
         };
 
+        service.batch = function (batchConfigs) {
+            return $http.post('api/configs/batch', batchConfigs).then(function (response) {
+                if (response.data.success) {
+                    $log.info('batch configs success');
+                }
+            })
+        };
+
         service.delete = function (id) {
             return $http.delete('api/configs/' + id).then(function (response) {
                 if (response.data.success) {

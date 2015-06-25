@@ -42,6 +42,38 @@
            ng-disabled="newConfigForm.$invalid">
 </form>
 
+<br>
+
+<button class="btn btn-default" ng-init="isBatchFormCollapsed = true"
+        ng-click="isBatchFormCollapsed = !isBatchFormCollapsed">
+    批量增加Config
+</button>
+<span class="glyphicon glyphicon-question-sign"
+      tooltip="批量增加Config，json array格式，请小心使用！"
+      tooltip-placement="top"
+      tooltip-trigger="mouseenter"></span>
+
+<form name="batchConfigForm"
+      ng-submit="batch(batchConfigs)"
+      role="form" collapse="isBatchFormCollapsed">
+    <div class="form-group">
+        <label>例子配置</label>
+        <textarea msd-elastic ng-model="exampleBatchConfigs" class="text-info form-control" readonly="readonly">
+        </textarea>
+    </div>
+
+    <div class="form-group">
+        <label>config array(json array):</label>
+        <span ng-show="!batchConfigChecked" class="text-danger">格式错误！</span>
+        <textarea msd-elastic json-input ng-model="batchConfigs" ng-change='checkBatchConfig(batchConfigs)'
+                  class="form-control"></textarea>
+    </div>
+
+    <input type="submit"
+           class="btn btn-success btn-lg"
+           ng-disabled="batchConfigForm.$invalid || !batchConfigChecked">
+</form>
+
 <div ng-show="false">
     <h3>Profile Configs</h3>
     <table class="table table-striped">
@@ -74,6 +106,7 @@
 <h3>Resolved Configs</h3>
 <a class="btn btn-success" target="_blank" href="{{propertiesUrl }}">以Properties格式查看</a>
 <a class="btn btn-success" target="_blank" href="{{jsonUrl }}">以JSON格式查看</a>
+<button class="btn btn-success" ng-click="showConfigsJSONModal()">以复制到另一个profile的格式查看</button>
 
 <table class="table table-striped">
 

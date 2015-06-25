@@ -53,6 +53,28 @@ public class ConfigController {
     return RestResult.success().withResult("message", "创建config成功").build();
   }
 
+  /**
+   * 传递进来的confiList需要是清理干净的，合理的
+   * @param configList
+   * @return
+   */
+  @RequestMapping(value = "/configs/batch", method = RequestMethod.POST)
+  @ResponseStatus(HttpStatus.CREATED)
+  public Object batch(@Valid @RequestBody List<Config> configList) {
+    for(Config config : configList){
+      // 创建Config前，检查是否有profile的权限
+      PermissionHelper.checkProfileControll(config.getProfileId());
+      // 设置创建者，时间，版本
+      config.setCreateTime(new Date());
+      config.setCreateUser(SecurityUtils.getSubject().getPrincipal().toString());
+      config.setVersion(0);
+
+      configService.insert(config);
+    }
+
+    return RestResult.success().withResult("message", "创建config成功").build();
+  }
+  
   @RequestMapping(value = "/configs/{configId}", method = RequestMethod.DELETE)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public Object delete(@PathVariable Integer configId) {
