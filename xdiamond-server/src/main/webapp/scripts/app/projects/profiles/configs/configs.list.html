@@ -104,12 +104,28 @@
 
 
 <h3>Resolved Configs</h3>
-<button class="btn btn-default" ng-init="bOnlyShowKeyValue = false" ng-click="bOnlyShowKeyValue = !bOnlyShowKeyValue">
-    只看Key/Value
-</button>
-<a class="btn btn-success" target="_blank" href="{{propertiesUrl }}">以Properties格式查看</a>
-<a class="btn btn-success" target="_blank" href="{{jsonUrl }}">以JSON格式查看</a>
-<button class="btn btn-success" ng-click="showConfigsJSONModal()">以复制到另一个profile的格式查看</button>
+<form role="form">
+    <div class="form-group">
+        <button class="btn btn-default" ng-init="bOnlyShowKeyValue = false"
+                ng-click="bOnlyShowKeyValue = !bOnlyShowKeyValue">
+            只看Key/Value
+        </button>
+        <a class="btn btn-success" target="_blank" href="{{propertiesUrl }}">以Properties格式查看</a>
+        <a class="btn btn-success" target="_blank" href="{{jsonUrl }}">以JSON格式查看</a>
+        <button class="btn btn-success" ng-click="showConfigsJSONModal()">以复制到另一个profile的格式查看</button>
+    </div>
+</form>
+
+<form role="form">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+
+            <input type="text" class="form-control" placeholder="Search" ng-model="search.$">
+
+        </div>
+    </div>
+</form>
 
 <table class="table table-striped">
 
@@ -129,7 +145,7 @@
     </tr>
     </thead>
 
-    <tr ng-repeat="resolveConfig in resolvedConfigs">
+    <tr ng-repeat="resolveConfig in resolvedConfigs | filter:search | orderBy:'config.key'">
         <td>{{resolveConfig.config.key}}</td>
         <td>{{resolveConfig.config.value}}</td>
         <td ng-hide="bOnlyShowKeyValue">{{resolveConfig.config.description}}</td>
