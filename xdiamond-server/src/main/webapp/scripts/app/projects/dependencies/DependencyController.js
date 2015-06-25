@@ -5,8 +5,8 @@
 'use strict';
 
 angular.module('xdiamondApp').controller("DependencyController",
-    ['$scope', 'DependencyService', 'dependencies', 'project', 'projects', '$modal', '$filter',
-        function ($scope, DependencyService, dependencies, project, projects, $modal, $filter) {
+    ['$scope', '$state', 'DependencyService', 'dependencies', 'project', 'projects', '$modal', '$filter',
+        function ($scope, $state, DependencyService, dependencies, project, projects, $modal, $filter) {
             console.log('DependencyController....')
 
             $scope.uniqueFilter = $filter('unique');
@@ -29,6 +29,7 @@ angular.module('xdiamondApp').controller("DependencyController",
             for (var i in dependencies) {
                 for (var j in projects) {
                     if (dependencies[i].dependencyProjectId === projects[j].id) {
+                        projects[j].dependencyId = dependencies[i].id;
                         $scope.dependencyProjects.push(projects[j]);
                     }
                 }
@@ -39,8 +40,16 @@ angular.module('xdiamondApp').controller("DependencyController",
                 DependencyService.create({
                     projectId: project.id,
                     dependencyProjectId: $scope.selected.byVersion.id
+                }).then(function () {
+                    $state.reload();
                 })
             }
+
+            $scope.delete = function (id) {
+                DependencyService.delete(id).then(function () {
+                    $state.reload();
+                });
+            };
 
             $scope.openNewProjectModal = function (size) {
                 var modalInstance = $modal.open({

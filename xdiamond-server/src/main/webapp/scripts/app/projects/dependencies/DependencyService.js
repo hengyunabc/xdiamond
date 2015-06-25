@@ -28,7 +28,7 @@ angular.module('xdiamondApp')
         };
 
         service.delete = function (id) {
-            return $http.delete('api/dependencies' + id).then(function (response) {
+            return $http.delete('api/dependencies/' + id).then(function (response) {
                 if (response.data.success) {
                     $log.info('delete dependency success, id:' + id);
                 }
