@@ -105,19 +105,6 @@ CREATE TABLE `project` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for project_profiles
--- ----------------------------
-DROP TABLE IF EXISTS `project_profiles`;
-CREATE TABLE `project_profiles` (
-  `projectId` int(11) NOT NULL,
-  `profile` varchar(255) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `createTime` datetime DEFAULT NULL,
-  `updateDate` datetime DEFAULT NULL,
-  PRIMARY KEY (`projectId`,`profile`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
 -- Table structure for role
 -- ----------------------------
 DROP TABLE IF EXISTS `role`;
