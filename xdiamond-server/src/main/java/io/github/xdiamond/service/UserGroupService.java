@@ -46,7 +46,7 @@ public class UserGroupService {
     example.createCriteria().andUserIdEqualTo(userId);
     return userGroupMapper.selectByExample(example);
   }
-  
+
   /**
    * 组里增加用户
    * 
@@ -61,7 +61,7 @@ public class UserGroupService {
     userGroup.setAccess(access);
     return userGroupMapper.insert(userGroup);
   }
-  
+
   /**
    * 组里删除用户
    * 
@@ -72,7 +72,7 @@ public class UserGroupService {
   public int deleteUser(int groupId, int userId) {
     return userGroupMapper.deleteByPrimaryKey(userId, groupId);
   }
-  
+
   /**
    * 获取组下面的所有用户还有Access
    * 
@@ -92,5 +92,9 @@ public class UserGroupService {
       userAndAccessList.add(json);
     }
     return userAndAccessList;
+  }
+
+  public boolean exist(int groupId, int userId) {
+    return userGroupMapper.selectByPrimaryKey(userId, groupId) != null;
   }
 }

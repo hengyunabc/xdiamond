@@ -87,17 +87,20 @@ public class LdapService {
     List<LdapUser> users = ldapGroup.getUsers();
     //
     for (LdapUser ldapUser : users) {
-      if (userService.query(ldapUser.getCn()) == null) {
-        User user = userService.insertLdapUser(ldapUser.getCn());
-        if (user != null) {
-          logger.info("insert ldap user: {}" + ldapUser.getCn());
-          userGroupService.addUser(group.getId(), user.getId(), Access.DEVELOPER);
-          logger.info("add user into group, user:{}, group:{}", user.getName(), group.getName());
-        } else {
-          logger.error("insert ldap user error!");
+      User user = userService.query(ldapUser.getCn());
+      // 如果用户不存在，先插入用户
+      if (user == null) {
+        user = userService.insertLdapUser(ldapUser.getCn());
+        if (user == null) {
+          logger.error("insert ldap user error!group:{}, user:{}", group.getName(),
+              ldapUser.getCn());
         }
-      } else {
-        logger.info("user exists, userName: {}", ldapUser.getCn());
+      }
+      // 如果组里还没有用户，则把用户插入到组里
+      if (!userGroupService.exist(group.getId(), user.getId())) {
+        logger.info("insert ldap user: {}" + ldapUser.getCn());
+        userGroupService.addUser(group.getId(), user.getId(), Access.DEVELOPER);
+        logger.info("add user into group, user:{}, group:{}", user.getName(), group.getName());
       }
     }
   }
