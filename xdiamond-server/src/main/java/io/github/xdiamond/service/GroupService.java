@@ -2,21 +2,14 @@ package io.github.xdiamond.service;
 
 import io.github.xdiamond.domain.Group;
 import io.github.xdiamond.domain.GroupExample;
-import io.github.xdiamond.domain.User;
-import io.github.xdiamond.domain.UserGroup;
-import io.github.xdiamond.domain.UserGroupExample;
 import io.github.xdiamond.persistence.GroupMapper;
 import io.github.xdiamond.persistence.UserGroupMapper;
 import io.github.xdiamond.persistence.UserMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 
 @Service
 public class GroupService {

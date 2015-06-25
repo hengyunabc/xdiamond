@@ -1,6 +1,7 @@
 package io.github.xdiamond.web.api.controller;
 
 import io.github.xdiamond.domain.Profile;
+import io.github.xdiamond.service.ConfigService;
 import io.github.xdiamond.service.ProfileService;
 import io.github.xdiamond.web.RestResult;
 import io.github.xdiamond.web.shiro.PermissionHelper;
@@ -25,6 +26,8 @@ import com.google.common.collect.Lists;
 public class ProfileController {
   @Autowired
   ProfileService profileService;
+  @Autowired
+  ConfigService configService;
 
   @RequestMapping(value = "/projects/{projectId}/profiles", method = RequestMethod.GET)
   public Object list(@PathVariable Integer projectId) {
@@ -64,6 +67,8 @@ public class ProfileController {
     // 删除profile之前，检查是否有权限
     PermissionHelper.checkProfileControll(profileId);
 
+    // 删除profile之前，先删除profile下面的Config
+    configService.deleteConfigByProfileId(profileId);
     profileService.delete(profileId);
     return RestResult.success().withResult("message", "删除profileId成功").build();
   }

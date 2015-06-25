@@ -1,14 +1,12 @@
 package io.github.xdiamond.web.api.controller;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
-import io.github.xdiamond.domain.Group;
 import io.github.xdiamond.domain.ldap.LdapGroup;
 import io.github.xdiamond.service.LdapService;
 import io.github.xdiamond.web.RestResult;
-import io.github.xdiamond.web.shiro.PermissionHelper;
+
+import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

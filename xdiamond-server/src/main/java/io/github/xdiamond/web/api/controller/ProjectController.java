@@ -1,9 +1,12 @@
 package io.github.xdiamond.web.api.controller;
 
+import io.github.xdiamond.domain.Dependency;
+import io.github.xdiamond.domain.Profile;
 import io.github.xdiamond.domain.Project;
 import io.github.xdiamond.service.ConfigService;
 import io.github.xdiamond.service.DependencyService;
 import io.github.xdiamond.service.MappingService;
+import io.github.xdiamond.service.ProfileService;
 import io.github.xdiamond.service.ProjectService;
 import io.github.xdiamond.web.RestResult;
 import io.github.xdiamond.web.shiro.PermissionHelper;
@@ -36,6 +39,8 @@ public class ProjectController {
   DependencyService dependencyService;
   @Autowired
   ConfigService configService;
+  @Autowired
+  ProfileService profileService;
 
   @RequestMapping(value = "", method = RequestMethod.GET)
   public Object list() {
@@ -73,7 +78,17 @@ public class ProjectController {
   public Object delete(@PathVariable Integer projectId) {
     // 检查delete权限
     PermissionHelper.checkProjectDelete(projectId);
-
+    // 检查是否有其它项目在依赖着这个项目
+    List<Dependency> depList = dependencyService.selectByDependencyProjectId(projectId);
+    if (!depList.isEmpty()) {
+      return RestResult.fail().withErrorMessage("项目被依赖，不能删除！");
+    }
+    // 删除project相关的profile，删除profile里的Config
+    List<Profile> profileList = profileService.list(projectId);
+    for (Profile profile : profileList) {
+      configService.deleteConfigByProfileId(profile.getId());
+      profileService.delete(profile.getId());
+    }
     projectService.delete(projectId);
     return RestResult.success().withResult("message", "删除project成功").build();
   }

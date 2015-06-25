@@ -36,7 +36,7 @@ public class DependencyService {
    * @return
    */
   public LinkedList<Dependency> queryFinalDependency(int projectId) {
-    //注意，这里必须要新建一个List，不能直接使用原有的，因为缓存里用的是同一个List
+    // 注意，这里必须要新建一个List，不能直接使用原有的，因为缓存里用的是同一个List
     List<Dependency> dependencies = Lists.newLinkedList(this.list(projectId));
 
     Map<Integer, Dependency> finalDeps = Maps.newLinkedHashMap();
@@ -91,5 +91,16 @@ public class DependencyService {
 
   public Dependency select(int id) {
     return dependencyMapper.selectByPrimaryKey(id);
+  }
+
+  /**
+   * 据被依赖的项目ID，查找出依赖
+   * @param dependencyProjectId
+   * @return
+   */
+  public List<Dependency> selectByDependencyProjectId(int dependencyProjectId) {
+    DependencyExample example = new DependencyExample();
+    example.createCriteria().andDependencyProjectIdEqualTo(dependencyProjectId);
+    return dependencyMapper.selectByExample(example);
   }
 }
