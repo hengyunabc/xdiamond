@@ -22,6 +22,8 @@ import io.github.xdiamond.service.UserService;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -33,6 +35,13 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.Timer.Context;
+import com.codahale.metrics.annotation.Timed;
 
 public class CustomRealm extends AuthorizingRealm implements Serializable {
 
@@ -63,100 +72,119 @@ public class CustomRealm extends AuthorizingRealm implements Serializable {
   @Autowired
   ConfigService configService;
 
+  private MetricRegistry metricRegistry;
+
+  @Value("${metrics.registryName}")
+  String registryName;
+
+  Timer timer;
+
+  @PostConstruct
+  public void init2() {
+    metricRegistry = SharedMetricRegistries.getOrCreate(registryName);
+    timer = metricRegistry.timer(MetricRegistry.name(this.getClass(), "authorizationInfo"));
+  }
+
+  @Timed
   public AuthorizationInfo authorizationInfo(PrincipalCollection principals) {
-    String userName = principals.getPrimaryPrincipal().toString();
-    User user = userService.query(userName);
+    Context timeContext = timer.time();
+    try {
+      String userName = principals.getPrimaryPrincipal().toString();
+      User user = userService.query(userName);
 
-    if (null != user) {
-      SimpleAuthorizationInfo authorization = new SimpleAuthorizationInfo();
-      // 查询用户本身的role，还有role有的permission
-      List<Role> roles = userRoleService.getRoles(user.getId());
-      for (Role role : roles) {
-        authorization.addRole(role.getName());
-
-        List<Permission> permissions = roleService.getPermissions(role.getId());
-        for (Permission permission : permissions) {
-          authorization.addStringPermission(permission.getPermissionStr());
-        }
-      }
-
-      // 所有public的project，都加入read权限
-      for (Project project : projectService.selectPublicProject()) {
-        PermissionHelper.addProjectRead(authorization, project.getId());
-      }
-
-      // 查询用户所在的组
-      List<UserGroup> userGroups = userGroupService.selectByUserId(user.getId());
-      for (UserGroup userGroup : userGroups) {
-        // 查出group对应的Role，再添加Role里的Permission组用户
-        List<Role> groupRoleList = groupRoleService.getRoles(userGroup.getGroupId());
-        for (Role role : groupRoleList) {
+      if (null != user) {
+        SimpleAuthorizationInfo authorization = new SimpleAuthorizationInfo();
+        // 查询用户本身的role，还有role有的permission
+        List<Role> roles = userRoleService.getRoles(user.getId());
+        for (Role role : roles) {
           authorization.addRole(role.getName());
+
           List<Permission> permissions = roleService.getPermissions(role.getId());
           for (Permission permission : permissions) {
             authorization.addStringPermission(permission.getPermissionStr());
           }
         }
 
-        // ==============Group 权限相关============
-        // 只有admin才有创建Group的权限
-        // 只有group的owner有删除group的权限
-        // 只有group的owner有组里的user的权限，包括增加/删除，列出组里的所有用户
-        if (userGroup.getAccess() == Access.OWNER) {
-          PermissionHelper.addGroupDelete(authorization, userGroup.getGroupId());
-          PermissionHelper.addGroupWrite(authorization, userGroup.getGroupId());
-
-          PermissionHelper.addGroupUser(authorization, userGroup.getGroupId());
-          PermissionHelper.addGroupProjectCreate(authorization, userGroup.getGroupId());
-        }
-        // 组里的所有用户都有group read权限
-        PermissionHelper.addGroupRead(authorization, userGroup.getGroupId());
-
-        // ========== project的权限相关==================
-        List<Project> projects = projectService.selectProjectByOwnerGroup(userGroup.getGroupId());
-        for (Project project : projects) {
-          // 对组里的所有用户，都有project read权限
+        // 所有public的project，都加入read权限
+        for (Project project : projectService.selectPublicProject()) {
           PermissionHelper.addProjectRead(authorization, project.getId());
+        }
 
-          // 如果是owner，增加project的修改/删除权限，create权限
-          if (userGroup.getAccess() == Access.OWNER) {
-            PermissionHelper.addProjectWrite(authorization, project.getId());
-            PermissionHelper.addProjectDelete(authorization, project.getId());
-          }
-          // ==========Dependency的权限相关==============
-          // 只有owner/master 有dependency的create权限
-          if (userGroup.getAccess() >= Access.MASTER) {
-            PermissionHelper.addDependencyCreate(authorization, project.getId());
-          }
-          for (Dependency dependency : dependencyService.list(project.getId())) {
-            // 组里的有户，都有dependency read权限
-            PermissionHelper.addDependencyRead(authorization, dependency.getId());
-            // 只有owner/master，才有dependency write/delete 权限
-            if (userGroup.getAccess() >= Access.MASTER) {
-              PermissionHelper.addDependencyWrite(authorization, dependency.getId());
-              PermissionHelper.addDependencyDelete(authorization, dependency.getId());
+        // 查询用户所在的组
+        List<UserGroup> userGroups = userGroupService.selectByUserId(user.getId());
+        for (UserGroup userGroup : userGroups) {
+          // 查出group对应的Role，再添加Role里的Permission组用户
+          List<Role> groupRoleList = groupRoleService.getRoles(userGroup.getGroupId());
+          for (Role role : groupRoleList) {
+            authorization.addRole(role.getName());
+            List<Permission> permissions = roleService.getPermissions(role.getId());
+            for (Permission permission : permissions) {
+              authorization.addStringPermission(permission.getPermissionStr());
             }
           }
 
-          // ===========Profile, Config权限相关==========
-          // 只有access 是owner, master的才有 profile create 权限
-          if (userGroup.getAccess() >= Access.MASTER) {
-            PermissionHelper.addProfileCreate(authorization, project.getId());
+          // ==============Group 权限相关============
+          // 只有admin才有创建Group的权限
+          // 只有group的owner有删除group的权限
+          // 只有group的owner有组里的user的权限，包括增加/删除，列出组里的所有用户
+          if (userGroup.getAccess() == Access.OWNER) {
+            PermissionHelper.addGroupDelete(authorization, userGroup.getGroupId());
+            PermissionHelper.addGroupWrite(authorization, userGroup.getGroupId());
+
+            PermissionHelper.addGroupUser(authorization, userGroup.getGroupId());
+            PermissionHelper.addGroupProjectCreate(authorization, userGroup.getGroupId());
           }
-          // 如果用户的access >= profile的access，则用户对这个profile有read,write/delete,
-          // 还有这个profile下面的config的所有权限
-          // 这个权限统称为 control
-          for (Profile profile : profileService.list(project.getId())) {
-            if (userGroup.getAccess() >= profile.getAccess()) {
-              PermissionHelper.addProfileControll(authorization, profile.getId());
+          // 组里的所有用户都有group read权限
+          PermissionHelper.addGroupRead(authorization, userGroup.getGroupId());
+
+          // ========== project的权限相关==================
+          List<Project> projects = projectService.selectProjectByOwnerGroup(userGroup.getGroupId());
+          for (Project project : projects) {
+            // 对组里的所有用户，都有project read权限
+            PermissionHelper.addProjectRead(authorization, project.getId());
+
+            // 如果是owner，增加project的修改/删除权限，create权限
+            if (userGroup.getAccess() == Access.OWNER) {
+              PermissionHelper.addProjectWrite(authorization, project.getId());
+              PermissionHelper.addProjectDelete(authorization, project.getId());
+            }
+            // ==========Dependency的权限相关==============
+            // 只有owner/master 有dependency的create权限
+            if (userGroup.getAccess() >= Access.MASTER) {
+              PermissionHelper.addDependencyCreate(authorization, project.getId());
+            }
+            for (Dependency dependency : dependencyService.list(project.getId())) {
+              // 组里的有户，都有dependency read权限
+              PermissionHelper.addDependencyRead(authorization, dependency.getId());
+              // 只有owner/master，才有dependency write/delete 权限
+              if (userGroup.getAccess() >= Access.MASTER) {
+                PermissionHelper.addDependencyWrite(authorization, dependency.getId());
+                PermissionHelper.addDependencyDelete(authorization, dependency.getId());
+              }
+            }
+
+            // ===========Profile, Config权限相关==========
+            // 只有access 是owner, master的才有 profile create 权限
+            if (userGroup.getAccess() >= Access.MASTER) {
+              PermissionHelper.addProfileCreate(authorization, project.getId());
+            }
+            // 如果用户的access >= profile的access，则用户对这个profile有read,write/delete,
+            // 还有这个profile下面的config的所有权限
+            // 这个权限统称为 control
+            for (Profile profile : profileService.list(project.getId())) {
+              if (userGroup.getAccess() >= profile.getAccess()) {
+                PermissionHelper.addProfileControll(authorization, profile.getId());
+              }
             }
           }
         }
-      }
 
-      return authorization;
+        return authorization;
+      }
+      return null;
+    } finally {
+      timeContext.stop();
     }
-    return null;
   }
 
   @Override
