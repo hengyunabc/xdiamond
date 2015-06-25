@@ -1,5 +1,10 @@
+<button class="btn btn-default" ng-init="isAddFormCollapsed = true" ng-click="isAddFormCollapsed = !isAddFormCollapsed">
+    增加组
+</button>
+
 <form name="newGroupForm"
       ng-submit="create()"
+      collapse="isAddFormCollapsed"
       role="form">
 
     <div class="form-group">
@@ -23,6 +28,15 @@
            ng-disabled="newGroupForm.$invalid">
 </form>
 
+<h3>Groups:</h3>
+<form role="form">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            <input type="text" class="form-control" placeholder="Search" ng-model="search.$">
+        </div>
+    </div>
+</form>
 <table class="table table-striped">
 
     <thead>
@@ -32,7 +46,7 @@
     </tr>
     </thead>
 
-    <tr ng-repeat="group in groups">
+    <tr ng-repeat="group in groups | filter:search | orderBy:'name'">
         <td>{{group.name}}</td>
         <td>{{group.description}}</td>
 

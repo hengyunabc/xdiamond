@@ -1,7 +1,14 @@
-
 <h3>LDAP的组和用户</h3>
+<form role="form">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            <input type="text" class="form-control" placeholder="Search" ng-model="search.$">
+        </div>
+    </div>
+</form>
 
-<div ng-repeat="ldapGroup in ldapGroups">
+<div ng-repeat="ldapGroup in ldapGroups | filter:search | orderBy:'cn'">
     <a ng-click="show = !show" data-placement="left">
         <span ng-show="!show">展开</span>
         <span ng-show="show">收起</span>

@@ -1,7 +1,9 @@
-<!--<button class="btn btn-default" ng-click="openNewProjectModal('lg')">新建Permission</button>-->
-
+<button class="btn btn-default" ng-init="isAddFormCollapsed = true" ng-click="isAddFormCollapsed = !isAddFormCollapsed">
+    增加Permission
+</button>
 <form name="newPermissionForm"
       ng-submit="create()"
+      collapse="isAddFormCollapsed"
       role="form">
 
     <div class="form-group">
@@ -25,6 +27,15 @@
            ng-disabled="newPermissionForm.$invalid">
 </form>
 
+<h3>Permissions:</h3>
+<form role="form">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            <input type="text" class="form-control" placeholder="Search" ng-model="search.$">
+        </div>
+    </div>
+</form>
 <table class="table table-striped">
 
     <thead>
@@ -34,7 +45,7 @@
     </tr>
     </thead>
 
-    <tr ng-repeat="permission in permissions">
+    <tr ng-repeat="permission in permissions | filter:search | orderBy:'permissionStr'">
         <td>{{permission.permissionStr}}</td>
         <td>{{permission.description}}</td>
 
