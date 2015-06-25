@@ -107,6 +107,7 @@ public class CustomRealm extends AuthorizingRealm implements Serializable {
           PermissionHelper.addGroupWrite(authorization, userGroup.getGroupId());
 
           PermissionHelper.addGroupUser(authorization, userGroup.getGroupId());
+          PermissionHelper.addGroupProjectCreate(authorization, userGroup.getGroupId());
         }
         // 组里的所有用户都有group read权限
         PermissionHelper.addGroupRead(authorization, userGroup.getGroupId());
@@ -121,7 +122,6 @@ public class CustomRealm extends AuthorizingRealm implements Serializable {
           if (userGroup.getAccess() == Access.OWNER) {
             PermissionHelper.addProjectWrite(authorization, project.getId());
             PermissionHelper.addProjectDelete(authorization, project.getId());
-            PermissionHelper.addProjectCreate(authorization, project.getId());
           }
           // ==========Dependency的权限相关==============
           // 只有owner/master 有dependency的create权限

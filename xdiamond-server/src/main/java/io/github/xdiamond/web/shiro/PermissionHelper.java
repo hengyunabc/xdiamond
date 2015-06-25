@@ -48,11 +48,11 @@ public abstract class PermissionHelper {
     SecurityUtils.getSubject().checkPermission("project:delete:" + projectId);
   }
 
-  static public void addProjectCreate(SimpleAuthorizationInfo auth, int groupId) {
+  static public void addGroupProjectCreate(SimpleAuthorizationInfo auth, int groupId) {
     auth.addStringPermission("project:create:" + groupId);
   }
 
-  static public void checkProjectCreate(int groupId) {
+  static public void checkGroupProjectCreate(int groupId) {
     SecurityUtils.getSubject().checkPermission("project:create:" + groupId);
   }
 

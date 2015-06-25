@@ -62,7 +62,7 @@ public class ProjectController {
   @ResponseStatus(HttpStatus.CREATED)
   public Object create(@Valid @RequestBody Project project) {
     // 检查create权限
-    PermissionHelper.checkProjectCreate(project.getOwnerGroup());
+    PermissionHelper.checkGroupProjectCreate(project.getOwnerGroup());
 
     projectService.insert(project);
     return RestResult.success().withResult("message", "创建project成功").build();
@@ -84,7 +84,7 @@ public class ProjectController {
     PermissionHelper.checkProjectWrite(projectId);
     if (project.getOwnerGroup() != null) {
       // 如果是把Project修改owner，检查是否有新group的权限
-      PermissionHelper.checkProjectCreate(project.getOwnerGroup());
+      PermissionHelper.checkGroupProjectCreate(project.getOwnerGroup());
     }
 
     // TODO 这里的 PathVariable 是否是必要的？
