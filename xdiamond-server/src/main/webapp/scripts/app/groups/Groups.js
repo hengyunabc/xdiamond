@@ -34,7 +34,7 @@ angular.module('xdiamondApp')
                         return $stateParams.groupId;
                     }],
                     group: ['GroupService', '$stateParams', function (GroupService, $stateParams) {
-                        return GroupService.getUsers($stateParams.groupId);
+                        return GroupService.get($stateParams.groupId);
                     }],
                     users: ['GroupService', '$stateParams', function (GroupService, $stateParams) {
                         return GroupService.getUsers($stateParams.groupId);

@@ -1,5 +1,15 @@
+<h4>
+    <a ui-sref="groups.list">Groups:</a>
+    <span class="label label-default">{{group.name}}</span>
+</h4>
+
+<button class="btn btn-default" ng-init="isAddFormCollapsed = true" ng-click="isAddFormCollapsed = !isAddFormCollapsed">
+    增加用户
+</button>
+
 <form name="addGroupUserForm"
       ng-submit="addUser(selected.user.id, selected.access)"
+      collapse="isAddFormCollapsed"
       role="form">
 
     <div class="form-group">
@@ -25,6 +35,16 @@
     <input type="submit"
            class="btn btn-success"
            ng-disabled="addGroupUserForm.$invalid || !selected.user || !selected.access">
+</form>
+
+<h3>Users:</h3>
+<form role="form">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            <input type="text" class="form-control" placeholder="Search" ng-model="search.$">
+        </div>
+    </div>
 </form>
 
 <table class="table table-striped">

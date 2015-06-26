@@ -38,6 +38,14 @@ public class GroupController {
   @Autowired
   UserGroupService userGroupService;
 
+  @RequestMapping(value = "/groups/{groupId}", method = RequestMethod.GET)
+  public Object get(@PathVariable Integer groupId) {
+    PermissionHelper.checkProfileControll(groupId);
+
+    Group group = groupService.select(groupId);
+    return RestResult.success().withResult("group", group).build();
+  }
+
   /**
    * GET /groups -> get all groups.
    */

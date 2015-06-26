@@ -7,6 +7,17 @@ angular.module('xdiamondApp')
     .factory('GroupService', ['$http', '$log', '$state', function ($http, $log, $state) {
         var service = {
 
+            get: function (groupId) {
+                return $http.get('api/groups/' + groupId).then(function (response) {
+                    console.log('group:' + response.data);
+
+                    if (response.data.success) {
+                        console.log(response.data.result.group);
+                        return response.data.result.group;
+                    }
+                })
+            },
+
             list: function () {
                 return $http.get('api/groups').then(function (response) {
                     console.log('groups:' + response.data);
