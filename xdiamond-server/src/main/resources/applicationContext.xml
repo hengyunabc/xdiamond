@@ -50,6 +50,4 @@
 			expression="io.github.xdiamond.config.web.*" />
 	</context:component-scan>
 
-	<!-- enable transaction demarcation with annotations -->
-	<tx:annotation-driven />
 </beans>
