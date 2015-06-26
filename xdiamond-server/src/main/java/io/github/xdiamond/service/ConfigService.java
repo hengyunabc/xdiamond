@@ -35,48 +35,54 @@ public class ConfigService {
     configExample.createCriteria().andProfileIdEqualTo(profileId);
     return configMapper.selectByExample(configExample);
   }
-  
-  private void merge(LinkedHashMap<Integer, ResolvedConfig> resolvedConfigResult , List<Config> configs, Project depProject, String profileName){
-    for(Config config : configs){
-      ResolvedConfig resolvedConfig = resolvedConfigResult.get(config.getId());
-      if(resolvedConfig == null){
-        resolvedConfigResult.put(config.getId(), new ResolvedConfig(config, depProject, profileName));
-      }else{
+
+  private void merge(LinkedHashMap<String, ResolvedConfig> resolvedConfigResult,
+      List<Config> configs, Project depProject, String profileName) {
+    for (Config config : configs) {
+      ResolvedConfig resolvedConfig = resolvedConfigResult.get(config.getKey());
+      if (resolvedConfig == null) {
+        resolvedConfigResult.put(config.getKey(), new ResolvedConfig(config, depProject,
+            profileName));
+      } else {
         resolvedConfig.setFromProject(depProject);
         resolvedConfig.setFromProfile(profileName);
       }
     }
   }
-  public List<ResolvedConfig> listResolvedConfig(int profileId){
-    LinkedHashMap<Integer, ResolvedConfig> resolvedConfigResult = Maps.newLinkedHashMap();
+
+  public List<ResolvedConfig> listResolvedConfig(int profileId) {
+    LinkedHashMap<String, ResolvedConfig> resolvedConfigResult = Maps.newLinkedHashMap();
     Profile profile = profileService.select(profileId);
     Project project = projectService.select(profile.getProjectId());
-    
-    //拿到所有的依赖，再依次拿到这些依赖的Config，再合并起来
-    LinkedList<Dependency> finalDependency = dependencyService.queryFinalDependency(project.getId());
-    for(Dependency dep : Lists.reverse(finalDependency)){
+
+    // 拿到所有的依赖，再依次拿到这些依赖的Config，再合并起来
+    LinkedList<Dependency> finalDependency =
+        dependencyService.queryFinalDependency(project.getId());
+    for (Dependency dep : Lists.reverse(finalDependency)) {
       Project depProject = projectService.select(dep.getDependencyProjectId());
-      
-      //如果不是base的profile，则先要合并上base的
-      if(!profile.getName().equals("base")){
-        Profile baseProfile = profileService.selectByProjectIdAndName(dep.getDependencyProjectId(), "base");
+
+      // 如果不是base的profile，则先要合并上base的
+      if (!profile.getName().equals("base")) {
+        Profile baseProfile =
+            profileService.selectByProjectIdAndName(dep.getDependencyProjectId(), "base");
         List<Config> configs = this.list(baseProfile.getId());
         this.merge(resolvedConfigResult, configs, depProject, "base");
       }
-      //获取到依赖的同名的profile的的Config，并合并到结果里
-      Profile tempProfile = profileService.selectByProjectIdAndName(dep.getDependencyProjectId(), profile.getName());
-      if(tempProfile != null){
+      // 获取到依赖的同名的profile的的Config，并合并到结果里
+      Profile tempProfile =
+          profileService.selectByProjectIdAndName(dep.getDependencyProjectId(), profile.getName());
+      if (tempProfile != null) {
         List<Config> configs = this.list(tempProfile.getId());
         this.merge(resolvedConfigResult, configs, depProject, profile.getName());
       }
     }
-    
+
     Profile baseProfile = profileService.selectByProjectIdAndName(project.getId(), "base");
     this.merge(resolvedConfigResult, this.list(baseProfile.getId()), project, "base");
-    if(!profile.getName().endsWith("base")){
+    if (!profile.getName().endsWith("base")) {
       this.merge(resolvedConfigResult, this.list(profile.getId()), project, profile.getName());
     }
-    
+
     return Lists.newLinkedList(resolvedConfigResult.values());
   }
 
