@@ -1,7 +1,9 @@
 package io.github.xdiamond.web.api.controller;
 
 import io.github.xdiamond.domain.Dependency;
+import io.github.xdiamond.domain.Project;
 import io.github.xdiamond.service.DependencyService;
+import io.github.xdiamond.service.ProjectService;
 import io.github.xdiamond.web.RestResult;
 import io.github.xdiamond.web.shiro.PermissionHelper;
 
@@ -28,6 +30,8 @@ public class DependencyController {
 
   @Autowired
   DependencyService dependencyService;
+  @Autowired
+  ProjectService projectService;
 
   @RequestMapping(value = "/projects/{projectId}/dependencies", method = RequestMethod.GET)
   public Object list(@PathVariable Integer projectId) {
@@ -46,9 +50,16 @@ public class DependencyController {
   @RequestMapping(value = "/dependencies", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.CREATED)
   public Object create(@Valid @RequestBody Dependency dependency) {
-    //增加依赖时，检查是否有Project的Dependency的权限
+    // 增加依赖时，检查是否有Project的Dependency的权限
     PermissionHelper.checkDependencyCreate(dependency.getProjectId());
-    
+
+    Project project = projectService.select(dependency.getDependencyProjectId());
+    if (project == null) {
+      return RestResult.fail().withErrorMessage("project don not exist!");
+    }
+    if (!project.getbAllowDependency()) {
+      return RestResult.fail().withErrorMessage("project don not allow dependency!!");
+    }
     dependencyService.insert(dependency);
     return RestResult.success().withResult("message", "创建dependency成功").build();
   }
@@ -56,18 +67,18 @@ public class DependencyController {
   @RequestMapping(value = "/dependencies/{dependencyId}", method = RequestMethod.DELETE)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public Object delete(@PathVariable Integer dependencyId) {
-    //删除依赖时，检查权限
+    // 删除依赖时，检查权限
     PermissionHelper.checkDependencyDelete(dependencyId);
-    
+
     dependencyService.delete(dependencyId);
     return RestResult.success().withResult("message", "删除dependencyId成功").build();
   }
 
   @RequestMapping(value = "/dependencies", method = RequestMethod.PATCH)
   public Object update(@Valid @RequestBody Dependency dependency) {
-    //更新依赖时，检查权限
+    // 更新依赖时，检查权限
     PermissionHelper.checkDependencyWrite(dependency.getId());
-    
+
     dependencyService.patch(dependency);
     return RestResult.success().withResult("message", "更新dependency成功").build();
   }
