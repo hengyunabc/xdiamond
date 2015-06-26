@@ -39,7 +39,7 @@ public class GroupController {
   UserGroupService userGroupService;
 
   @RequestMapping(value = "/groups/{groupId}", method = RequestMethod.GET)
-  public Object get(@PathVariable Integer groupId) {
+  public ResponseEntity<RestResult> get(@PathVariable Integer groupId) {
     PermissionHelper.checkProfileControll(groupId);
 
     Group group = groupService.select(groupId);
@@ -126,4 +126,17 @@ public class GroupController {
     return RestResult.success().withResult("message", "删除用户成功").build();
   }
 
+  /**
+   * 修改用户在组里的access
+   * @param userGroup
+   * @return
+   */
+  @RequestMapping(value = "/groups/{groupId}/users", method = RequestMethod.PATCH)
+  public Object updateUserGroup(@Valid @RequestBody UserGroup userGroup) {
+    PermissionHelper.checkGroupWrite(userGroup.getGroupId());
+
+    userGroupService.patch(userGroup);
+    return RestResult.success().withResult("message", "更新userGroup access成功").build();
+  }
+  
 }

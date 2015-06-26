@@ -73,6 +73,10 @@ public class UserGroupService {
     return userGroupMapper.deleteByPrimaryKey(userId, groupId);
   }
 
+  public int patch(UserGroup userGroup) {
+    return userGroupMapper.updateByPrimaryKeySelective(userGroup);
+  }
+
   /**
    * 获取组下面的所有用户还有Access
    * 

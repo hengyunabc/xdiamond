@@ -30,7 +30,7 @@ angular.module('xdiamondApp').controller("ProjectController", ['$scope', 'projec
 
         $scope.popNewProjectModal = function (size) {
             var modalInstance = $modal.open({
-                animation: $scope.animationsEnabled,
+                animation: true,
                 templateUrl: 'scripts/app/projects/projects.new.html',
                 controller: 'ProjectNewController',
                 size: size,
@@ -44,7 +44,7 @@ angular.module('xdiamondApp').controller("ProjectController", ['$scope', 'projec
 
         $scope.popUpdateProjectModal = function (project, size) {
             var modalInstance = $modal.open({
-                animation: $scope.animationsEnabled,
+                animation: true,
                 templateUrl: 'scripts/app/projects/projects.update.html',
                 controller: 'ProjectUpdateController',
                 size: size,

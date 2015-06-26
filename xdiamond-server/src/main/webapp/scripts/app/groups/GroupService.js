@@ -79,6 +79,18 @@ angular.module('xdiamondApp')
                         $log.info('delete group success, groupId:' + groupId + ', userId:' + userId);
                     }
                 })
+            },
+
+            changeUserAccess: function (groupId, userId, access) {
+                return $http.patch('api/groups/' + groupId + '/users', {
+                    groupId: groupId,
+                    userId: userId,
+                    access: access
+                }).then(function (response) {
+                    if (response.data.success) {
+                        $log.info('change user access success, groupId:' + groupId + ', userId:' + userId);
+                    }
+                })
             }
 
         }

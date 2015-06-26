@@ -70,6 +70,7 @@
         {{ user.access}}
 
         <td>
+            <button class="btn btn-danger danger" ng-click="popUpdateGroupUserModal(group, user)">Update</button>
             <button class="btn btn-danger danger" ng-really-click="deleteUser(user.id)">Delete</button>
         </td>
 

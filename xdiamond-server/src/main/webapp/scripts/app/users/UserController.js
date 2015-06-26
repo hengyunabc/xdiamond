@@ -27,7 +27,7 @@ angular.module('xdiamondApp').controller("UserController", ['$scope', '$state', 
 
         $scope.popNewUserModal = function (size) {
             var modalInstance = $modal.open({
-                animation: $scope.animationsEnabled,
+                animation: true,
                 templateUrl: 'scripts/app/users/users.new.html',
                 controller: 'UserNewController',
                 size: size
@@ -36,7 +36,7 @@ angular.module('xdiamondApp').controller("UserController", ['$scope', '$state', 
 
         $scope.popUpdateUserModal = function (index, size) {
             var modalInstance = $modal.open({
-                animation: $scope.animationsEnabled,
+                animation: true,
                 templateUrl: 'scripts/app/users/users.update.html',
                 controller: 'UserUpdateController',
                 size: size,

@@ -28,15 +28,15 @@ angular.module('xdiamondApp').controller("GroupController", ['$scope', 'groups',
 
 
 angular.module('xdiamondApp').controller("GroupUserController",
-    ['$scope', '$state', '$stateParams', 'GroupService', 'allUsers', 'users', 'group', 'AccessLevels',
-        function ($scope, $state, $stateParams, GroupService, allUsers, users, group, AccessLevels) {
+    ['$scope', '$state', '$stateParams', '$modal', 'GroupService', 'allUsers', 'users', 'group', 'AccessLevels',
+        function ($scope, $state, $stateParams, $modal, GroupService, allUsers, users, group, AccessLevels) {
             $scope.selected = {};
 
-            $scope.accessArray = [];
-
+            var accessArray = [];
             for (var access in AccessLevels) {
-                $scope.accessArray.push(access);
+                accessArray.push(access);
             }
+            $scope.accessArray = accessArray;
 
             $scope.group = group;
 
@@ -53,4 +53,48 @@ angular.module('xdiamondApp').controller("GroupUserController",
                     $state.reload();
                 })
             }
+
+            $scope.popUpdateGroupUserModal = function (group, user, size) {
+                var modalInstance = $modal.open({
+                    animation: true,
+                    templateUrl: 'scripts/app/groups/groups.users.update.html',
+                    controller: 'GroupUserUpdateController',
+                    size: size,
+                    resolve: {
+                        group: function () {
+                            return angular.copy(group);
+                        },
+                        user: function () {
+                            return angular.copy(user);
+                        },
+                        accessArray: function () {
+                            return angular.copy(accessArray);
+                        }
+                    }
+                });
+            }
+        }]);
+
+angular.module('xdiamondApp').controller("GroupUserUpdateController",
+    ['$scope', '$state', '$modal', '$modalInstance', 'GroupService', 'group', 'user', 'accessArray',
+        function ($scope, $state, $modal, $modalInstance, GroupService, group, user, accessArray) {
+            $scope.group = group;
+            $scope.user = user;
+            $scope.accessArray = accessArray;
+
+            $scope.update = function () {
+                GroupService.changeUserAccess(group.id, user.id, user.access).then(function () {
+                    $state.reload();
+                })
+                $modalInstance.close();
+            }
+
+            $scope.ok = function () {
+                $modalInstance.close();
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+
         }]);

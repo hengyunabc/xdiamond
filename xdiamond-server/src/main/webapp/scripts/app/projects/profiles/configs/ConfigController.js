@@ -79,7 +79,7 @@ angular.module('xdiamondApp').controller("ConfigController",
 
             $scope.popUpdateConfigModal = function (config, size) {
                 var modalInstance = $modal.open({
-                    animation: $scope.animationsEnabled,
+                    animation: true,
                     templateUrl: 'scripts/app/projects/profiles/configs/configs.update.html',
                     controller: 'ConfigUpdateController',
                     size: size,
@@ -93,7 +93,7 @@ angular.module('xdiamondApp').controller("ConfigController",
 
             $scope.showConfigsJSONModal = function (size) {
                 var modalInstance = $modal.open({
-                    animation: $scope.animationsEnabled,
+                    animation: true,
                     templateUrl: 'scripts/app/projects/profiles/configs/configs.showConfigsJSON.html',
                     controller: 'ShowConfigsJSONController',
                     size: size,

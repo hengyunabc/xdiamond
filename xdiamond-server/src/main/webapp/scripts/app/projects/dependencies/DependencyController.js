@@ -53,7 +53,7 @@ angular.module('xdiamondApp').controller("DependencyController",
 
             $scope.openNewProjectModal = function (size) {
                 var modalInstance = $modal.open({
-                    animation: $scope.animationsEnabled,
+                    animation: true,
                     templateUrl: 'scripts/app/projects/dependencies/dependencies.new.html',
                     controller: 'DependencyNewController',
                     size: size,

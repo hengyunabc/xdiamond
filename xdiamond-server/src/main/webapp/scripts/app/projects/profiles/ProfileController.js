@@ -37,7 +37,7 @@ angular.module('xdiamondApp').controller("ProfileController",
 
             $scope.popUpdateProfileModal = function (profile, size) {
                 var modalInstance = $modal.open({
-                    animation: $scope.animationsEnabled,
+                    animation: true,
                     templateUrl: 'scripts/app/projects/profiles/profiles.update.html',
                     controller: "ProfileUpdateController",
                     size: size,
