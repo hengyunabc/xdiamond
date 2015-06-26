@@ -44,6 +44,7 @@ public class ConfigService {
         resolvedConfigResult.put(config.getKey(), new ResolvedConfig(config, depProject,
             profileName));
       } else {
+        resolvedConfig.setConfig(config);
         resolvedConfig.setFromProject(depProject);
         resolvedConfig.setFromProfile(profileName);
       }
