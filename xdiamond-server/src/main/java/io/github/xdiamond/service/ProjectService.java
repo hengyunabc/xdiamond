@@ -92,10 +92,10 @@ public class ProjectService {
     return projectMapper.selectByExample(example);
   }
 
-  // TODO 这里事务的隔离级别是怎样的？
   @Transactional
   public void delete(int id) {
     // TODO 删除所有的profile，config, dependency，还要检查这个项目有没有被其它的项目依赖到
+    // 目前检查的逻辑在Controller里
     projectMapper.deleteByPrimaryKey(id);
   }
 }

@@ -41,6 +41,9 @@ public class WebConfigurer {
   @Autowired
   Filter shiroFilter;
 
+  @Autowired
+  Filter shiroCacheCleanFilter;
+
   @PostConstruct
   public void init() {
     initMetricsFilter();
@@ -72,8 +75,12 @@ public class WebConfigurer {
   }
 
   private void initShiroFilter() {
-    Dynamic filter = servletContext.addFilter("shiroFilter", shiroFilter);
-    filter.addMappingForUrlPatterns(null, true, "/*");
+    Dynamic addShirofilter = servletContext.addFilter("shiroFilter", shiroFilter);
+    addShirofilter.addMappingForUrlPatterns(null, true, "/*");
+
+    Dynamic addShiroCacheCleanFilter =
+        servletContext.addFilter("shiroCacheCleanFilter", shiroCacheCleanFilter);
+    addShiroCacheCleanFilter.addMappingForUrlPatterns(null, true, "/api/*");
   }
 
   private void initMetricsFilter() {
@@ -103,7 +110,7 @@ public class WebConfigurer {
   }
 
   private void initCsrfFilter() {
-    //这里只拦截 /api/* 的请求，对于 /druid/不拦截
+    // 这里只拦截 /api/* 的请求，对于 /druid/不拦截
     Dynamic filter = servletContext.addFilter("csrfFilter", new CsrfFilter());
     filter.addMappingForUrlPatterns(null, true, "/api/*");
   }
