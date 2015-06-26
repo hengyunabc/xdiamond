@@ -60,7 +60,7 @@
     </tr>
     </thead>
 
-    <tr ng-repeat="user in users">
+    <tr ng-repeat="user in users | filter:search | orderBy:'name'">
         <td>{{user.name}}</td>
         <td>{{user.nickName}}</td>
         <td>{{user.email}}</td>
