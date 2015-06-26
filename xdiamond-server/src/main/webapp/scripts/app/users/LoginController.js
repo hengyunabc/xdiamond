@@ -21,6 +21,7 @@ angular.module('xdiamondApp')
                 }, function (error) {
                     $scope.errorMessage = error.data.msg;
                 })
+                user.password = "";
             };
             $scope.logout = function () {
                 UserService.logout().then(function (success) {
