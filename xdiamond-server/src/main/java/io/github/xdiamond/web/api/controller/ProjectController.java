@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ import com.google.common.collect.Lists;
 
 @Controller
 @RequestMapping("api/projects")
+@Transactional
 public class ProjectController {
   @Autowired
   MappingService mappingService;
@@ -106,6 +108,5 @@ public class ProjectController {
     projectService.patch(project);
     return RestResult.success().withResult("message", "更新project成功").build();
   }
-
 
 }
