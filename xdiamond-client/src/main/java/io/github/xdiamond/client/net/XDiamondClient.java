@@ -2,117 +2,168 @@ package io.github.xdiamond.client.net;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoop;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.concurrent.Future;
-import io.xdiamond.common.ConfigVO;
+import io.netty.util.concurrent.FutureListener;
 import io.xdiamond.common.ResolvedConfigVO;
-import io.xdiamond.common.net.Message;
 import io.xdiamond.common.net.MessageDecoder;
 import io.xdiamond.common.net.MessageEncoder;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class XDiamondClient {
+  static final Logger logger = LoggerFactory.getLogger(XDiamondClient.class);
 
-	String serverAddress;
-	int port = 5678;
-	int readTimeout = 5;
-	int writeTimeout = 5;
+  String serverAddress;
+  int port = 5678;
+  int readTimeout = 5;
+  int writeTimeout = 5;
 
-	int reconnectDelaySeconds = 3;
+  // 指数退避的方式增加
+  boolean bBackOffRetryInterval = true;
+  // 失败重试的次数
+  int maxRetryTimes = Integer.MAX_VALUE;
+  // 失败重试的时间间隔
+  int retryIntervalSeconds = 5;
+  // 默认最大的重试时间间隔，2分钟
+  int maxRetryIntervalSeconds = 2 * 60;
 
-	public XDiamondClient(String serverAddress, int port) {
-		super();
-		this.serverAddress = serverAddress;
-		this.port = port;
-	}
+  // 当前已经重试的次数
+  int currentRetryTimes = 0;
 
-	// TODO 改为一个线程？
-	EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+  public XDiamondClient(String serverAddress, int port, boolean bBackOffRetryInterval,
+      int maxRetryTimes, int retryIntervalSeconds, int maxRetryIntervalSeconds) {
+    super();
+    this.serverAddress = serverAddress;
+    this.port = port;
+    this.bBackOffRetryInterval = bBackOffRetryInterval;
+    this.maxRetryTimes = maxRetryTimes;
+    this.retryIntervalSeconds = retryIntervalSeconds;
+    this.maxRetryIntervalSeconds = maxRetryIntervalSeconds;
+  }
 
-	ClientHandler clientHandler = new ClientHandler(this);
+  // TODO 改为一个线程？
+  EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
 
-	public ChannelFuture init() {
-		return configureBootstrap(new Bootstrap(), eventLoopGroup).connect();
-	}
+  ClientHandler clientHandler = new ClientHandler(this);
 
-	public void destory() {
-		eventLoopGroup.shutdownGracefully();
-	}
+  public ChannelFuture init() {
+    return configureBootstrap(new Bootstrap(), eventLoopGroup).connect();
+  }
 
-	public Future<List<ResolvedConfigVO>> getConfigs(String groupId, String artifactId,
-			String version, String profile, String secretKey) {
-		return clientHandler.getConfig(groupId, artifactId, version, profile, secretKey);
-	}
+  public void destory() {
+    eventLoopGroup.shutdownGracefully();
+  }
 
-	Bootstrap configureBootstrap(Bootstrap b, EventLoopGroup g) {
-		b.group(g).channel(NioSocketChannel.class)
-				.remoteAddress(serverAddress, port)
-				.handler(new ChannelInitializer<SocketChannel>() {
-					@Override
-					public void initChannel(SocketChannel ch) throws Exception {
-						clientHandler = new ClientHandler(XDiamondClient.this);
-						ch.pipeline()
-								.addLast(
-										new LoggingHandler(LogLevel.DEBUG),
-										// new IdleStateHandler(readTimeout,
-										// writeTimeout,
-										// readTimeout > writeTimeout ?
-										// readTimeout :
-										// writeTimeout),
-										new MessageEncoder(), 
-										new MessageDecoder(), clientHandler);
-					}
-				});
+  public Future<List<ResolvedConfigVO>> getConfigs(String groupId, String artifactId,
+      String version, String profile, String secretKey) {
+    return clientHandler.getConfig(groupId, artifactId, version, profile, secretKey);
+  }
 
-		return b;
-	}
+  Bootstrap configureBootstrap(Bootstrap b, EventLoopGroup g) {
+    b.group(g).channel(NioSocketChannel.class).remoteAddress(serverAddress, port)
+        .handler(new ChannelInitializer<SocketChannel>() {
+          @Override
+          public void initChannel(SocketChannel ch) throws Exception {
+            clientHandler = new ClientHandler(XDiamondClient.this);
+            ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG),
+            // new IdleStateHandler(readTimeout,
+            // writeTimeout,
+            // readTimeout > writeTimeout ?
+            // readTimeout :
+            // writeTimeout),
+                new MessageEncoder(), new MessageDecoder(), clientHandler);
+          }
+        });
 
-	public int getReconnectDelaySeconds() {
-		return reconnectDelaySeconds;
-	}
+    return b;
+  }
 
-	public void setReconnectDelaySeconds(int reconnectDelaySeconds) {
-		this.reconnectDelaySeconds = reconnectDelaySeconds;
-	}
+  /**
+   * only call by ClientHandler
+   */
+  void channelRegistered(ChannelHandlerContext ctx) {
+    currentRetryTimes = 0;
+  }
 
-	public String getServerAddress() {
-		return serverAddress;
-	}
+  /**
+   * only call by ClientHandler
+   */
+  void channelUnregistered(final ChannelHandlerContext ctx) {
+    currentRetryTimes++;
+    if (currentRetryTimes > maxRetryTimes) {
+      return;
+    }
 
-	public void setServerAddress(String serverAddress) {
-		this.serverAddress = serverAddress;
-	}
+    int currentRetryInterval = retryIntervalSeconds;
+    if (bBackOffRetryInterval) {
+      currentRetryInterval = retryIntervalSeconds * (1 << currentRetryTimes);
+    }
+    if (currentRetryInterval > maxRetryIntervalSeconds) {
+      currentRetryInterval = maxRetryIntervalSeconds;
+    }
+    logger.info("Waiting for " + currentRetryInterval + "s to reconnect");
 
-	public int getPort() {
-		return port;
-	}
+    final EventLoop loop = ctx.channel().eventLoop();
+    loop.schedule(new Runnable() {
+      @Override
+      public void run() {
+        logger.info("Reconnecting to {}:{}", serverAddress, port);
+        configureBootstrap(new Bootstrap(), loop).connect().addListener(new FutureListener<Void>() {
+          @Override
+          public void operationComplete(Future<Void> future) throws Exception {
+            if (!future.isSuccess()) {
+              logger.error("can not connection to {}:{}", serverAddress, port, future.cause());
+            } else {
+              logger.info("connection to {}:{} success.", serverAddress, port);
+            }
+          }
+        });
+      }
+    }, currentRetryInterval, TimeUnit.SECONDS);
+  }
 
-	public void setPort(int port) {
-		this.port = port;
-	}
+  public String getServerAddress() {
+    return serverAddress;
+  }
 
-	public int getReadTimeout() {
-		return readTimeout;
-	}
+  public void setServerAddress(String serverAddress) {
+    this.serverAddress = serverAddress;
+  }
 
-	public void setReadTimeout(int readTimeout) {
-		this.readTimeout = readTimeout;
-	}
+  public int getPort() {
+    return port;
+  }
 
-	public int getWriteTimeout() {
-		return writeTimeout;
-	}
+  public void setPort(int port) {
+    this.port = port;
+  }
 
-	public void setWriteTimeout(int writeTimeout) {
-		this.writeTimeout = writeTimeout;
-	}
+  public int getReadTimeout() {
+    return readTimeout;
+  }
+
+  public void setReadTimeout(int readTimeout) {
+    this.readTimeout = readTimeout;
+  }
+
+  public int getWriteTimeout() {
+    return writeTimeout;
+  }
+
+  public void setWriteTimeout(int writeTimeout) {
+    this.writeTimeout = writeTimeout;
+  }
 }

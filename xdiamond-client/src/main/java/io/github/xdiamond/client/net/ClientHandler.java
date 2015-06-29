@@ -1,9 +1,7 @@
 package io.github.xdiamond.client.net;
 
-import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.EventLoop;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -23,6 +21,7 @@ import io.xdiamond.common.net.Message;
 import io.xdiamond.common.net.Request;
 import io.xdiamond.common.net.Response;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +38,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 /**
- * ClientHandler is not a @Sharable handler, so can't be added or removed
- * multiple times.
+ * ClientHandler is not a @Sharable handler, so can't be added or removed multiple times.
  * 
  * @author hengyunabc
  * 
@@ -57,7 +55,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
 
   Channel channel = null;
 
-  //超过的id通过Listener，Timer清理掉
+  // 超时的id通过Listener，Timer清理掉
   Map<Integer, Promise<?>> idPromiseMap = new ConcurrentHashMap<Integer, Promise<?>>();
 
   public ClientHandler(XDiamondClient xDiamondClient) {
@@ -86,36 +84,38 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
         JSONArray configs = (JSONArray) response.resultValue("configs");
         List<ResolvedConfigVO> ResolvedConfigVOList = new ArrayList<>(configs.size());
         for (Object object : configs) {
-          ResolvedConfigVO ResolvedConfigVO = JSON.toJavaObject((JSONObject) object, ResolvedConfigVO.class);
+          ResolvedConfigVO ResolvedConfigVO =
+              JSON.toJavaObject((JSONObject) object, ResolvedConfigVO.class);
           ResolvedConfigVOList.add(ResolvedConfigVO);
         }
         Promise<List<ResolvedConfigVO>> promise =
             (Promise<List<ResolvedConfigVO>>) idPromiseMap.get(response.getId());
-        if(promise != null && !promise.isDone()){
+        if (promise != null && !promise.isDone()) {
           promise.setSuccess(ResolvedConfigVOList);
         }
       }
     }
   }
 
-  public Future<List<ResolvedConfigVO>> getConfig(String groupId, String artifactId, String version,
-      String profile, String secretKey) {
+  public Future<List<ResolvedConfigVO>> getConfig(String groupId, String artifactId,
+      String version, String profile, String secretKey) {
     // 如果没有连接上，或者可能网络中断等，直接返回FailedFuture。
     if (channel == null || !channel.isActive()) {
-      return new FailedFuture<List<ResolvedConfigVO>>(GlobalEventExecutor.INSTANCE, new RuntimeException(
-          "channel is not available"));
+      return new FailedFuture<List<ResolvedConfigVO>>(GlobalEventExecutor.INSTANCE,
+          new ConnectException("channel is not available"));
     }
 
     Message msg = new Message();
     msg.setType(Message.REQUEST);
     final Request request =
-        Request.builder().type(Message.REQUEST)
-            .command(Commands.GET_CONFIG).withData("groupId", groupId)
-            .withData("artifactId", artifactId).withData("version", version)
-            .withData("profile", profile).withData("secretKey", secretKey).build();
+        Request.builder().type(Message.REQUEST).command(Commands.GET_CONFIG)
+            .withData("groupId", groupId).withData("artifactId", artifactId)
+            .withData("version", version).withData("profile", profile)
+            .withData("secretKey", secretKey).build();
 
-    Promise<List<ResolvedConfigVO>> promise = (Promise<List<ResolvedConfigVO>>) this.createRequestPromise(channel, request);
-    
+    Promise<List<ResolvedConfigVO>> promise =
+        (Promise<List<ResolvedConfigVO>>) this.createRequestPromise(channel, request);
+
     msg.setData(JSON.toJSONBytes(request));
     channel.writeAndFlush(msg);
     // 这里返回promise，让调用者等待？
@@ -173,15 +173,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
 
   @Override
   public void channelUnregistered(final ChannelHandlerContext ctx) throws Exception {
-    logger.info("Sleeping for: " + xDiamondClient.getReconnectDelaySeconds() + 's');
-
-    final EventLoop loop = ctx.channel().eventLoop();
-    loop.schedule(new Runnable() {
-      @Override
-      public void run() {
-        logger.info("Reconnecting to: " + ctx.channel().remoteAddress());
-        xDiamondClient.configureBootstrap(new Bootstrap(), loop).connect();
-      }
-    }, xDiamondClient.getReconnectDelaySeconds(), TimeUnit.SECONDS);
+    xDiamondClient.channelUnregistered(ctx);
   }
 }

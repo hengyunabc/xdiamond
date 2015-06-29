@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +72,15 @@ public class XDiamondConfig {
   // 获取到配置，是否同步到System Properties里
   boolean bSyncToSystemProperties = false;
 
+  // 指数退避的方式增加
+  boolean bBackOffRetryInterval = true;
+  // 失败重试的次数
+  int maxRetryTimes = Integer.MAX_VALUE;
+  // 失败重试的时间间隔
+  int retryIntervalSeconds = 5;
+  // 最大的重试时间间隔
+  int maxRetryIntervalSeconds = 2 * 60;
+
   XDiamondClient xDiamondClient;
 
   public XDiamondConfig() {}
@@ -89,7 +99,9 @@ public class XDiamondConfig {
 
   public void init() {
     boolean bShouldLoadLocalConfig = true;
-    xDiamondClient = new XDiamondClient(serverHost, serverPort);
+    xDiamondClient =
+        new XDiamondClient(serverHost, serverPort, bBackOffRetryInterval, maxRetryTimes,
+            retryIntervalSeconds, maxRetryIntervalSeconds);
     // 首先尝试连接服务器
     ChannelFuture future = xDiamondClient.init();
     try {
@@ -138,7 +150,15 @@ public class XDiamondConfig {
         try {
           List<ResolvedConfigVO> resolvedConfigVOs = future.get(10, TimeUnit.SECONDS);
           loadConfig(resolvedConfigVOs);
+        } catch (ConnectException e) {
+          // 对于连接错误，这里不打印错误信息，因为会在重试任务里打印
+          return;
         } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
+          if(e instanceof ExecutionException){
+            if(e.getCause() instanceof ConnectException){
+              return;
+            }
+          }
           logger.error("timer to get xdiamond config error!", e);
         }
       }
@@ -387,4 +407,37 @@ public class XDiamondConfig {
   public void setSecretKey(String secretKey) {
     this.secretKey = secretKey;
   }
+
+  public boolean isbBackOffRetryInterval() {
+    return bBackOffRetryInterval;
+  }
+
+  public void setbBackOffRetryInterval(boolean bBackOffRetryInterval) {
+    this.bBackOffRetryInterval = bBackOffRetryInterval;
+  }
+
+  public int getRetryIntervalSeconds() {
+    return retryIntervalSeconds;
+  }
+
+  public void setRetryIntervalSeconds(int retryIntervalSeconds) {
+    this.retryIntervalSeconds = retryIntervalSeconds;
+  }
+
+  public int getMaxRetryTimes() {
+    return maxRetryTimes;
+  }
+
+  public void setMaxRetryTimes(int maxRetryTimes) {
+    this.maxRetryTimes = maxRetryTimes;
+  }
+
+  public int getMaxRetryIntervalSeconds() {
+    return maxRetryIntervalSeconds;
+  }
+
+  public void setMaxRetryIntervalSeconds(int maxRetryIntervalSeconds) {
+    this.maxRetryIntervalSeconds = maxRetryIntervalSeconds;
+  }
+
 }

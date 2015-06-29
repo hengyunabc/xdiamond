@@ -65,9 +65,18 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
   String serverPort;
 
   // 启动时，是否打印获取到的配置信息
-  boolean bPrintConfigWhenBoot = true;
+  String bPrintConfigWhenBoot;
   // 获取到配置，是否同步到System Properties里
-  boolean bSyncToSystemProperties = false;
+  String bSyncToSystemProperties;
+
+  // 指数退避的方式增加
+  String bBackOffRetryInterval;
+  // 失败重试的次数
+  String maxRetryTimes;
+  // 失败重试的时间间隔
+  String retryIntervalSeconds;
+  // 最大的重试时间间隔
+  String maxRetryIntervalSeconds;
 
   XDiamondConfig xDiamondConfig;
 
@@ -159,9 +168,36 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
       serverPort = helper.replacePlaceholders(serverPort, properties);
       xDiamondConfig.setServerPort(Integer.parseInt(serverPort));
     }
-    
-    xDiamondConfig.setbPrintConfigWhenBoot(bPrintConfigWhenBoot);
-    xDiamondConfig.setbSyncToSystemProperties(bSyncToSystemProperties);
+
+    if (!StringUtils.isEmpty(bPrintConfigWhenBoot)) {
+      bPrintConfigWhenBoot = helper.replacePlaceholders(bPrintConfigWhenBoot, properties);
+      xDiamondConfig.setbPrintConfigWhenBoot(Boolean.getBoolean(bPrintConfigWhenBoot));
+    }
+
+    if (!StringUtils.isEmpty(bSyncToSystemProperties)) {
+      bSyncToSystemProperties = helper.replacePlaceholders(bSyncToSystemProperties, properties);
+      xDiamondConfig.setbSyncToSystemProperties(Boolean.getBoolean(bSyncToSystemProperties));
+    }
+
+    if (!StringUtils.isEmpty(bBackOffRetryInterval)) {
+      bBackOffRetryInterval = helper.replacePlaceholders(bBackOffRetryInterval, properties);
+      xDiamondConfig.setbBackOffRetryInterval(Boolean.getBoolean(bBackOffRetryInterval));
+    }
+
+    if (!StringUtils.isEmpty(maxRetryTimes)) {
+      maxRetryTimes = helper.replacePlaceholders(maxRetryTimes, properties);
+      xDiamondConfig.setMaxRetryTimes(Integer.parseInt(maxRetryTimes));
+    }
+
+    if (!StringUtils.isEmpty(retryIntervalSeconds)) {
+      retryIntervalSeconds = helper.replacePlaceholders(retryIntervalSeconds, properties);
+      xDiamondConfig.setRetryIntervalSeconds(Integer.parseInt(retryIntervalSeconds));
+    }
+
+    if (!StringUtils.isEmpty(maxRetryIntervalSeconds)) {
+      maxRetryIntervalSeconds = helper.replacePlaceholders(maxRetryIntervalSeconds, properties);
+      xDiamondConfig.setMaxRetryIntervalSeconds(Integer.parseInt(maxRetryIntervalSeconds));
+    }
 
     xDiamondConfig.init();
   }
@@ -293,22 +329,6 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
 
   public void setSecretKey(String secretKey) {
     this.secretKey = secretKey;
-  }
-
-  public boolean isbPrintConfigWhenBoot() {
-    return bPrintConfigWhenBoot;
-  }
-
-  public void setbPrintConfigWhenBoot(boolean bPrintConfigWhenBoot) {
-    this.bPrintConfigWhenBoot = bPrintConfigWhenBoot;
-  }
-
-  public boolean isbSyncToSystemProperties() {
-    return bSyncToSystemProperties;
-  }
-
-  public void setbSyncToSystemProperties(boolean bSyncToSystemProperties) {
-    this.bSyncToSystemProperties = bSyncToSystemProperties;
   }
 
   @Override
