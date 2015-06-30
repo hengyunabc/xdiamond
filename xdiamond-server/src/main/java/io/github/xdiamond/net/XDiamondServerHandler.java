@@ -11,6 +11,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
@@ -129,8 +131,29 @@ public class XDiamondServerHandler extends SimpleChannelInboundHandler<Message> 
                 .toString());
         ctx.channel().attr(connectionInfoKey).set(connectionInfo);
         return;
+      } else if (request.getCommand() == Commands.HEARTBEAT) {
+        // 回应心跳包
+        Response response = responseBuilder.success().command(Commands.HEARTBEAT).build();
+        responseMsg.setData(JSON.toJSONBytes(response));
+        ctx.writeAndFlush(responseMsg);
+        return;
       }
     }
-
   }
+
+  @Override
+  public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+    if (!(evt instanceof IdleStateEvent)) {
+      ctx.fireUserEventTriggered(evt);
+      return;
+    }
+
+    IdleStateEvent e = (IdleStateEvent) evt;
+    if (e.state() == IdleState.READER_IDLE) {
+      // 长时间没有收到客户端的数据，说明客户端可能掉线了
+      logger.info("long time do not reveive data from client, close the channel.");
+      ctx.channel().close();
+    }
+  }
+
 }

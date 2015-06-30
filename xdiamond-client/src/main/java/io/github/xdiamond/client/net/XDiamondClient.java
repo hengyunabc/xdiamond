@@ -4,6 +4,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoop;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -11,6 +12,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
 import io.xdiamond.common.ResolvedConfigVO;
@@ -28,7 +30,7 @@ public class XDiamondClient {
 
   String serverAddress;
   int port = 5678;
-  int readTimeout = 5;
+  int readTimeout = 15;
   int writeTimeout = 5;
 
   // 指数退避的方式增加
@@ -56,11 +58,16 @@ public class XDiamondClient {
 
   // TODO 改为一个线程？
   EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+  Bootstrap bootstrap = new Bootstrap();
 
   ClientHandler clientHandler = new ClientHandler(this);
 
   public ChannelFuture init() {
-    return configureBootstrap(new Bootstrap(), eventLoopGroup).connect();
+    bootstrap.option(ChannelOption.SO_KEEPALIVE, true).option(ChannelOption.SO_TIMEOUT, 5)
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000)
+        .option(ChannelOption.TCP_NODELAY, true);
+
+    return configureBootstrap(bootstrap, eventLoopGroup).connect();
   }
 
   public void destory() {
@@ -78,13 +85,14 @@ public class XDiamondClient {
           @Override
           public void initChannel(SocketChannel ch) throws Exception {
             clientHandler = new ClientHandler(XDiamondClient.this);
-            ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG),
-            // new IdleStateHandler(readTimeout,
-            // writeTimeout,
-            // readTimeout > writeTimeout ?
-            // readTimeout :
-            // writeTimeout),
-                new MessageEncoder(), new MessageDecoder(), clientHandler);
+            if (logger.isDebugEnabled()) {
+              ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
+            }
+            ch.pipeline().addLast(
+                new IdleStateHandler(readTimeout, writeTimeout,
+                    readTimeout > writeTimeout ? readTimeout : writeTimeout), 
+                    new MessageEncoder(),
+                new MessageDecoder(), clientHandler);
           }
         });
 
@@ -94,7 +102,8 @@ public class XDiamondClient {
   /**
    * only call by ClientHandler
    */
-  void channelRegistered(ChannelHandlerContext ctx) {
+  void channelActive(ChannelHandlerContext ctx) {
+    //当client连接到server时，重连次数重置
     currentRetryTimes = 0;
   }
 

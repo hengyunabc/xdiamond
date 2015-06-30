@@ -69,6 +69,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
   }
 
   @Override
+  public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    xDiamondClient.channelActive(ctx);
+    super.channelActive(ctx);
+  }
+
+  @Override
   protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
     if (msg.getType() == Message.RESPONSE) {
       Response response = JSON.parseObject(msg.getData(), Response.class);
@@ -156,23 +162,29 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
   @Override
   public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
     if (!(evt instanceof IdleStateEvent)) {
+      ctx.fireUserEventTriggered(evt);
       return;
     }
 
     // 当空闲时，发心跳包
     IdleStateEvent e = (IdleStateEvent) evt;
-    if (e.state() == IdleState.ALL_IDLE) {
-      // Message msg = new Message();
-      // msg.setCommand(Commands.HEARTBEAT);
-      // msg.setId(msgId.getAndIncrement());
-      // msg.setType(Message.REQUEST);
-      // msg.setData(new byte[0]);
-      // ctx.write(msg);
+    if (e.state() == IdleState.WRITER_IDLE) {
+      Message msg = new Message();
+      msg.setType(Message.REQUEST);
+      final Request request =
+          Request.builder().type(Message.REQUEST).command(Commands.HEARTBEAT).build();
+      msg.setData(JSON.toJSONBytes(request));
+      ctx.write(msg);
+    } else if (e.state() == IdleState.READER_IDLE) {
+      // 长时间没有收到服务器的回应，说明网络出现问题
+      logger.error("long time do not reveive data from server, please check network.");
+      ctx.channel().close();
     }
   }
 
   @Override
   public void channelUnregistered(final ChannelHandlerContext ctx) throws Exception {
     xDiamondClient.channelUnregistered(ctx);
+    this.channel = null;
   }
 }

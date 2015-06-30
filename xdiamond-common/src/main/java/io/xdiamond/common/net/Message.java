@@ -4,6 +4,8 @@ package io.xdiamond.common.net;
  * <pre>
  *   version + length + type +  data(request/response)
  *    2 + 4 + 2,   length = data.length + 2
+ *    
+ *   type: REQUEST|RESPONSE|ONEWAY
  * </pre>
  * 
  * @author hengyunabc
