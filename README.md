@@ -11,7 +11,7 @@
 
 每个项目都有一个base的profile，所有的profile都会继承base的配置。在base可以放一些公共的配置，比如某个服务的端口。
 
-## 快速例子
+## 客户端使用快速例子
 配置xdiamond只需要配置两个bean：
 ```xml
 	<bean id="xDiamondConfig" class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
@@ -46,6 +46,21 @@
 ```
 完整 的示例代码在xdiamond-client-example里。
 
+### 临时修改本地配置的方法
+在开发过程中，可能会需要临时修改本地的配置，那么可以在resources目录下增加一个````local.properties```文件，然后这样配置：
+```xml
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<!-- 对于本地临时要修改的配置，可以放在local.properties文件里，注意不要把内容提交到代码库里，保持local.properties文件内容为空 -->
+	<!-- <property name="location" value="classpath:local.properties" /> -->
+		<property name="properties">
+			<bean id="xDiamondProperties" class="java.util.Properties"
+				factory-bean="xDiamondConfig" factory-method="getProperties">
+			</bean>
+		</property>
+```
 
 ## 项目的属性
 项目里有两个需要解析的属性：
@@ -90,3 +105,23 @@ format   properties/utf8properties/json
 
 http://localhost:8081/clientapi/config?groupId=test&artifactId=test&version=test&profile=base&secretKey=123456&format=properties
 
+## 本地开发环境
+* git clone 代码
+* 运行xdiamond server：
+
+```bash
+cd xdiamond-server
+mvn tomcat7:run -DskipTests
+```
+然后访问 http://localhost:8080/xdiamond-server ，用admin/admin, standard登录
+
+* 执行client例子代码：
+
+```bash
+cd xdiamond-client-example/
+mvn exec:java -Dexec.mainClass="io.github.xdiamond.example.ClientExampleMain"
+```
+默认是获取product环境的配置，如果想获取dev环境的配置，则可以执行：
+```bash
+mvn exec:exec -Dexec.executable="java" -Dexec.args="-DXDIAMOND_PROFILE=dev -classpath %classpath io.github.xdiamond.example.ClientExampleMain"
+```
