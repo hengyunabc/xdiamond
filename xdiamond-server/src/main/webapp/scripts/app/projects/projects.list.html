@@ -1,4 +1,22 @@
-<button class="btn btn-default" ng-click="popNewProjectModal('lg')">新建Project</button>
+<form role="form">
+    <div class="form-group">
+        <button class="btn btn-default" ng-click="popNewProjectModal('lg')">新建Project</button>
+    </div>
+</form>
+
+
+<form role="form">
+    <div class="form-group">
+        <button class="btn btn-warning" ng-init="bShowProjectDeatil = true"
+                ng-click="bShowProjectDeatil = !bShowProjectDeatil" ng-show="bShowProjectDeatil">
+            + 详细显示
+        </button>
+        <button class="btn btn-warning"
+                ng-click="bShowProjectDeatil = !bShowProjectDeatil" ng-show="!bShowProjectDeatil">
+            - 精简显示
+        </button>
+    </div>
+</form>
 
 <form role="form">
     <div class="form-group">
@@ -16,10 +34,10 @@
         <th>groupId</th>
         <th>artifactId</th>
         <th>version</th>
-        <th>description</th>
-        <th>ownerGroup</th>
-        <th>bPublic</th>
-        <th>bAllowDependency</th>
+        <th ng-hide="bShowProjectDeatil">description</th>
+        <th ng-hide="bShowProjectDeatil">ownerGroup</th>
+        <th ng-hide="bShowProjectDeatil">bPublic</th>
+        <th ng-hide="bShowProjectDeatil">bAllowDependency</th>
     </tr>
     </thead>
 
@@ -27,19 +45,20 @@
         <td>{{project.groupId}}</td>
         <td>{{project.artifactId}}</td>
         <td>{{project.version}}</td>
-        <td>{{project.description}}</td>
-        <td>{{project.ownerGroupName}}</td>
-        <td>{{project.bPublic}}</td>
-        <td>{{project.bAllowDependency}}</td>
+        <td ng-hide="bShowProjectDeatil">{{project.description}}</td>
+        <td ng-hide="bShowProjectDeatil">{{project.ownerGroupName}}</td>
+        <td ng-hide="bShowProjectDeatil">{{project.bPublic}}</td>
+        <td ng-hide="bShowProjectDeatil">{{project.bAllowDependency}}</td>
 
         <td><a ui-sref="projects.profiles.list({projectId:project.id})">查看profile</a></td>
-        <td><a ui-sref="projects.dependencies.list({projectId:project.id})">查看Dependency</a></td>
+        <td><a
+                ui-sref="projects.dependencies.list({projectId:project.id})">查看Dependency</a></td>
 
-        <td>
+        <td ng-hide="bShowProjectDeatil">
             <button class="btn btn-default" ng-click="popUpdateProjectModal(project)">修改
             </button>
         </td>
-        <td>
+        <td ng-hide="bShowProjectDeatil">
             <button class="btn btn-danger danger" ng-really-click="delete(project.id)">Delete</button>
         </td>
 

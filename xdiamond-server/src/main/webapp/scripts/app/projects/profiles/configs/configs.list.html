@@ -6,9 +6,15 @@
     <a ui-sref="projects.profiles.list">Profiles:</a>
     <span class="label label-default">{{profile.name}}</span>
 </h4>
-<button class="btn btn-default" ng-init="isAddFormCollapsed = true" ng-click="isAddFormCollapsed = !isAddFormCollapsed">
-    Add Config
-</button>
+
+<form role="form">
+    <div class="form-group">
+        <button class="btn btn-default" ng-init="isAddFormCollapsed = true"
+                ng-click="isAddFormCollapsed = !isAddFormCollapsed">
+            Add Config
+        </button>
+    </div>
+</form>
 
 <form name="newConfigForm"
       ng-submit="create()"
@@ -44,14 +50,18 @@
 
 <br>
 
-<button class="btn btn-default" ng-init="isBatchFormCollapsed = true"
-        ng-click="isBatchFormCollapsed = !isBatchFormCollapsed">
-    批量增加Config
-</button>
-<span class="glyphicon glyphicon-question-sign"
-      tooltip="批量增加Config，json array格式，请小心使用！"
-      tooltip-placement="top"
-      tooltip-trigger="mouseenter"></span>
+<form role="form">
+    <div class="form-group">
+        <button class="btn btn-default" ng-init="isBatchFormCollapsed = true"
+                ng-click="isBatchFormCollapsed = !isBatchFormCollapsed">
+            批量增加Config
+        </button>
+        <span class="glyphicon glyphicon-question-sign"
+              tooltip="批量增加Config，json array格式，请小心使用！"
+              tooltip-placement="top"
+              tooltip-trigger="mouseenter"></span>
+    </div>
+</form>
 
 <form name="batchConfigForm"
       ng-submit="batch(batchConfigs)"
@@ -106,9 +116,13 @@
 <h3>Resolved Configs</h3>
 <form role="form">
     <div class="form-group">
-        <button class="btn btn-default" ng-init="bOnlyShowKeyValue = false"
-                ng-click="bOnlyShowKeyValue = !bOnlyShowKeyValue">
-            只看Key/Value
+        <button class="btn btn-warning" ng-init="bOnlyShowKeyValue = true"
+                ng-click="bOnlyShowKeyValue = !bOnlyShowKeyValue" ng-show="bOnlyShowKeyValue">
+            + 详细显示Key/Value
+        </button>
+        <button class="btn btn-warning"
+                ng-click="bOnlyShowKeyValue = !bOnlyShowKeyValue" ng-show="!bOnlyShowKeyValue">
+            - 精简显示Key/Value
         </button>
         <a class="btn btn-success" target="_blank" href="{{propertiesUrl }}">以Properties格式查看</a>
         <a class="btn btn-success" target="_blank" href="{{jsonUrl }}">以JSON格式查看</a>
