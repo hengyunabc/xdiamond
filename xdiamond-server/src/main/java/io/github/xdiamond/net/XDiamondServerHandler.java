@@ -22,6 +22,7 @@ import io.xdiamond.common.net.Request;
 import io.xdiamond.common.net.Response;
 import io.xdiamond.common.net.Response.ResponseBuilder;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -126,10 +127,14 @@ public class XDiamondServerHandler extends SimpleChannelInboundHandler<Message> 
         ctx.writeAndFlush(responseMsg);
 
         // 把客户端连接信息写到Attr里
-        ConnectionInfo connectionInfo =
-            new ConnectionInfo(groupId, artifactId, version, profile, ctx.channel().remoteAddress()
-                .toString());
-        ctx.channel().attr(connectionInfoKey).set(connectionInfo);
+        Attribute<ConnectionInfo> attr = ctx.channel().attr(connectionInfoKey);
+        ConnectionInfo connectionInfo = attr.get();
+        if (connectionInfo == null) {
+          connectionInfo =
+              new ConnectionInfo(groupId, artifactId, version, profile, ctx.channel()
+                  .remoteAddress().toString(), new Date());
+          attr.set(connectionInfo);
+        }
         return;
       } else if (request.getCommand() == Commands.HEARTBEAT) {
         // 回应心跳包

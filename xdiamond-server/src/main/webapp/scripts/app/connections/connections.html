@@ -1,5 +1,12 @@
 <h3>Connections</h3>
-
+<form role="form">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            <input type="text" class="form-control" placeholder="Search" ng-model="search.$">
+        </div>
+    </div>
+</form>
 <table class="table table-striped">
 
     <thead>
@@ -9,15 +16,17 @@
         <th>artifactId</th>
         <th>version</th>
         <th>profile</th>
+        <th>connectTime</th>
     </tr>
     </thead>
 
-    <tr ng-repeat="connection in connections">
+    <tr ng-repeat="connection in connections | filter:search | orderBy:['groupId', 'artifactId', 'version', 'profile', 'remoteAddress']">
         <td>{{connection.remoteAddress}}</td>
         <td>{{connection.groupId}}</td>
         <td>{{connection.artifactId}}</td>
         <td>{{connection.version}}</td>
         <td>{{connection.profile}}</td>
+        <td>{{connection.connectTime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
 
     </tr>
 </table>

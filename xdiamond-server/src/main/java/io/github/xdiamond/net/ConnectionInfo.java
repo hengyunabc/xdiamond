@@ -1,5 +1,7 @@
 package io.github.xdiamond.net;
 
+import java.util.Date;
+
 public class ConnectionInfo {
 
   String groupId;
@@ -9,16 +11,19 @@ public class ConnectionInfo {
 
   String remoteAddress;
 
+  Date connectTime;
+
   public ConnectionInfo() {}
 
   public ConnectionInfo(String groupId, String artifactId, String version, String profile,
-      String remoteAddress) {
+      String remoteAddress, Date connectTime) {
     super();
     this.groupId = groupId;
     this.artifactId = artifactId;
     this.version = version;
     this.profile = profile;
     this.remoteAddress = remoteAddress;
+    this.connectTime = connectTime;
   }
 
   public String getGroupId() {
@@ -59,5 +64,13 @@ public class ConnectionInfo {
 
   public void setRemoteAddress(String remoteAddress) {
     this.remoteAddress = remoteAddress;
+  }
+
+  public Date getConnectTime() {
+    return connectTime;
+  }
+
+  public void setConnectTime(Date connectTime) {
+    this.connectTime = connectTime;
   }
 }
