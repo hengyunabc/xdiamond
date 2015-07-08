@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- dev环境 -->
+	<beans profile="dev">
+		<bean id="xdiamondServerHost" class="java.lang.String">
+			<constructor-arg value="192.168.66.61" />
+		</bean>
+		<bean id="projectProfile" class="java.lang.String">
+			<constructor-arg value="dev" />
+		</bean>
+		<bean id="projectSecretKey" class="java.lang.String">
+			<constructor-arg value="" />
+		</bean>
+	</beans>
+
+	<!-- test环境 -->
+	<beans profile="test">
+		<bean id="xdiamondServerHost" class="java.lang.String">
+			<constructor-arg value="192.168.66.61" />
+		</bean>
+		<bean id="projectProfile" class="java.lang.String">
+			<constructor-arg value="test" />
+		</bean>
+		<bean id="projectSecretKey" class="java.lang.String">
+			<constructor-arg value="" />
+		</bean>
+	</beans>
+
+	<!-- product环境 -->
+	<beans profile="product">
+		<bean id="xdiamondServerHost" class="java.lang.String">
+			<constructor-arg value="product.xdiamond.com" />
+		</bean>
+		<bean id="projectProfile" class="java.lang.String">
+			<constructor-arg value="product" />
+		</bean>
+		<!-- 生产环境的secretkey最好是通过tomcat setenv.sh传进来，不要显式配置在代码里 -->
+		<bean id="projectSecretKey" class="java.lang.String">
+			<constructor-arg value="${xdiamond.project.secretkey}" />
+		</bean>
+	</beans>
+
+	<beans>
+		<bean id="xDiamondConfig"
+			class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
+			<property name="serverHost" ref="xdiamondServerHost" />
+			<property name="serverPort" value="5678" />
+			<property name="groupId" value="io.github.xdiamond" />
+			<property name="artifactId" value="xdiamond-client-example" />
+			<property name="version" value="0.0.1-SNAPSHOT" />
+			<property name="profile" ref="projectProfile" />
+			<property name="secretKey" ref="projectSecretKey"></property>
+		</bean>
+
+		<bean
+			class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+			<property name="ignoreResourceNotFound" value="true" />
+			<property name="ignoreUnresolvablePlaceholders" value="true" />
+			<!-- 对于本地临时要修改的配置，可以放在local.properties文件里，注意不要把内容提交到代码库里，保持local.properties文件内容为空 -->
+			<!-- <property name="location" value="classpath:local.properties" /> -->
+			<property name="properties">
+				<bean id="xDiamondProperties" class="java.util.Properties"
+					factory-bean="xDiamondConfig" factory-method="getProperties">
+				</bean>
+			</property>
+		</bean>
+
+		<!-- <context:component-scan base-package="io.github.xdiamond.example"> -->
+		<!-- </context:component-scan> -->
+
+		<bean id="clientExampleConfig" class="io.github.xdiamond.example.ClientExampleConfig">
+			<property name="memcachedAddress" value="${memcached.serverlist}"></property>
+			<property name="zookeeperAddress" value="${zookeeper.address}"></property>
+		</bean>
+	</beans>
+
+</beans>

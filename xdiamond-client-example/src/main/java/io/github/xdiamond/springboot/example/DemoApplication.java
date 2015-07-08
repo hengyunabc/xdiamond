@@ -1,6 +1,5 @@
-package io.github.xdiamond.example.springboot;
+package io.github.xdiamond.springboot.example;
 
-import io.github.xdiamond.client.XDiamondConfig;
 import io.github.xdiamond.example.ClientExampleAnnotationConfig;
 
 import org.springframework.boot.SpringApplication;
