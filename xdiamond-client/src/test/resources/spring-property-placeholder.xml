@@ -15,8 +15,8 @@
 	
 	<bean id="xDiamondConfig"
 		class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
-		<property name="serverHost" value="${XDIAMOND_SERVERHOST:localhost}" />
-		<property name="serverPort" value="${XDIAMOND_SERVERPORT:5678}" />
+		<property name="serverHost" value="${xdiamond.server.host:localhost}" />
+		<property name="serverPort" value="5678" />
 		<property name="groupId" value="testGroupId" />
 		<property name="artifactId" value="${projectArtifactId:testArtifactId}" />
 		<property name="version" value="${projectVersion}" />

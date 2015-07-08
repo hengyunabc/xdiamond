@@ -8,13 +8,13 @@
 
 	<bean id="xDiamondConfig"
 		class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
-		<property name="serverHost" value="${XDIAMOND_SERVERHOST:192.168.66.61}" />
-		<property name="serverPort" value="${XDIAMOND_SERVERPORT:5678}" />
+		<property name="serverHost" value="${xdiamond.server.host:192.168.66.61}" />
+		<property name="serverPort" value="5678" />
 		<property name="groupId" value="io.github.xdiamond" />
 		<property name="artifactId" value="xdiamond-client-example" />
 		<property name="version" value="0.0.1-SNAPSHOT" />
 		<property name="profile" value="test" />
-		<property name="secretKey" value="${XDIAMOND_SECRETKEY}"></property>
+		<property name="secretKey" value="${xdiamond.project.secretkey}"></property>
 	</bean>
 
 	<bean

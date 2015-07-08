@@ -24,12 +24,12 @@
 
 	<bean id="xDiamondConfig" class="io.github.xdiamond.client.XDiamondConfig"
 		init-method="init">
-		<property name="serverHost" value="${XDIAMOND_SERVERHOST:localhost}" />
-		<property name="serverPort" value="${XDIAMOND_SERVERPORT:5678}" />
+		<property name="serverHost" value="${xdiamond.server.host:localhost}" />
+		<property name="serverPort" value="5678" />
 		<property name="groupId" value="testtt" />
 		<property name="artifactId" value="testtt" />
 		<property name="version" value="vvvvv" />
-		<property name="profile" value="${XDIAMOND_PROFILE:pppppp}" />
+		<property name="profile" value="${xdiamond.project.profile:pppppp}" />
 	</bean>
 
 	<!-- <bean id="xDiamondProperties" -->

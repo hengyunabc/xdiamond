@@ -8,13 +8,13 @@
 
 	<bean id="xDiamondConfig"
 		class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
-		<property name="serverHost" value="${XDIAMOND_SERVERHOST:192.168.66.61}" />
-		<property name="serverPort" value="${XDIAMOND_SERVERPORT:5678}" />
+		<property name="serverHost" value="${xdiamond.server.host:192.168.66.61}" />
+		<property name="serverPort" value="5678" />
 		<property name="groupId" value="io.github.xdiamond" />
 		<property name="artifactId" value="xdiamond-client-example" />
 		<property name="version" value="0.0.1-SNAPSHOT" />
-		<property name="profile" value="${XDIAMOND_PROFILE:dev}" />
-		<property name="secretKey" value="${XDIAMOND_SECRETKEY}"></property>
+		<property name="profile" value="${xdiamond.project.profile:dev}" />
+		<property name="secretKey" value="${xdiamond.project.secretkey:123456}"></property>
 	</bean>
 
 	<bean
@@ -22,7 +22,7 @@
 		<property name="ignoreResourceNotFound" value="true" />
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<!-- 对于本地临时要修改的配置，可以放在local.properties文件里，注意不要把内容提交到代码库里，保持local.properties文件内容为空 -->
-	<!-- <property name="location" value="classpath:local.properties" /> -->
+		<!-- <property name="location" value="classpath:local.properties" /> -->
 		<property name="properties">
 			<bean id="xDiamondProperties" class="java.util.Properties"
 				factory-bean="xDiamondConfig" factory-method="getProperties">

@@ -15,13 +15,13 @@
 配置xdiamond只需要配置两个bean：
 ```xml
 	<bean id="xDiamondConfig" class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
-		<property name="serverHost" value="${XDIAMOND_SERVERHOST:192.168.66.61}" />
-		<property name="serverPort" value="${XDIAMOND_SERVERPORT:5678}" />
+		<property name="serverHost" value="${xdiamond.server.host:192.168.66.61}" />
+		<property name="serverPort" value="5678" />
 		<property name="groupId" value="io.github.xdiamond" />
 		<property name="artifactId" value="xdiamond-client-example" />
 		<property name="version" value="0.0.1-SNAPSHOT" />
-		<property name="profile" value="dev" />
-		<property name="secretKey" value="123456"></property>
+		<property name="profile" value="${xdiamond.project.profile:dev}" />
+		<property name="secretKey" value="${xdiamond.project.secretkey:123456}"></property>
 	</bean>
 
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -123,5 +123,5 @@ mvn exec:java -Dexec.mainClass="io.github.xdiamond.example.ClientExampleMain"
 ```
 默认是获取product环境的配置，如果想获取dev环境的配置，则可以执行：
 ```bash
-mvn exec:exec -Dexec.executable="java" -Dexec.args="-DXDIAMOND_PROFILE=dev -classpath %classpath io.github.xdiamond.example.ClientExampleMain"
+mvn exec:exec -Dexec.executable="java" -Dexec.args="-Dxdiamond.project.profile=dev -classpath %classpath io.github.xdiamond.example.ClientExampleMain"
 ```
