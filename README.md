@@ -12,7 +12,18 @@
 每个项目都有一个base的profile，所有的profile都会继承base的配置。在base可以放一些公共的配置，比如某个服务的端口。
 
 ## 客户端使用快速例子
-配置xdiamond只需要配置两个bean：
+* 增加maven依赖
+
+```xml
+		<dependency>
+			<groupId>io.github.xdiamond</groupId>
+			<artifactId>xdiamond-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+```
+
+* 配置xdiamond只需要配置两个bean：
+
 ```xml
 	<bean id="xDiamondConfig" class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
 		<property name="serverHost" value="${xdiamond.server.host:192.168.66.61}" />
@@ -61,6 +72,9 @@
 			</bean>
 		</property>
 ```
+
+### 在测试环境使用xdiamond的配置
+xdiamond本质是提供了一个properties对象，只要把profile改为dev即可。参考````xdiamond-client-example````里的test case。
 
 ### 线上环境的Tomcat的setenv.sh的配置
 以上面的配置为例，假定xdiamond的服务器是````product.xdiamond.com````，则在````tomcat/bin/setenv.sh````里配置：
@@ -117,7 +131,9 @@ testKey=xxx${keyFromXdiamond}yyy
 为了避免前端的项目都有一份memcached地址的配置，则可以把memcached的配置抽取为一个公共的配置，下游的项目通过依赖关系获取到memcached的配置。
 
 ## 客户端获取配置的安全性保证
-每个profile可以配置secretKey，只有匹配才可以获取到project的配置。
+每个profile可以配置secretKey，只有匹配才可以获取到project的配置。线上环境的tomcat在setenv.sh里通过参数把secretkey传递给应用。
+
+在test, dev等环境，可以不用配置secretkey。
 
 ## xdiamond配置的本质
 对于使用者，xdiamond提供的是一个Properties对象。用户可以结合Spring等来使用。
