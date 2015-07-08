@@ -113,7 +113,7 @@ public class XDiamondConfig {
         List<ResolvedConfigVO> resolvedConfigs = configFuture.get(10, TimeUnit.SECONDS);
         if (configFuture.isSuccess()) {
           loadConfig(resolvedConfigs);
-          logger.info("load config from xdiamond server success.");
+          logger.info("load config from xdiamond server success. " + toProjectInfoString());
           bShouldLoadLocalConfig = false;
 
           if (bPrintConfigWhenBoot) {
@@ -122,23 +122,25 @@ public class XDiamondConfig {
         }
       }
       if (!future.isSuccess()) {
-        logger.error("can not load xdiamond config from server!", future.cause());
+        logger.error("can not load xdiamond config from server! " + toProjectInfoString(),
+            future.cause());
       }
     } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
-      logger.error("load xdiamond config from server error!", e);
+      logger.error("load xdiamond config from server error! " + toProjectInfoString(), e);
     }
     // 如果没有从服务器加载到配置，则从本地的备份读取
     if (bShouldLoadLocalConfig) {
       try {
         List<ResolvedConfigVO> resolvedConfigVOList = loadLocalConfig();
         this.resolvedConfigVOMap = ResolvedConfigVO.listToMap(resolvedConfigVOList);
-        logger.info("load xdiamond config from localConfigPath:" + localConfigPath);
+        logger.info("load xdiamond config " + toProjectInfoString() + " from localConfigPath:"
+            + localConfigPath);
 
         if (bPrintConfigWhenBoot) {
           System.out.println(ResolvedConfigVO.toUTF8PropertiesString(resolvedConfigVOList, true));
         }
       } catch (IOException e) {
-        throw new RuntimeException("load xdiamond localConfig error!", e);
+        throw new RuntimeException("load xdiamond localConfig error! " + toProjectInfoString(), e);
       }
     }
 
@@ -154,8 +156,8 @@ public class XDiamondConfig {
           // 对于连接错误，这里不打印错误信息，因为会在重试任务里打印
           return;
         } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
-          if(e instanceof ExecutionException){
-            if(e.getCause() instanceof ConnectException){
+          if (e instanceof ExecutionException) {
+            if (e.getCause() instanceof ConnectException) {
               return;
             }
           }
@@ -440,4 +442,7 @@ public class XDiamondConfig {
     this.maxRetryIntervalSeconds = maxRetryIntervalSeconds;
   }
 
+  private String toProjectInfoString() {
+    return this.groupId + "|" + artifactId + "|" + version + "|" + profile;
+  }
 }
