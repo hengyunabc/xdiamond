@@ -141,6 +141,10 @@ testKey=xxx${keyFromXdiamond}yyy
 ### 和Spring profile的关系
 xdiamond只提供了一个properties对象，可以在不同的Spring profile里使用这个properties。两者是独立的。
 
+#### 结合spring profile配置
+可以在不同的spring profile，加载对应的xdiamond profile。具体的配置参考example里的````SpringProfileMain````，````spring-profile-example.xml````。
+
+
 ## RESTful API
 对于非Java的客户端，可以通过http方式获取到配置。
 ```
