@@ -62,6 +62,42 @@
 		</property>
 ```
 
+### 线上环境的Tomcat的setenv.sh的配置
+以上面的配置为例，假定xdiamond的服务器是````product.xdiamond.com````，则在````tomcat/bin/setenv.sh````里配置：
+```bash
+JAVA_OPTS="$JAVA_OPTS -Dxdiamond.server.host=product.xdiamond.com -Dxdiamond.project.profile=product -Dxdiamond.project.secretkey=b8ylj4r0OcBMgdNU"
+```
+
+### 高级配置
+
+#### 把配置同步到system properties
+````bSyncToSystemProperties````可以把配置同步到System Properties里，默认值是false。这样可以实现在*.properties文件里引用xdiamond里的配置。比如在一个test.properties文件里：
+```
+testKey=xxx${keyFromXdiamond}yyy
+```
+```xml
+	<bean id="xDiamondConfig"
+		class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
+        ...
+		<property name="bSyncToSystemProperties" value="true"></property>
+	</bean>
+```
+#### 设置连接重试的次数和时间
+默认是会不断尝试重连服务器。在打印日志时已经做了优化，通常不需要改变设置。
+```xml
+	<bean id="xDiamondConfig"
+		class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
+        ...
+		<!-- 以指数退避方式计算重连时间间隔 -->
+		<property name="bBackOffRetryInterval" value="true"></property>
+		<property name="retryIntervalSeconds" value="5"></property>
+		<property name="maxRetryIntervalSeconds" value="120"></property>
+		<!-- 默认会无限重试 -->
+		<property name="maxRetryTimes" value=""></property>
+	</bean>
+```
+
+
 ## 项目的属性
 项目里有两个需要解析的属性：
 * bPublic   是否允许其它人查看到这个Project

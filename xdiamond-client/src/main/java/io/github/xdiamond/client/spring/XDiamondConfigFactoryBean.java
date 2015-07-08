@@ -331,6 +331,54 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
     this.secretKey = secretKey;
   }
 
+  public String getbPrintConfigWhenBoot() {
+    return bPrintConfigWhenBoot;
+  }
+
+  public void setbPrintConfigWhenBoot(String bPrintConfigWhenBoot) {
+    this.bPrintConfigWhenBoot = bPrintConfigWhenBoot;
+  }
+
+  public String getbSyncToSystemProperties() {
+    return bSyncToSystemProperties;
+  }
+
+  public void setbSyncToSystemProperties(String bSyncToSystemProperties) {
+    this.bSyncToSystemProperties = bSyncToSystemProperties;
+  }
+
+  public String getbBackOffRetryInterval() {
+    return bBackOffRetryInterval;
+  }
+
+  public void setbBackOffRetryInterval(String bBackOffRetryInterval) {
+    this.bBackOffRetryInterval = bBackOffRetryInterval;
+  }
+
+  public String getMaxRetryTimes() {
+    return maxRetryTimes;
+  }
+
+  public void setMaxRetryTimes(String maxRetryTimes) {
+    this.maxRetryTimes = maxRetryTimes;
+  }
+
+  public String getRetryIntervalSeconds() {
+    return retryIntervalSeconds;
+  }
+
+  public void setRetryIntervalSeconds(String retryIntervalSeconds) {
+    this.retryIntervalSeconds = retryIntervalSeconds;
+  }
+
+  public String getMaxRetryIntervalSeconds() {
+    return maxRetryIntervalSeconds;
+  }
+
+  public void setMaxRetryIntervalSeconds(String maxRetryIntervalSeconds) {
+    this.maxRetryIntervalSeconds = maxRetryIntervalSeconds;
+  }
+
   @Override
   public void onApplicationEvent(ContextStartedEvent event) {
     // scan annotation 必须要放到这里，不然会出现构造函数里传进来String不能正确地处理${}表达式
