@@ -50,9 +50,9 @@
 3. 通过${}表达式把配置值注入到bean里
 
 ```xml
-	<bean id="memcachedConfig" class="io.github.xdiamond.example.MemcachedConfig">
-		<property name="host" value="${memcached.host}"></property>
-		<property name="port" value="${memcached.port}"></property>
+	<bean id="clientExampleConfig" class="io.github.xdiamond.example.ClientExampleConfig">
+		<property name="memcachedAddress" value="${memcached.serverlist}"></property>
+		<property name="zookeeperAddress" value="${zookeeper.address}"></property>
 	</bean>
 ```
 完整 的示例代码在xdiamond-client-example里。
