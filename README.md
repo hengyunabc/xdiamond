@@ -14,6 +14,7 @@
 ## 客户端使用快速例子
 * 增加maven依赖
 
+**注意，xdiamond-client里依赖的Spring版本是3.x，如果有使用spring 4.x，可以把spring的依赖exclude掉。**
 ```xml
 		<dependency>
 			<groupId>io.github.xdiamond</groupId>
