@@ -27,18 +27,18 @@
                            required="">
                 </div>
                 <div class="form-group">
-
                     <div class="btn-group">
                         <label class="btn btn-primary" ng-model="user.provider" btn-radio="'ldap'">LDAP</label>
                         <label class="btn btn-primary" ng-model="user.provider" btn-radio="'standard'">Standard</label>
                     </div>
                 </div>
 
-
-                <input type="submit"
-                       class="btn btn-success"
-                       value="Login"
-                       ng-disabled="loginForm.$invalid">
+                <div class="form-group">
+                    <input type="submit"
+                           class="btn btn-success"
+                           value="Login"
+                           ng-disabled="loginForm.$invalid">
+                </div>
             </form>
         </div>
     </div>

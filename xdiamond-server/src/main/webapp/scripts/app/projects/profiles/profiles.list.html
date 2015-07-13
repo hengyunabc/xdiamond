@@ -3,7 +3,7 @@
     <span class="label label-default">{{project.groupId}}</span>/
     <span class="label label-default">{{project.artifactId}}</span>/
     <span class="label label-default">{{project.version}}</span>
-    <a ui-sref="projects.dependencies.list">Dependencies:</a>
+    <a ui-sref="projects.dependencies.list({projectId:project.id})">查看Dependencies</a>
 </h4>
 
 <button class="btn btn-default" ng-init="isAddFormCollapsed = true" ng-click="isAddFormCollapsed = !isAddFormCollapsed">
