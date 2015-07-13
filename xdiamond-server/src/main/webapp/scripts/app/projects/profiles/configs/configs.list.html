@@ -137,6 +137,18 @@
             <input type="text" class="form-control" placeholder="Search" ng-model="search.$">
         </div>
     </div>
+
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" ng-model="filters.bOnlyShowCurrentProjectConfig">只显示当前项目的配置
+        </label>
+    </div>
+
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" ng-model="filters.bOnlyShowCurrentProfileConfig">只显示当前Profile的配置
+        </label>
+    </div>
 </form>
 
 <table class="table table-striped">
@@ -146,45 +158,44 @@
         <th>key</th>
         <th>value</th>
         <th ng-hide="bOnlyShowKeyValue">description</th>
+        <th ng-hide="bOnlyShowKeyValue">配置的来源</th>
         <th ng-hide="bOnlyShowKeyValue">createUser</th>
         <th ng-hide="bOnlyShowKeyValue">createTime</th>
         <th ng-hide="bOnlyShowKeyValue">updateUser</th>
         <th ng-hide="bOnlyShowKeyValue">updateTime</th>
         <th ng-hide="bOnlyShowKeyValue"></th>
-        <th ng-hide="bOnlyShowKeyValue">配置的来源</th>
         <th ng-hide="bOnlyShowKeyValue">lastVersionValue</th>
         <th ng-hide="bOnlyShowKeyValue">version</th>
     </tr>
     </thead>
 
-    <tr ng-repeat="resolveConfig in resolvedConfigs | filter:search | orderBy:'config.key'">
-        <td>{{resolveConfig.config.key}}</td>
-        <td>{{resolveConfig.config.value}}</td>
-        <td ng-hide="bOnlyShowKeyValue">{{resolveConfig.config.description}}</td>
-        <td ng-hide="bOnlyShowKeyValue">{{resolveConfig.config.createUser}}</td>
-        <td ng-hide="bOnlyShowKeyValue">{{resolveConfig.config.createTime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
-        <td ng-hide="bOnlyShowKeyValue">{{resolveConfig.config.updateUser}}</td>
-        <td ng-hide="bOnlyShowKeyValue">{{resolveConfig.config.updateTime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
-
+    <tr ng-repeat="resolvedConfig in resolvedConfigs | filter:filtersFunc | filter:search | orderBy:'config.key'">
+        <td>{{resolvedConfig.config.key}}</td>
+        <td>{{resolvedConfig.config.value}}</td>
+        <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.description}}</td>
         <td ng-hide="bOnlyShowKeyValue">
-            <div ng-hide="resolveConfig.config.profileId != profile.id">
-                <button class="btn btn-default" ng-click="popUpdateConfigModal(resolveConfig.config)">修改</button>
-                <button class="btn btn-danger danger" ng-really-click="delete(resolveConfig.config.id)">Delete</button>
-            </div>
-        </td>
-
-        <td ng-hide="bOnlyShowKeyValue">
-            <div ng-show="resolveConfig.config.profileId != profile.id">
+            <div ng-show="resolvedConfig.config.profileId != profile.id">
                 Project:
-                <span class="label label-default">{{resolveConfig.fromProject.groupId}}</span>/
-                <span class="label label-default">{{resolveConfig.fromProject.artifactId}}</span>/
-                <span class="label label-default">{{resolveConfig.fromProject.version}}</span>
+                <span class="label label-default">{{resolvedConfig.fromProject.groupId}}</span>/
+                <span class="label label-default">{{resolvedConfig.fromProject.artifactId}}</span>/
+                <span class="label label-default">{{resolvedConfig.fromProject.version}}</span>
                 Profile:
-                <span class="label label-default">{{resolveConfig.fromProfile}}</span>
+                <span class="label label-default">{{resolvedConfig.fromProfile}}</span>
+            </div>
+        </td>
+        <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.createUser}}</td>
+        <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.createTime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+        <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.updateUser}}</td>
+        <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.updateTime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+
+        <td ng-hide="bOnlyShowKeyValue">
+            <div ng-hide="resolvedConfig.config.profileId != profile.id">
+                <button class="btn btn-default" ng-click="popUpdateConfigModal(resolvedConfig.config)">修改</button>
+                <button class="btn btn-danger danger" ng-really-click="delete(resolvedConfig.config.id)">Delete</button>
             </div>
         </td>
 
-        <td ng-hide="bOnlyShowKeyValue">{{resolveConfig.config.lastVersionValue}}</td>
-        <td ng-hide="bOnlyShowKeyValue">{{resolveConfig.config.version}}</td>
+        <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.lastVersionValue}}</td>
+        <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.version}}</td>
     </tr>
 </table>

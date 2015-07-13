@@ -77,6 +77,29 @@ angular.module('xdiamondApp').controller("ConfigController",
                 });
             };
 
+            var filters = {};
+            filters.bOnlyShowCurrentProfileConfig = false;
+            filters.bOnlyShowCurrentProjectConfig = false;
+            $scope.filters = filters;
+
+            $scope.filtersFunc = function (resolvedConfig) {
+                if (filters.bOnlyShowCurrentProfileConfig) {
+                    if (resolvedConfig.config.profileId == profile.id) {
+                        return resolvedConfig;
+                    } else {
+                        return null;
+                    }
+                }
+                if (filters.bOnlyShowCurrentProjectConfig) {
+                    if (resolvedConfig.fromProject.id == project.id) {
+                        return resolvedConfig;
+                    } else {
+                        return null;
+                    }
+                }
+                return resolvedConfig;
+            }
+
             $scope.popUpdateConfigModal = function (config, size) {
                 var modalInstance = $modal.open({
                     animation: true,
