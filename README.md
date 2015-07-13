@@ -111,6 +111,14 @@ testKey=xxx${keyFromXdiamond}yyy
 	</bean>
 ```
 
+## 旧的client jar迁移过程
+假定client jar提供了一个spring xml配置文件，如````resources/clientDefault/clientjar-spring-context.xml````，下游使用这个jar包的项目都会import这个xml文件。
+
+在这个xml文件里会有client自己内部用到的````${}````变量，那么只需要在xdiamond server上增加相应的project，然后通过下游的项目在xdiamond server上增加对这个client jar的依赖即可。
+
+client jar只需要保证自己client jar里的xml的变量都配置到xdiamond server上即可。
+
+**client jar里不需要配置xdiamond client！client jar对xdiamond实际上无感知的！**
 
 ## 项目的属性
 项目里有两个需要解析的属性：
