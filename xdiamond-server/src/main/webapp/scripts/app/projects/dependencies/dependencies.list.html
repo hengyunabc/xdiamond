@@ -13,7 +13,7 @@
       ng-submit="addDependency()"
       role="form" collapse="isAddFormCollapsed">
     <div class="form-group">
-
+        <label>groupId</label>
         <ui-select ng-model="selected.byGroupId" ng-change="selected.byArtifactId=''; selected.byVersion=''"
                    theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select groupId">{{$select.selected.groupId}}</ui-select-match>
@@ -21,7 +21,10 @@
                 <span ng-bind-html="project.groupId"></span>
             </ui-select-choices>
         </ui-select>
+    </div>
 
+    <div class="form-group">
+        <label>artifactId</label>
         <ui-select ng-model="selected.byArtifactId" ng-change="selected.byVersion=''" theme="bootstrap"
                    ng-disabled=" !selected.byGroupId"
                    style="width: 300px;">
@@ -31,7 +34,10 @@
                 <span ng-bind-html="project.artifactId"></span>
             </ui-select-choices>
         </ui-select>
+    </div>
 
+    <div class="form-group">
+        <label>version</label>
         <ui-select ng-model="selected.byVersion" theme="bootstrap" ng-disabled="!selected.byArtifactId"
                    style="width: 300px;">
             <ui-select-match placeholder="Select version">{{$select.selected.version}}</ui-select-match>
@@ -41,6 +47,7 @@
                 <span ng-bind-html="project.version"></span>
             </ui-select-choices>
         </ui-select>
+
     </div>
     <input type="submit"
            class="btn btn-success"
