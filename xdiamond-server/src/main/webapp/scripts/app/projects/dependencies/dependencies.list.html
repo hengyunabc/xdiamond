@@ -3,6 +3,7 @@
     <span class="label label-default">{{project.groupId}}</span>/
     <span class="label label-default">{{project.artifactId}}</span>/
     <span class="label label-default">{{project.version}}</span>
+    <a ui-sref="projects.profiles.list">Profiles:</a>
 </h4>
 
 <button class="btn btn-default" ng-init="isAddFormCollapsed = true" ng-click="isAddFormCollapsed = !isAddFormCollapsed">
@@ -13,7 +14,6 @@
       role="form" collapse="isAddFormCollapsed">
     <div class="form-group">
 
-        <p>Selected: {{selected.byGroupId}}</p>
         <ui-select ng-model="selected.byGroupId" ng-change="selected.byArtifactId=''; selected.byVersion=''"
                    theme="bootstrap" style="width: 300px;">
             <ui-select-match placeholder="Select groupId">{{$select.selected.groupId}}</ui-select-match>
@@ -22,7 +22,6 @@
             </ui-select-choices>
         </ui-select>
 
-        <p>Selected: {{selected.byArtifactId}}</p>
         <ui-select ng-model="selected.byArtifactId" ng-change="selected.byVersion=''" theme="bootstrap"
                    ng-disabled=" !selected.byGroupId"
                    style="width: 300px;">
@@ -33,7 +32,6 @@
             </ui-select-choices>
         </ui-select>
 
-        <p>Selected: {{selected.byVersion}}</p>
         <ui-select ng-model="selected.byVersion" theme="bootstrap" ng-disabled="!selected.byArtifactId"
                    style="width: 300px;">
             <ui-select-match placeholder="Select version">{{$select.selected.version}}</ui-select-match>
