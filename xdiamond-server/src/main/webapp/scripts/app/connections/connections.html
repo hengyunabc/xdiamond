@@ -7,6 +7,8 @@
         </div>
     </div>
 </form>
+
+Total {{filtered.length}} connections.
 <table class="table table-striped">
 
     <thead>
@@ -20,7 +22,7 @@
     </tr>
     </thead>
 
-    <tr ng-repeat="connection in connections | filter:search | orderBy:['groupId', 'artifactId', 'version', 'profile', 'remoteAddress']">
+    <tr ng-repeat="connection in filtered = (connections | filter:search | orderBy:['groupId', 'artifactId', 'version', 'profile', 'remoteAddress'])">
         <td>{{connection.remoteAddress}}</td>
         <td>{{connection.groupId}}</td>
         <td>{{connection.artifactId}}</td>

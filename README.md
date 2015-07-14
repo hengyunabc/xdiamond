@@ -149,6 +149,13 @@ client jar只需要保证自己client jar里的xml的变量都配置到xdiamond 
 有一些公共配置，或者client jar包的配置是要被依赖的。比如前端的memcached集群的地址。
 为了避免前端的项目都有一份memcached地址的配置，则可以把memcached的配置抽取为一个公共的配置，下游的项目通过依赖关系获取到memcached的配置。
 
+### 同名的profile的依赖传递关系
+profile可以看做是环境，同样环境的配置，会通过依赖关系传递。
+
+比如client jar里有一个````memcached.server````的key。
+
+在dev环境value是````localhost:11211````，在product环境是````192.168.90.145:11211````，那么下游的应用只要在xdiamond server上依赖了这个client jar，在相应的环境里，就会自动拿到相应的配置（当然，通常不用关心client jar里的配置是什么，client jar自己要保证在不同环境的value是正确的）。
+
 ## 客户端获取配置的安全性保证
 每个profile可以配置secretKey，只有匹配才可以获取到project的配置。线上环境的tomcat在setenv.sh里通过参数把secretkey传递给应用。
 
