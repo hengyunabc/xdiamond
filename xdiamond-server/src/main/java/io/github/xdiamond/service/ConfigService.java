@@ -11,15 +11,24 @@ import io.github.xdiamond.persistence.ConfigMapper;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @Service
 public class ConfigService {
+  private static final Logger logger = LoggerFactory.getLogger(ConfigService.class);
 
   @Autowired
   ConfigMapper configMapper;
@@ -29,6 +38,18 @@ public class ConfigService {
   ProfileService profileService;
   @Autowired
   ProjectService projectService;
+
+  @Value("${configService.cache.duration:1000}")
+  int configCacheDurationMs = 1000;
+
+  Cache<Object, Object> resolvedConfigCache;
+
+  @PostConstruct
+  public void init() {
+    resolvedConfigCache =
+        CacheBuilder.newBuilder().expireAfterWrite(configCacheDurationMs, TimeUnit.MILLISECONDS)
+            .maximumSize(1000).build();
+  }
 
   public List<Config> list(int profileId) {
     ConfigExample configExample = new ConfigExample();
@@ -85,6 +106,46 @@ public class ConfigService {
     }
 
     return Lists.newLinkedList(resolvedConfigResult.values());
+  }
+
+  /**
+   * 默认一秒钟的缓存，简单的防并发机制
+   * 
+   * @param profileId
+   * @return
+   */
+  public List<ResolvedConfig> listCachedResolvedConfig(int profileId) {
+    @SuppressWarnings("unchecked")
+    List<ResolvedConfig> result =
+        (List<ResolvedConfig>) resolvedConfigCache.getIfPresent(profileId);
+
+    if (result != null) {
+      return result;
+    }
+
+    int sleepTimes = 0;
+    int sleepMillis = 100;
+    while (sleepMillis * sleepTimes < configCacheDurationMs) {
+      Object lock = resolvedConfigCache.getIfPresent("_lock_" + profileId);
+      // 说明已经有其它线程在获取这个profile的配置了
+      if (lock != null) {
+        try {
+          Thread.sleep(sleepMillis);
+          sleepTimes++;
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
+      } else {
+        break;
+      }
+    }
+
+    // 当前没有线程在获取这个profile的配置，则加上锁标记，再去获取
+    resolvedConfigCache.put("_lock_" + profileId, new Object());
+    result = this.listResolvedConfig(profileId);
+    resolvedConfigCache.put(profileId, result);
+
+    return result;
   }
 
   public void deleteConfigByProfileId(int profileId) {

@@ -60,7 +60,7 @@ public class ClientConfigController {
       return RestResult.fail().withErrorMessage("secretKey is wrong!").build();
     }
     List<ResolvedConfig> resolvedConfigList =
-        configService.listResolvedConfig(projectProfile.getId());
+        configService.listCachedResolvedConfig(projectProfile.getId());
 
     if (StringUtils.equals(format, "properties")) {
       return ResponseEntity.ok().contentType(MediaType.TEXT_PLAIN)

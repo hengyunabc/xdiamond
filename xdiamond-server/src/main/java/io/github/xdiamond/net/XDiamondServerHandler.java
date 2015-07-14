@@ -119,7 +119,7 @@ public class XDiamondServerHandler extends SimpleChannelInboundHandler<Message> 
         }
 
         List<ResolvedConfig> resolvedConfigList =
-            configService.listResolvedConfig(projectProfile.getId());
+            configService.listCachedResolvedConfig(projectProfile.getId());
         Response response =
             responseBuilder.success().withResult("configs", resolvedConfigList)
                 .command(request.getCommand()).build();
