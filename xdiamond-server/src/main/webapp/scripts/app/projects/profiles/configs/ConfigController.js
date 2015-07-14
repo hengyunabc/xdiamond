@@ -93,7 +93,7 @@ angular.module('xdiamondApp').controller("ConfigController",
                         return null;
                     }
                 }
-                if (filters.bNotShowCurrentProjectConfig) {
+                if (filters.bNotShowCurrentProfileConfig) {
                     if (resolvedConfig.config.profileId != profile.id) {
                         return resolvedConfig;
                     } else {
@@ -108,7 +108,7 @@ angular.module('xdiamondApp').controller("ConfigController",
                         return null;
                     }
                 }
-                if (filters.bNotShowCurrentProfileConfig) {
+                if (filters.bNotShowCurrentProjectConfig) {
                     if (resolvedConfig.fromProject.id != project.id) {
                         return resolvedConfig;
                     } else {
