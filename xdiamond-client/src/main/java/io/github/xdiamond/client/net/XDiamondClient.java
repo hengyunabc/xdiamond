@@ -63,7 +63,7 @@ public class XDiamondClient {
   ClientHandler clientHandler = new ClientHandler(this);
 
   public ChannelFuture init() {
-    bootstrap.option(ChannelOption.SO_KEEPALIVE, true).option(ChannelOption.SO_TIMEOUT, 5)
+    bootstrap.option(ChannelOption.SO_KEEPALIVE, true)
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000)
         .option(ChannelOption.TCP_NODELAY, true);
 
@@ -90,8 +90,7 @@ public class XDiamondClient {
             }
             ch.pipeline().addLast(
                 new IdleStateHandler(readTimeout, writeTimeout,
-                    readTimeout > writeTimeout ? readTimeout : writeTimeout), 
-                    new MessageEncoder(),
+                    readTimeout > writeTimeout ? readTimeout : writeTimeout), new MessageEncoder(),
                 new MessageDecoder(), clientHandler);
           }
         });
@@ -103,7 +102,7 @@ public class XDiamondClient {
    * only call by ClientHandler
    */
   void channelActive(ChannelHandlerContext ctx) {
-    //当client连接到server时，重连次数重置
+    // 当client连接到server时，重连次数重置
     currentRetryTimes = 0;
   }
 
