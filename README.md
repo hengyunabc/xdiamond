@@ -124,6 +124,13 @@ client jar只需要保证自己client jar里的xml的变量都配置到xdiamond 
 
 **注意：每一个war/应用，都只有一个xdiamond client，通常不需要配置多个**
 
+## 使用某个client/公共组件的方法
+
+1. 在xdiamond server的界面上，为自己项目增加client jar的"Dependencies"
+2. 在spring配置里import client jar提供的spring xml配置文件
+
+很简单地通过依赖关系可以获取到client jar的配置，完全不用关心client内部所用的key/value。
+
 ## 项目的属性
 项目里有两个需要配置的属性：
 * bPublic   是否允许其它人查看到这个Project

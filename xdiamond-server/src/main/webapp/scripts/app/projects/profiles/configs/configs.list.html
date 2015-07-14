@@ -116,14 +116,6 @@
 <h3>Resolved Configs</h3>
 <form role="form">
     <div class="form-group">
-        <button class="btn btn-warning" ng-init="bOnlyShowKeyValue = true"
-                ng-click="bOnlyShowKeyValue = !bOnlyShowKeyValue" ng-show="bOnlyShowKeyValue">
-            + 详细显示Key/Value
-        </button>
-        <button class="btn btn-warning"
-                ng-click="bOnlyShowKeyValue = !bOnlyShowKeyValue" ng-show="!bOnlyShowKeyValue">
-            - 精简显示Key/Value
-        </button>
         <a class="btn btn-success" target="_blank" href="{{propertiesUrl }}">以Properties格式查看</a>
         <a class="btn btn-success" target="_blank" href="{{jsonUrl }}">以JSON格式查看</a>
         <button class="btn btn-success" ng-click="showConfigsJSONModal()">以复制到另一个profile的格式查看</button>
@@ -137,29 +129,41 @@
             <input type="text" class="form-control" placeholder="Search" ng-model="search.$">
         </div>
     </div>
-
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" ng-model="filters.bOnlyShowCurrentProjectConfig">只显示当前项目的配置
-        </label>
+    <div class="form-group">
+        <button class="btn btn-warning" ng-init="bOnlyShowKeyValue = true"
+                ng-click="bOnlyShowKeyValue = !bOnlyShowKeyValue" ng-show="bOnlyShowKeyValue">
+            + 详细显示Key/Value
+        </button>
+        <button class="btn btn-warning"
+                ng-click="bOnlyShowKeyValue = !bOnlyShowKeyValue" ng-show="!bOnlyShowKeyValue">
+            - 精简显示Key/Value
+        </button>
     </div>
 
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" ng-model="filters.bNotShowCurrentProjectConfig">只显示从其它项目继承过来的配置
-        </label>
-    </div>
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="filters.bOnlyShowCurrentProjectConfig">只显示当前项目的配置
+            </label>
+        </div>
 
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" ng-model="filters.bOnlyShowCurrentProfileConfig">只显示当前Profile的配置
-        </label>
-    </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="filters.bNotShowCurrentProjectConfig">只显示从其它项目继承过来的配置
+            </label>
+        </div>
 
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" ng-model="filters.bNotShowCurrentProfileConfig">只显示非当前Profile的配置
-        </label>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="filters.bOnlyShowCurrentProfileConfig">只显示当前Profile的配置
+            </label>
+        </div>
+
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="filters.bNotShowCurrentProfileConfig">只显示非当前Profile的配置
+            </label>
+        </div>
     </div>
 </form>
 
@@ -169,8 +173,8 @@
     <tr>
         <th>key</th>
         <th>value</th>
+        <th>配置的来源</th>
         <th ng-hide="bOnlyShowKeyValue">description</th>
-        <th ng-hide="bOnlyShowKeyValue">配置的来源</th>
         <th ng-hide="bOnlyShowKeyValue">createUser</th>
         <th ng-hide="bOnlyShowKeyValue">createTime</th>
         <th ng-hide="bOnlyShowKeyValue">updateUser</th>
@@ -184,8 +188,7 @@
     <tr ng-repeat="resolvedConfig in resolvedConfigs | filter:filtersFunc | filter:search | orderBy:'config.key'">
         <td>{{resolvedConfig.config.key}}</td>
         <td>{{resolvedConfig.config.value}}</td>
-        <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.description}}</td>
-        <td ng-hide="bOnlyShowKeyValue">
+        <td>
             <div ng-show="resolvedConfig.config.profileId != profile.id">
                 Project:
                 <span class="label label-default">{{resolvedConfig.fromProject.groupId}}</span>/
@@ -195,6 +198,7 @@
                 <span class="label label-default">{{resolvedConfig.fromProfile}}</span>
             </div>
         </td>
+        <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.description}}</td>
         <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.createUser}}</td>
         <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.createTime | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
         <td ng-hide="bOnlyShowKeyValue">{{resolvedConfig.config.updateUser}}</td>
