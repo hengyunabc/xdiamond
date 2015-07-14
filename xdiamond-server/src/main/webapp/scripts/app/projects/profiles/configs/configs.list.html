@@ -146,7 +146,19 @@
 
     <div class="checkbox">
         <label>
+            <input type="checkbox" ng-model="filters.bNotShowCurrentProjectConfig">只显示从其它项目继承过来的配置
+        </label>
+    </div>
+
+    <div class="checkbox">
+        <label>
             <input type="checkbox" ng-model="filters.bOnlyShowCurrentProfileConfig">只显示当前Profile的配置
+        </label>
+    </div>
+
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" ng-model="filters.bNotShowCurrentProfileConfig">只显示非当前Profile的配置
         </label>
     </div>
 </form>

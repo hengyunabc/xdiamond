@@ -14,7 +14,8 @@
 ## 客户端使用快速例子
 * 增加maven依赖
 
-**注意，xdiamond-client里依赖的Spring版本是3.x，如果有使用spring 4.x，可以把spring的依赖exclude掉。**
+**注意：xdiamond-client里依赖的Spring版本是3.x，如果有使用spring 4.x，可以把spring的依赖exclude掉。**
+
 ```xml
 		<dependency>
 			<groupId>io.github.xdiamond</groupId>
@@ -121,8 +122,10 @@ client jar只需要保证自己client jar里的xml的变量都配置到xdiamond 
 
 **client jar里不需要配置xdiamond client！client jar对xdiamond实际上无感知的！**
 
+**注意：每一个war/应用，都只有一个xdiamond client，通常不需要配置多个**
+
 ## 项目的属性
-项目里有两个需要解析的属性：
+项目里有两个需要配置的属性：
 * bPublic   是否允许其它人查看到这个Project
 * bAllowDependency  是否允许下游项目依赖这个Project
 

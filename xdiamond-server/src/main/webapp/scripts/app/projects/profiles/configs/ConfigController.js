@@ -79,19 +79,37 @@ angular.module('xdiamondApp').controller("ConfigController",
 
             var filters = {};
             filters.bOnlyShowCurrentProfileConfig = false;
+            filters.bNotShowCurrentProjectConfig = false;
             filters.bOnlyShowCurrentProjectConfig = false;
+            filters.bNotShowCurrentProfileConfig = false;
+
             $scope.filters = filters;
 
             $scope.filtersFunc = function (resolvedConfig) {
                 if (filters.bOnlyShowCurrentProfileConfig) {
-                    if (resolvedConfig.config.profileId == profile.id) {
+                    if (resolvedConfig.config.profileId === profile.id) {
                         return resolvedConfig;
                     } else {
                         return null;
                     }
                 }
+                if (filters.bNotShowCurrentProjectConfig) {
+                    if (resolvedConfig.config.profileId != profile.id) {
+                        return resolvedConfig;
+                    } else {
+                        return null;
+                    }
+                }
+
                 if (filters.bOnlyShowCurrentProjectConfig) {
-                    if (resolvedConfig.fromProject.id == project.id) {
+                    if (resolvedConfig.fromProject.id === project.id) {
+                        return resolvedConfig;
+                    } else {
+                        return null;
+                    }
+                }
+                if (filters.bNotShowCurrentProfileConfig) {
+                    if (resolvedConfig.fromProject.id != project.id) {
                         return resolvedConfig;
                     } else {
                         return null;
