@@ -38,8 +38,6 @@
 	</bean>
 
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="ignoreResourceNotFound" value="true" />
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="properties">
 			<bean id="xDiamondProperties" class="java.util.Properties"
 				factory-bean="xDiamondConfig" factory-method="getProperties">
@@ -64,8 +62,6 @@
 ```xml
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="ignoreResourceNotFound" value="true" />
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<!-- 对于本地临时要修改的配置，可以放在local.properties文件里，注意不要把内容提交到代码库里，保持local.properties文件内容为空 -->
 	<!-- <property name="location" value="classpath:local.properties" /> -->
 		<property name="properties">
@@ -74,6 +70,11 @@
 			</bean>
 		</property>
 ```
+
+### 配置在本地缓存的目录
+xdiamond client会把最后拉取的配置缓存到本地的````${usr.home}/.xdiamond````目录下，如果有需要，可以到下面去查看相应的配置文件。
+
+如果应用在启动时，连接xdiamond server失败，那么也会先到这个目录下加载最后缓存的配置。
 
 ### 在测试环境使用xdiamond的配置
 xdiamond本质是提供了一个properties对象，只要把profile改为dev即可。参考````xdiamond-client-example````里的test case。
