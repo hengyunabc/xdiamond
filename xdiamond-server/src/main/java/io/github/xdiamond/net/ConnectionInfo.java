@@ -13,6 +13,8 @@ public class ConnectionInfo {
 
   Date connectTime;
 
+  String message;
+
   public ConnectionInfo() {}
 
   public ConnectionInfo(String groupId, String artifactId, String version, String profile,
@@ -72,5 +74,13 @@ public class ConnectionInfo {
 
   public void setConnectTime(Date connectTime) {
     this.connectTime = connectTime;
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
   }
 }

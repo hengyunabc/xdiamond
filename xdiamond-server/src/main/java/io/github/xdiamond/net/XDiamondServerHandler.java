@@ -69,11 +69,25 @@ public class XDiamondServerHandler extends SimpleChannelInboundHandler<Message> 
   @Override
   public void channelActive(final ChannelHandlerContext ctx) throws Exception {
     channels.add(ctx.channel());
+
+    // 把客户端连接信息写到Attr里
+    Attribute<ConnectionInfo> attr = ctx.channel().attr(connectionInfoKey);
+    ConnectionInfo connectionInfo = attr.get();
+    if (connectionInfo == null) {
+      connectionInfo = new ConnectionInfo();
+      connectionInfo.setConnectTime(new Date());
+      connectionInfo.setRemoteAddress(ctx.channel().remoteAddress().toString());
+      connectionInfo.setMessage("channel actived");
+      attr.set(connectionInfo);
+    }
+
     super.channelActive(ctx);
   }
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
+    ConnectionInfo connectionInfo = ctx.channel().attr(connectionInfoKey).get();
+
     if (msg.getType() == Message.REQUEST) {
       Message responseMsg = new Message();
       responseMsg.setType(Message.RESPONSE);
@@ -95,6 +109,8 @@ public class XDiamondServerHandler extends SimpleChannelInboundHandler<Message> 
                   .command(request.getCommand()).build();
           responseMsg.setData(JSON.toJSONBytes(response));
           ctx.writeAndFlush(responseMsg);
+          // 设置connection错误信息
+          connectionInfo.setMessage("project do not exist!");
           return;
         }
         Profile projectProfile = profileService.selectByProjectIdAndName(project.getId(), profile);
@@ -104,6 +120,8 @@ public class XDiamondServerHandler extends SimpleChannelInboundHandler<Message> 
                   .command(request.getCommand()).build();
           responseMsg.setData(JSON.toJSONBytes(response));
           ctx.writeAndFlush(responseMsg);
+          // 设置connection错误信息
+          connectionInfo.setMessage("profile do not exist!");
           return;
         }
 
@@ -115,6 +133,8 @@ public class XDiamondServerHandler extends SimpleChannelInboundHandler<Message> 
                   .command(request.getCommand()).build();
           responseMsg.setData(JSON.toJSONBytes(response));
           ctx.writeAndFlush(responseMsg);
+          // 设置connection错误信息
+          connectionInfo.setMessage("secretKey is wrong!");
           return;
         }
 
@@ -127,20 +147,17 @@ public class XDiamondServerHandler extends SimpleChannelInboundHandler<Message> 
         ctx.writeAndFlush(responseMsg);
 
         // 把客户端连接信息写到Attr里
-        Attribute<ConnectionInfo> attr = ctx.channel().attr(connectionInfoKey);
-        ConnectionInfo connectionInfo = attr.get();
-        if (connectionInfo == null) {
-          connectionInfo =
-              new ConnectionInfo(groupId, artifactId, version, profile, ctx.channel()
-                  .remoteAddress().toString(), new Date());
-          attr.set(connectionInfo);
-        }
+        connectionInfo.setGroupId(groupId);
+        connectionInfo.setArtifactId(artifactId);
+        connectionInfo.setVersion(version);
+        connectionInfo.setProfile(profile);
         return;
       } else if (request.getCommand() == Commands.HEARTBEAT) {
         // 回应心跳包
         Response response = responseBuilder.success().command(Commands.HEARTBEAT).build();
         responseMsg.setData(JSON.toJSONBytes(response));
         ctx.writeAndFlush(responseMsg);
+        connectionInfo.setMessage("heartbeat");
         return;
       }
     }
