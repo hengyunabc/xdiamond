@@ -18,8 +18,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.codahale.metrics.annotation.Timed;
+
 @Controller
 @RequestMapping("api")
+@Timed
 public class ThreadDumpController {
 
   @RequestMapping(value = "/threadinfo", method = RequestMethod.GET)

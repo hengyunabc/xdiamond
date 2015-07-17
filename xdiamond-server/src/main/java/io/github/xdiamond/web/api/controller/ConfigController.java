@@ -22,9 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.codahale.metrics.annotation.Timed;
+
 @Controller
 @RequestMapping(value = "/api")
 @Transactional
+@Timed
 public class ConfigController {
   @Autowired
   ConfigService configService;

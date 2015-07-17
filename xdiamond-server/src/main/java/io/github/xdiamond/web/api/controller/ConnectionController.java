@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.codahale.metrics.annotation.Timed;
+
 @Controller
+@Timed
 public class ConnectionController {
   @RequestMapping(value = "api/connections", method = RequestMethod.GET)
   @ResponseBody

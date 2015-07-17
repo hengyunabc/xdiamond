@@ -30,6 +30,7 @@ import com.codahale.metrics.annotation.Timed;
 @Controller
 @RequestMapping("api")
 @Transactional
+@Timed
 public class RoleController {
 
   @Autowired
@@ -44,7 +45,6 @@ public class RoleController {
    */
   @RequestMapping(value = "/roles", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @Timed
   public ResponseEntity<RestResult> getAll() {
     List<Role> roles = roleService.list();
 
@@ -74,7 +74,6 @@ public class RoleController {
   //权限Permission相关
   @RequestMapping(value = "/roles/{roleId}/permissions", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @Timed
   public ResponseEntity<RestResult> getPermissions(@PathVariable Integer roleId) {
     List<Permission> permissions = roleService.getPermissions(roleId);
 
@@ -100,7 +99,6 @@ public class RoleController {
   //用户相关的
   @RequestMapping(value = "/roles/{roleId}/users", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @Timed
   public ResponseEntity<RestResult> getUsers(@PathVariable Integer roleId) {
     List<User> users = userRoleService.getUsers(roleId);
 
@@ -126,7 +124,6 @@ public class RoleController {
   //组相关的
   @RequestMapping(value = "/roles/{roleId}/groups", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @Timed
   public ResponseEntity<RestResult> getGroups(@PathVariable Integer roleId) {
     List<Group> groups = groupRoleService.getGroups(roleId);
 

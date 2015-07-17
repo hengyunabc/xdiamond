@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Lists;
 
 @Controller
 @RequestMapping("api")
 @Transactional
+@Timed
 public class ProfileController {
   @Autowired
   ProfileService profileService;

@@ -30,6 +30,7 @@ import com.google.common.collect.Lists;
 @Controller
 @RequestMapping("api")
 @Transactional
+@Timed
 public class GroupController {
 
   @Autowired
@@ -51,7 +52,6 @@ public class GroupController {
    */
   @RequestMapping(value = "/groups", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @Timed
   public ResponseEntity<RestResult> getAll() {
     List<Group> groups = groupService.list();
 
@@ -98,7 +98,6 @@ public class GroupController {
    */
   @RequestMapping(value = "/groups/{groupId}/users", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  @Timed
   public ResponseEntity<RestResult> getUsers(@PathVariable Integer groupId) {
     PermissionHelper.checkGroupUser(groupId);
 

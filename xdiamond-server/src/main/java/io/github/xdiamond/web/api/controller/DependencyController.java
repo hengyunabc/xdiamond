@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Lists;
 
 @Controller
 @RequestMapping(value = "/api")
 @Transactional
+@Timed
 public class DependencyController {
 
   @Autowired
