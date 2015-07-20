@@ -32,7 +32,6 @@ import com.google.common.collect.Lists;
 @Controller
 @RequestMapping("api/projects")
 @Transactional
-@Timed
 public class ProjectController {
   @Autowired
   MappingService mappingService;
@@ -46,6 +45,7 @@ public class ProjectController {
   @Autowired
   ProfileService profileService;
 
+  @Timed
   @RequestMapping(value = "", method = RequestMethod.GET)
   public Object list() {
     List<Project> projects = projectService.list();
@@ -60,6 +60,7 @@ public class ProjectController {
     return RestResult.success().withResult("projects", result).build();
   }
 
+  @Timed
   @RequestMapping(value = "/{projectId}", method = RequestMethod.GET)
   public ResponseEntity<RestResult> get(@PathVariable Integer projectId) {
     PermissionHelper.checkProjectRead(projectId);

@@ -22,9 +22,9 @@ import com.codahale.metrics.annotation.Timed;
 
 @Controller
 @RequestMapping("api")
-@Timed
 public class ThreadDumpController {
 
+  @Timed
   @RequestMapping(value = "/threadinfo", method = RequestMethod.GET)
   public ResponseEntity<RestResult> threaddump() {
     return RestResult.success()
@@ -32,6 +32,7 @@ public class ThreadDumpController {
         .build();
   }
 
+  @Timed
   @RequestMapping(value = "/threaddump", method = RequestMethod.GET)
   public ResponseEntity<byte[]> dump(OutputStream out) {
     ByteArrayOutputStream bo = new ByteArrayOutputStream();

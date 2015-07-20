@@ -24,7 +24,6 @@ import com.codahale.metrics.annotation.Timed;
  */
 @RestController
 @RequestMapping("/api")
-@Timed
 public class LoggerController {
 
   public static class LoggerDTO {
@@ -62,6 +61,7 @@ public class LoggerController {
     }
   }
 
+  @Timed
   @RequestMapping(value = "/logs", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public List<LoggerDTO> getList() {
@@ -75,6 +75,7 @@ public class LoggerController {
     return result;
   }
 
+  @Timed
   @RequestMapping(value = "/logs", method = RequestMethod.PUT)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void changeLevel(@RequestBody LoggerDTO jsonLogger) {

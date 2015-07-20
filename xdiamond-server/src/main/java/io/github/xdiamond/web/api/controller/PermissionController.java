@@ -25,7 +25,6 @@ import com.codahale.metrics.annotation.Timed;
 @Controller
 @RequestMapping("api")
 @Transactional
-@Timed
 public class PermissionController {
 
   @Autowired
@@ -34,6 +33,7 @@ public class PermissionController {
   /**
    * GET /permissions -> get all permissions.
    */
+  @Timed
   @RequestMapping(value = "/permissions", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<RestResult> getAll() {

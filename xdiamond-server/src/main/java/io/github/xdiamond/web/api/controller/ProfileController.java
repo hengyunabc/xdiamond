@@ -26,13 +26,13 @@ import com.google.common.collect.Lists;
 @Controller
 @RequestMapping("api")
 @Transactional
-@Timed
 public class ProfileController {
   @Autowired
   ProfileService profileService;
   @Autowired
   ConfigService configService;
 
+  @Timed
   @RequestMapping(value = "/projects/{projectId}/profiles", method = RequestMethod.GET)
   public Object list(@PathVariable Integer projectId) {
     List<Profile> profiles = profileService.list(projectId);
@@ -47,6 +47,7 @@ public class ProfileController {
         .build();
   }
 
+  @Timed
   @RequestMapping(value = "/profiles/{profileId}", method = RequestMethod.GET)
   public Object get(@PathVariable Integer profileId) {
     PermissionHelper.checkProfileControll(profileId);

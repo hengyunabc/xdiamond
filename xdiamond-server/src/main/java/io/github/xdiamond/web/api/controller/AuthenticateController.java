@@ -22,7 +22,6 @@ import com.codahale.metrics.annotation.Timed;
 
 @Controller
 @RequestMapping(value = "/api")
-@Timed
 public class AuthenticateController {
 
   private static final Logger logger = LoggerFactory.getLogger(AuthenticateController.class);
@@ -36,6 +35,7 @@ public class AuthenticateController {
    * @return
    */
   @RequestMapping(value = "/authenticate", method = RequestMethod.GET)
+  @Timed
   public ResponseEntity<RestResult> authenticate() {
     Map<String, Object> authc = new HashMap<String, Object>();
     Map<String, Object> authz = new HashMap<String, Object>();
@@ -51,7 +51,7 @@ public class AuthenticateController {
       authz.put("roles", authorizationInfo.getRoles());
       authz.put("permissions", authorizationInfo.getStringPermissions());
     }
-    
+
     Map<String, Object> result = new HashMap<String, Object>();
     result.put("authc", authc);
     result.put("authz", authz);

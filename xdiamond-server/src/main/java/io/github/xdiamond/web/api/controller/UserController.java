@@ -26,7 +26,6 @@ import com.codahale.metrics.annotation.Timed;
 @Controller
 @RequestMapping("api")
 @Transactional
-@Timed
 public class UserController {
 
   @Autowired
@@ -37,6 +36,7 @@ public class UserController {
    */
   @RequestMapping(value = "/users", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Timed
   public ResponseEntity<RestResult> getAll() {
     // 获取所有用户，这个只要登陆就有权限，因为在管理组，向组里增加用户时要用到
     List<User> users = userService.list();

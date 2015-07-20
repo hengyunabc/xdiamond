@@ -23,7 +23,6 @@ import com.codahale.metrics.annotation.Timed;
 
 @Controller
 @RequestMapping("api")
-@Timed
 public class LdapController {
 
   @Autowired
@@ -31,6 +30,7 @@ public class LdapController {
 
   @RequestMapping(value = "/ldap/groups", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Timed
   public ResponseEntity<RestResult> getAll() {
     List<LdapGroup> ldapGroups = ldapService.listGroups();
     return RestResult.success().withResult("ldapGroups", ldapGroups).build();
@@ -39,6 +39,7 @@ public class LdapController {
   @RequestMapping(value = "/ldap/groups", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.CREATED)
   @Transactional
+  @Timed
   public ResponseEntity<RestResult> addGroupAndUser(@Valid @RequestBody LdapGroup ldapGroup) {
     ldapService.addGroupAndUser(ldapGroup);
     return RestResult.success().withResult("message", "同步成功!").build();

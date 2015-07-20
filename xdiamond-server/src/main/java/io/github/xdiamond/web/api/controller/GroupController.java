@@ -30,7 +30,6 @@ import com.google.common.collect.Lists;
 @Controller
 @RequestMapping("api")
 @Transactional
-@Timed
 public class GroupController {
 
   @Autowired
@@ -39,6 +38,7 @@ public class GroupController {
   @Autowired
   UserGroupService userGroupService;
 
+  @Timed
   @RequestMapping(value = "/groups/{groupId}", method = RequestMethod.GET)
   public ResponseEntity<RestResult> get(@PathVariable Integer groupId) {
     PermissionHelper.checkProfileControll(groupId);
@@ -52,6 +52,7 @@ public class GroupController {
    */
   @RequestMapping(value = "/groups", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Timed
   public ResponseEntity<RestResult> getAll() {
     List<Group> groups = groupService.list();
 
@@ -98,6 +99,7 @@ public class GroupController {
    */
   @RequestMapping(value = "/groups/{groupId}/users", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
+  @Timed
   public ResponseEntity<RestResult> getUsers(@PathVariable Integer groupId) {
     PermissionHelper.checkGroupUser(groupId);
 
@@ -127,6 +129,7 @@ public class GroupController {
 
   /**
    * 修改用户在组里的access
+   * 
    * @param userGroup
    * @return
    */
@@ -137,5 +140,5 @@ public class GroupController {
     userGroupService.patch(userGroup);
     return RestResult.success().withResult("message", "更新userGroup access成功").build();
   }
-  
+
 }

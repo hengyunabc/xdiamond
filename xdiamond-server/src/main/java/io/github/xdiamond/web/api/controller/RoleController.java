@@ -30,7 +30,6 @@ import com.codahale.metrics.annotation.Timed;
 @Controller
 @RequestMapping("api")
 @Transactional
-@Timed
 public class RoleController {
 
   @Autowired
@@ -39,10 +38,11 @@ public class RoleController {
   GroupRoleService groupRoleService;
   @Autowired
   UserRoleService userRoleService;
-  
+
   /**
    * GET /roles -> get all roles.
    */
+  @Timed
   @RequestMapping(value = "/roles", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<RestResult> getAll() {
@@ -71,13 +71,15 @@ public class RoleController {
     return RestResult.success().withResult("message", "更新role成功").build();
   }
 
-  //权限Permission相关
+  // 权限Permission相关
+  @Timed
   @RequestMapping(value = "/roles/{roleId}/permissions", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<RestResult> getPermissions(@PathVariable Integer roleId) {
     List<Permission> permissions = roleService.getPermissions(roleId);
 
-    return RestResult.success().withResult("permissions", permissions).withResult("roleId", roleId).build();
+    return RestResult.success().withResult("permissions", permissions).withResult("roleId", roleId)
+        .build();
   }
 
   @RequestMapping(value = "/roles/{roleId}/permissions/{permissionId}", method = RequestMethod.POST)
@@ -88,15 +90,17 @@ public class RoleController {
     return RestResult.success().withResult("message", "增加权限成功").build();
   }
 
-  @RequestMapping(value = "/roles/{roleId}/permissions/{permissionId}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/roles/{roleId}/permissions/{permissionId}",
+      method = RequestMethod.DELETE)
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public ResponseEntity<RestResult> deletePermission(@PathVariable Integer roleId,
       @PathVariable Integer permissionId) {
     roleService.deletePermission(roleId, permissionId);
     return RestResult.success().withResult("message", "删除权限成功").build();
   }
-  
-  //用户相关的
+
+  // 用户相关的
+  @Timed
   @RequestMapping(value = "/roles/{roleId}/users", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<RestResult> getUsers(@PathVariable Integer roleId) {
@@ -120,8 +124,8 @@ public class RoleController {
     userRoleService.delete(roleId, userId);
     return RestResult.success().withResult("message", "删除用户成功").build();
   }
-  
-  //组相关的
+
+  // 组相关的
   @RequestMapping(value = "/roles/{roleId}/groups", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<RestResult> getGroups(@PathVariable Integer roleId) {

@@ -27,7 +27,6 @@ import com.google.common.collect.Lists;
 @Controller
 @RequestMapping(value = "/api")
 @Transactional
-@Timed
 public class DependencyController {
 
   @Autowired
@@ -36,6 +35,7 @@ public class DependencyController {
   ProjectService projectService;
 
   @RequestMapping(value = "/projects/{projectId}/dependencies", method = RequestMethod.GET)
+  @Timed
   public Object list(@PathVariable Integer projectId) {
     List<Dependency> dependencies = dependencyService.list(projectId);
     // 过滤掉没有read权限的Dependency

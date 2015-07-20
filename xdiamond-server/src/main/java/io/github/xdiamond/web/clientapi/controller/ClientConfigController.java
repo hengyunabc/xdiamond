@@ -44,7 +44,7 @@ public class ClientConfigController {
   public Object getResolvedConfig(String groupId, String artifactId, String version,
       String profile, @RequestParam(required = false) String secretKey, @RequestParam(
           required = false) String format) {
-    
+
     Project project = projectService.select(groupId, artifactId, version);
     if (project == null) {
       return RestResult.fail().withErrorMessage("project don not exist!").build();
@@ -71,7 +71,7 @@ public class ClientConfigController {
           .body(ResolvedConfig.toUTF8PropertiesString(resolvedConfigList, true));
     }
 
-    //default format json
+    // default format json
     return ResponseEntity.ok().contentType(new MediaType("application", "json", Charsets.UTF_8))
         .body(ResolvedConfig.toJSONString(resolvedConfigList));
   }

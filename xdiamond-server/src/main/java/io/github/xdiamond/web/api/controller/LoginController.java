@@ -26,7 +26,6 @@ import com.codahale.metrics.annotation.Timed;
 
 @Controller
 @RequestMapping("api/")
-@Timed
 public class LoginController {
   private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -35,6 +34,7 @@ public class LoginController {
 
   @RequestMapping(value = "/login", method = RequestMethod.POST)
   @ResponseBody
+  @Timed
   public ResponseEntity<RestResult> login(@Valid @RequestBody User user, BindingResult result,
       HttpSession session, HttpServletRequest request) {
     logger.info("user login:userName:" + user.getName());
@@ -59,6 +59,7 @@ public class LoginController {
 
   @RequestMapping("/logout")
   @ResponseBody
+  @Timed
   public ResponseEntity<RestResult> logout(HttpSession session) {
     Subject subject = SecurityUtils.getSubject();
     subject.logout();
