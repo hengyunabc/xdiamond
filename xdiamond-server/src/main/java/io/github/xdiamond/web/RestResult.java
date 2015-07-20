@@ -72,6 +72,11 @@ public class RestResult {
     public ResponseEntity<RestResult> build() {
       return ResponseEntity.status(status).body(result);
     }
+    
+    public RestResult buildRestResult() {
+      return result;
+    }
+    
   }
 
   public void putResult(String key, Object value) {

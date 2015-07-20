@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.codahale.metrics.annotation.Timed;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
@@ -72,6 +73,7 @@ public class ConfigService {
     }
   }
 
+  @Timed
   public List<ResolvedConfig> listResolvedConfig(int profileId) {
     LinkedHashMap<String, ResolvedConfig> resolvedConfigResult = Maps.newLinkedHashMap();
     Profile profile = profileService.select(profileId);
@@ -114,6 +116,7 @@ public class ConfigService {
    * @param profileId
    * @return
    */
+  @Timed
   public List<ResolvedConfig> listCachedResolvedConfig(int profileId) {
     @SuppressWarnings("unchecked")
     List<ResolvedConfig> result =

@@ -161,6 +161,8 @@ public class XDiamondServerHandler extends SimpleChannelInboundHandler<Message> 
         return;
       }
     }
+    //如果请求数据包没有被处理，则是 unknown state.
+    connectionInfo.setMessage("unknown state");
   }
 
   @Override
