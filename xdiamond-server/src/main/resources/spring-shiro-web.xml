@@ -29,9 +29,9 @@
 	<bean id="customRealm" class="io.github.xdiamond.web.shiro.CustomRealm">
 		<property name="cachingEnabled" value="true" />
 		<property name="authenticationCachingEnabled" value="true" />
-		<property name="authenticationCacheName" value="authenticationCache" />
+		<property name="authenticationCacheName" value="${ehCache.authenticationCacheName}" />
 		<property name="authorizationCachingEnabled" value="true" />
-		<property name="authorizationCacheName" value="authorizationCache"></property>
+		<property name="authorizationCacheName" value="${ehCache.authorizationCacheName}"></property>
 		<property name="credentialsMatcher" ref="allowAllCredentialsMatcher" />
 	</bean>
 

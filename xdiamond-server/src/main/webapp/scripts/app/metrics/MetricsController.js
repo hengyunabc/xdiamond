@@ -14,7 +14,7 @@ angular.module('xdiamondApp').controller("MetricsController",
 
             angular.forEach(metrics.timers, function (value, key) {
                 //TODO 这里的service的统计不对
-                if (key.indexOf('io.github.xdiamond.web') !== -1 || key.indexOf('client.controller') !== -1) {
+                if (key.indexOf('io.github.xdiamond.web') !== -1 || key.indexOf('client.controller') !== -1 || key.indexOf('io.github.xdiamond.service') !== -1) {
                     $scope.servicesStats[key] = value;
                 }
 

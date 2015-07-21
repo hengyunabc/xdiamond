@@ -19,7 +19,7 @@
 		<slf4j.version>1.7.5</slf4j.version>
 		<swagger-springmvc.version>0.9.5</swagger-springmvc.version>
 		<dropwizard-metrics.version>3.1.1</dropwizard-metrics.version>
-		<metrics-spring.version>3.0.4</metrics-spring.version>
+		<metrics-spring.version>3.1.0</metrics-spring.version>
 		<shiro.version>1.2.3</shiro.version>
 	</properties>
 	<dependencies>

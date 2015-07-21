@@ -3,7 +3,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:task="http://www.springframework.org/schema/task" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:metrics="http://www.ryantenney.com/schema/metrics"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans 
@@ -12,7 +12,9 @@
 		http://www.springframework.org/schema/task/spring-task.xsd		
 		http://www.springframework.org/schema/context 
 		http://www.springframework.org/schema/context/spring-context.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		           http://www.ryantenney.com/schema/metrics
+           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
 	<import resource="classpath:config/spring-profile-properties.xml" />
 
@@ -26,6 +28,9 @@
 		<context:include-filter type="annotation"
 			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
 	</context:component-scan>
+
+	<!-- annotation-driven must be included in all context files -->
+	<metrics:annotation-driven metric-registry="metricRegistry" />
 
 	<mvc:annotation-driven />
 

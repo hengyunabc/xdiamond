@@ -3,22 +3,32 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://www.springframework.org/schema/c"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:metrics="http://www.ryantenney.com/schema/metrics"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		           http://www.ryantenney.com/schema/metrics
+           http://www.ryantenney.com/schema/metrics/metrics-3.0.xsd">
 
 	<import resource="classpath:config/spring-profile-properties.xml" />
+
+	<!-- enable component scanning and autowire (beware that this does not enable 
+		mapper scanning!) -->
+	<context:component-scan base-package="io.github.xdiamond">
+		<context:exclude-filter expression="org.springframework.stereotype.Controller"
+			type="annotation" />
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+		<!-- exclude web config -->
+		<context:exclude-filter type="regex"
+			expression="io.github.xdiamond.config.web.*" />
+	</context:component-scan>
+
 	<import resource="classpath:dozer/spring-dozer.xml" />
 
 	<import resource="classpath:spring-ldap.xml" />
 	<import resource="classpath:database/spring-database.xml" />
-
-	<!-- 使用ehcache缓存 -->
-	<bean id="ehCacheManager"
-		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-		<property name="configLocation" value="classpath:my-ehcache.xml" />
-	</bean>
 
 	<import resource="classpath:mybatis/spring-mybatis.xml" />
 
@@ -38,16 +48,27 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<!-- enable component scanning and autowire (beware that this does not enable 
-		mapper scanning!) -->
-	<context:component-scan base-package="io.github.xdiamond">
-		<context:exclude-filter expression="org.springframework.stereotype.Controller"
-			type="annotation" />
-		<context:exclude-filter type="annotation"
-			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
-		<!-- exclude web config -->
-		<context:exclude-filter type="regex"
-			expression="io.github.xdiamond.config.web.*" />
-	</context:component-scan>
+	<metrics:metric-registry id="metricRegistry"
+		name="xdiamond-server" />
+
+	<!-- annotation-driven must be included in all context files -->
+	<metrics:annotation-driven metric-registry="metricRegistry" />
+
+	<metrics:register metric-registry="metricRegistry">
+		<bean metrics:name="jvm.garbage"
+			class="com.codahale.metrics.jvm.GarbageCollectorMetricSet" />
+		<bean metrics:name="jvm.memory" class="com.codahale.metrics.jvm.MemoryUsageGaugeSet" />
+		<bean metrics:name="jvm.threads"
+			class="com.codahale.metrics.jvm.ThreadStatesGaugeSet" />
+		<bean metrics:name="jvm.files"
+			class="com.codahale.metrics.jvm.FileDescriptorRatioGauge" />
+
+		<bean metrics:name="jvm.buffers" class="com.codahale.metrics.jvm.BufferPoolMetricSet">
+			<constructor-arg>
+				<bean class="java.lang.management.ManagementFactory"
+					factory-method="getPlatformMBeanServer" />
+			</constructor-arg>
+		</bean>
+	</metrics:register>
 
 </beans>
