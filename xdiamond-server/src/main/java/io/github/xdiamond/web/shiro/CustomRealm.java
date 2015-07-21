@@ -72,16 +72,13 @@ public class CustomRealm extends AuthorizingRealm implements Serializable {
   @Autowired
   ConfigService configService;
 
-  private MetricRegistry metricRegistry;
-
-  @Value("${metrics.registryName}")
-  String registryName;
+  @Autowired
+  MetricRegistry metricRegistry;
 
   Timer timer;
 
   @PostConstruct
   public void init2() {
-    metricRegistry = SharedMetricRegistries.getOrCreate(registryName);
     timer = metricRegistry.timer(MetricRegistry.name(this.getClass(), "authorizationInfo"));
   }
 

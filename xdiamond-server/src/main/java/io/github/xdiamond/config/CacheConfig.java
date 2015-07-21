@@ -40,19 +40,19 @@ public class CacheConfig {
 
     cacheManager.addCache(authenticationCacheName);
     Cache authenticationCache = cacheManager.getCache(authenticationCacheName);
-    authenticationCache.getCacheConfiguration().maxEntriesLocalHeap(1000).timeToLiveSeconds(3600);
+    authenticationCache.getCacheConfiguration().maxEntriesLocalHeap(1000).timeToLiveSeconds(3600).timeToIdleSeconds(0);
     cacheManager.replaceCacheWithDecoratedCache(authenticationCache,
         InstrumentedEhcache.instrument(metricRegistry, authenticationCache));
 
     cacheManager.addCache(authorizationCacheName);
     Cache authorizationCache = cacheManager.getCache(authorizationCacheName);
-    authorizationCache.getCacheConfiguration().maxEntriesLocalHeap(1000).timeToLiveSeconds(3600);
+    authorizationCache.getCacheConfiguration().maxEntriesLocalHeap(1000).timeToLiveSeconds(3600).timeToIdleSeconds(0);
     cacheManager.replaceCacheWithDecoratedCache(authorizationCache,
         InstrumentedEhcache.instrument(metricRegistry, authorizationCache));
 
     cacheManager.addCache(CachingSessionDAO.ACTIVE_SESSION_CACHE_NAME);
     Cache activeSessionCache = cacheManager.getCache(CachingSessionDAO.ACTIVE_SESSION_CACHE_NAME);
-    activeSessionCache.getCacheConfiguration().maxEntriesLocalHeap(1000).timeToLiveSeconds(3600);
+    activeSessionCache.getCacheConfiguration().maxEntriesLocalHeap(1000).timeToLiveSeconds(3600).timeToIdleSeconds(0);
     cacheManager.replaceCacheWithDecoratedCache(activeSessionCache,
         InstrumentedEhcache.instrument(metricRegistry, activeSessionCache));
 

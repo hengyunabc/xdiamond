@@ -21,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+import com.codahale.metrics.Timer.Context;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -45,11 +48,19 @@ public class ConfigService {
 
   Cache<Object, Object> resolvedConfigCache;
 
+  @Autowired
+  MetricRegistry metricRegistry;
+
+  Timer listResolvedConfigTimer;
+
   @PostConstruct
   public void init() {
     resolvedConfigCache =
         CacheBuilder.newBuilder().expireAfterWrite(configCacheDurationMs, TimeUnit.MILLISECONDS)
             .maximumSize(1000).build();
+
+    listResolvedConfigTimer =
+        metricRegistry.timer(MetricRegistry.name(this.getClass(), "listResolvedConfig"));
   }
 
   public List<Config> list(int profileId) {
@@ -73,41 +84,46 @@ public class ConfigService {
     }
   }
 
-  @Timed
   public List<ResolvedConfig> listResolvedConfig(int profileId) {
-    LinkedHashMap<String, ResolvedConfig> resolvedConfigResult = Maps.newLinkedHashMap();
-    Profile profile = profileService.select(profileId);
-    Project project = projectService.select(profile.getProjectId());
+    Context context = listResolvedConfigTimer.time();
+    try {
+      LinkedHashMap<String, ResolvedConfig> resolvedConfigResult = Maps.newLinkedHashMap();
+      Profile profile = profileService.select(profileId);
+      Project project = projectService.select(profile.getProjectId());
 
-    // 拿到所有的依赖，再依次拿到这些依赖的Config，再合并起来
-    LinkedList<Dependency> finalDependency =
-        dependencyService.queryFinalDependency(project.getId());
-    for (Dependency dep : Lists.reverse(finalDependency)) {
-      Project depProject = projectService.select(dep.getDependencyProjectId());
+      // 拿到所有的依赖，再依次拿到这些依赖的Config，再合并起来
+      LinkedList<Dependency> finalDependency =
+          dependencyService.queryFinalDependency(project.getId());
+      for (Dependency dep : Lists.reverse(finalDependency)) {
+        Project depProject = projectService.select(dep.getDependencyProjectId());
 
-      // 如果不是base的profile，则先要合并上base的
-      if (!profile.getName().equals("base")) {
-        Profile baseProfile =
-            profileService.selectByProjectIdAndName(dep.getDependencyProjectId(), "base");
-        List<Config> configs = this.list(baseProfile.getId());
-        this.merge(resolvedConfigResult, configs, depProject, "base");
+        // 如果不是base的profile，则先要合并上base的
+        if (!profile.getName().equals("base")) {
+          Profile baseProfile =
+              profileService.selectByProjectIdAndName(dep.getDependencyProjectId(), "base");
+          List<Config> configs = this.list(baseProfile.getId());
+          this.merge(resolvedConfigResult, configs, depProject, "base");
+        }
+        // 获取到依赖的同名的profile的的Config，并合并到结果里
+        Profile tempProfile =
+            profileService
+                .selectByProjectIdAndName(dep.getDependencyProjectId(), profile.getName());
+        if (tempProfile != null) {
+          List<Config> configs = this.list(tempProfile.getId());
+          this.merge(resolvedConfigResult, configs, depProject, profile.getName());
+        }
       }
-      // 获取到依赖的同名的profile的的Config，并合并到结果里
-      Profile tempProfile =
-          profileService.selectByProjectIdAndName(dep.getDependencyProjectId(), profile.getName());
-      if (tempProfile != null) {
-        List<Config> configs = this.list(tempProfile.getId());
-        this.merge(resolvedConfigResult, configs, depProject, profile.getName());
+
+      Profile baseProfile = profileService.selectByProjectIdAndName(project.getId(), "base");
+      this.merge(resolvedConfigResult, this.list(baseProfile.getId()), project, "base");
+      if (!profile.getName().endsWith("base")) {
+        this.merge(resolvedConfigResult, this.list(profile.getId()), project, profile.getName());
       }
-    }
 
-    Profile baseProfile = profileService.selectByProjectIdAndName(project.getId(), "base");
-    this.merge(resolvedConfigResult, this.list(baseProfile.getId()), project, "base");
-    if (!profile.getName().endsWith("base")) {
-      this.merge(resolvedConfigResult, this.list(profile.getId()), project, profile.getName());
+      return Lists.newLinkedList(resolvedConfigResult.values());
+    } finally {
+      context.stop();
     }
-
-    return Lists.newLinkedList(resolvedConfigResult.values());
   }
 
   /**
