@@ -3,11 +3,13 @@ package io.github.xdiamond.config;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -24,8 +26,7 @@ public class PackageInfoConfig {
   @Value("/META-INF/maven/${app.groupId}/${app.artifactId}/pom.properties")
   String mavenPomProperties;
 
-  @Value("/META-INF/MAINFEST.MF")
-  String mainfest;
+  static final String mainfest = "/META-INF/MANIFEST.MF";
 
   @Bean(name = "packageProperties")
   public Properties packageInfo() throws IOException {
@@ -61,9 +62,14 @@ public class PackageInfoConfig {
     // Build-Jdk: 1.8.0_45
     Resource mainfestResource = applicationContext.getResource(mainfest);
     if (mainfestResource.exists()) {
-      Properties mainfestProperties = new Properties();
-      mainfestProperties.load(mainfestResource.getInputStream());
-      packageProperties.putAll(mainfestProperties);
+      byte[] mainfestData = FileCopyUtils.copyToByteArray(mainfestResource.getInputStream());
+      BufferedReader br = new BufferedReader(new StringReader(new String(mainfestData)));
+      for (String line = br.readLine(); line != null; line = br.readLine()) {
+        String[] split = StringUtils.split(line, ':');
+        if (split != null && split.length == 2) {
+          packageProperties.put(split[0].trim(), split[1].trim());
+        }
+      }
     }
 
     return packageProperties;
