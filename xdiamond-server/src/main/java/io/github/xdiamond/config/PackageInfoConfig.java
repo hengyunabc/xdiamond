@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.servlet.ServletContext;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -28,9 +26,6 @@ public class PackageInfoConfig {
 
   @Value("/META-INF/MAINFEST.MF")
   String mainfest;
-
-  @Autowired
-  ServletContext servletContext;
 
   @Bean(name = "packageProperties")
   public Properties packageInfo() throws IOException {
@@ -64,7 +59,7 @@ public class PackageInfoConfig {
     // Built-By: hengyunabc
     // Created-By: Apache Maven 3.3.1
     // Build-Jdk: 1.8.0_45
-    Resource mainfestResource = applicationContext.getResource(mavenPomProperties);
+    Resource mainfestResource = applicationContext.getResource(mainfest);
     if (mainfestResource.exists()) {
       Properties mainfestProperties = new Properties();
       mainfestProperties.load(mainfestResource.getInputStream());
