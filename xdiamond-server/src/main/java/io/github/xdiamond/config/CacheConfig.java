@@ -7,7 +7,6 @@ import org.apache.shiro.session.mgt.eis.CachingSessionDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -19,9 +18,6 @@ import com.codahale.metrics.ehcache.InstrumentedEhcache;
 public class CacheConfig {
 
   @Autowired
-  ApplicationContext applicationContext;
-
-  @Autowired
   MetricRegistry metricRegistry;
 
   @Value("${ehCache.authenticationCacheName}")
@@ -29,12 +25,14 @@ public class CacheConfig {
 
   @Value("${ehCache.authorizationCacheName}")
   String authorizationCacheName;
+  
+  @Value("${ehCache.configPath}")
+  private Resource ehCacheConfig;
 
   @Bean(name = "ehCacheManager")
   public CacheManager cacheManager() {
     EhCacheManagerFactoryBean factoryBean = new EhCacheManagerFactoryBean();
-    Resource configLocation = applicationContext.getResource("classpath:my-ehcache.xml");
-    factoryBean.setConfigLocation(configLocation);
+    factoryBean.setConfigLocation(ehCacheConfig);
     factoryBean.afterPropertiesSet();
     CacheManager cacheManager = factoryBean.getObject();
 

@@ -1,0 +1,13 @@
+<h2>Application Health</h2>
+
+<div ng-repeat="(group, groupInfo) in healthInfo">
+    <h3>{{group}}</h3>
+    <table class="table table-striped">
+        <tr ng-repeat="(key, value) in groupInfo">
+            <td>{{key}}</td>
+            <td>{{value}}</td>
+        </tr>
+
+    </table>
+
+</div>
