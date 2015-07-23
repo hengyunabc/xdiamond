@@ -5,23 +5,35 @@
 'use strict';
 
 angular.module('xdiamondApp')
-    .controller('LoginController', ['UserService', '$scope', '$location', '$log', '$state',
-        function (UserService, $scope, $location, $log, $state) {
+    .controller('LoginController', ['UserService', '$scope', '$location', '$log', '$state', '$previousState',
+        function (UserService, $scope, $location, $log, $state, $previousState) {
             //var authenticateInfo = {};
             //$scope.authenticateInfo = authenticateInfo;
             $scope.user = {name: '', password: '', provider: 'ldap'};
             $scope.userService = UserService;
             UserService.session();
 
+            var cleanPassword = function () {
+                $scope.user.password = '';
+            }
+
             $scope.login = function () {
                 UserService.login($scope.user).then(function (success) {
                     console.log(success);
                     $log.info('login:' + success);
-                    $state.go('main')
+                    cleanPassword();
+
+                    var previous = $previousState.get();
+                    if (previous) {
+                        console.log('previous state:');
+                        console.log(previous.state.name);
+                        $previousState.go();
+                    } else {
+                        $state.go('main')
+                    }
                 }, function (error) {
                     $scope.errorMessage = error.data.msg;
                 })
-                user.password = "";
             };
             $scope.logout = function () {
                 UserService.logout().then(function (success) {

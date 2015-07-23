@@ -1,7 +1,7 @@
 'use strict';
 
 var xdiamondApp = angular.module('xdiamondApp', ['ngResource', 'ui.router', 'ui.utils', 'ui.bootstrap',
-    'ngCookies', 'ngTouch', 'ui.select', 'ngSanitize', 'toaster', 'ngAnimate', 'monospaced.elastic']);
+    'ngCookies', 'ngTouch', 'ui.select', 'ngSanitize', 'toaster', 'ngAnimate', 'monospaced.elastic', 'ct.ui.router.extras.previous']);
 
 xdiamondApp.constant("AccessLevels", {
     10: "Guest",

@@ -1,0 +1,40 @@
+{
+  "name": "ui-router-extras",
+  "version": "0.0.14",
+  "authors": [
+    "Chris Thielen <christopherthielen@ikkyikkyikkypikangzoopboing.com>"
+  ],
+  "description": "Extras for UI-Router including: Sticky States (a.k.a. parallel states), Deep State Redirect (for tab-like navigation), Future States (async state definition), Previous State ",
+  "keywords": [
+    "angular", "angularjs", "ui-router", "ui-router-extras", "tab", "tabs", "state", "states", "parallel", "sticky", "lazy", "future"
+  ],
+  "license": "MIT",
+  "main": "./release/ct-ui-router-extras.js",
+  "ignore": [
+    "**/.*",
+    "pages",
+    "build",
+    "node_modules",
+    "bower_components",
+    "ui-router-versions",
+    "src",
+    "test",
+    "tests",
+    "Gruntfile.js",
+    "files.js",
+    "package.json",
+    ".bower.json",
+    "*.iml",
+    "*.ipr",
+    "*.iws"
+  ],
+  "dependencies": {
+    "angular": "^1.2.0",
+    "angular-ui-router": "~0.2.8"
+  },
+  "devDependencies": {
+    "angular-mocks": "^1.2.0",
+    "lodash": "latest",
+    "jquery": "~1.11"
+  }
+}
