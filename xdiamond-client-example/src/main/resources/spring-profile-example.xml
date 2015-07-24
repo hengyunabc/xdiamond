@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd">
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
 	<!-- dev环境 -->
 	<beans profile="dev">
@@ -60,12 +63,16 @@
 
 		<bean
 			class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-			<!-- 对于本地临时要修改的配置，可以放在local.properties文件里，注意不要把内容提交到代码库里，保持local.properties文件内容为空 -->
-			<!-- <property name="location" value="classpath:local.properties" /> -->
-			<property name="properties">
-				<bean id="xDiamondProperties" class="java.util.Properties"
-					factory-bean="xDiamondConfig" factory-method="getProperties">
-				</bean>
+			<property name="propertiesArray">
+				<util:list>
+					<!-- 对于本地临时要修改的配置，可以像下面这样配置，注意不要把util:properties的内容提交到代码库里 -->
+					<!-- <util:properties> -->
+					<!-- <prop key="myTempConfigKey">tempConfigValue</prop> -->
+					<!-- </util:properties> -->
+					<bean class="java.util.Properties" factory-bean="xDiamondConfig"
+						factory-method="getProperties">
+					</bean>
+				</util:list>
 			</property>
 		</bean>
 

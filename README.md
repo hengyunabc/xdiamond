@@ -39,7 +39,7 @@
 
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="properties">
-			<bean id="xDiamondProperties" class="java.util.Properties"
+			<bean class="java.util.Properties"
 				factory-bean="xDiamondConfig" factory-method="getProperties">
 			</bean>
 		</property>
@@ -58,7 +58,28 @@
 完整 的示例代码在xdiamond-client-example里。
 
 ### 临时修改本地配置的方法
-在开发过程中，可能会需要临时修改本地的配置，那么可以在resources目录下增加一个````local.properties```文件，然后这样配置：
+在开发过程中，可能会需要临时修改本地的配置，下面给出两种参考的配置方式：
+
+* 使用````propertiesArray````和````util:properties````
+
+```xml
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="propertiesArray">
+			<util:list>
+			<!-- 对于本地临时要修改的配置，可以像下面这样配置，注意不要把util:properties的内容提交到代码库里 -->
+<!-- 				<util:properties> -->
+<!-- 					<prop key="myTempConfigKey">tempConfigValue</prop> -->
+<!-- 				</util:properties> -->
+				<bean class="java.util.Properties" factory-bean="xDiamondConfig"
+					factory-method="getProperties">
+				</bean>
+			</util:list>
+		</property>
+	</bean>
+```
+* 在本地配置一个````local.properties````
+
+在resources目录下增加一个````local.properties```文件，然后这样配置：
 ```xml
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -99,6 +120,7 @@ testKey=xxx${keyFromXdiamond}yyy
 		<property name="bSyncToSystemProperties" value="true"></property>
 	</bean>
 ```
+**注意，如果是一个Tomcat里跑多个war，小心打开这个配置**。参考： http://wiki.apache.org/tomcat/HowTo#Can_I_set_Java_system_properties_differently_for_each_webapp.3F
 #### 设置连接重试的次数和时间
 默认是会不断尝试重连服务器。在打印日志时已经做了优化，通常不需要改变设置。
 ```xml
