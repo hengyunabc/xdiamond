@@ -97,10 +97,12 @@ public class LdapService {
         }
       }
       // 如果组里还没有用户，则把用户插入到组里
-      if (!userGroupService.exist(group.getId(), user.getId())) {
-        logger.info("insert ldap user: {}" + ldapUser.getCn());
-        userGroupService.addUser(group.getId(), user.getId(), Access.DEVELOPER);
-        logger.info("add user into group, user:{}, group:{}", user.getName(), group.getName());
+      if (user != null) {
+        if (!userGroupService.exist(group.getId(), user.getId())) {
+          logger.info("insert ldap user: {}" + ldapUser.getCn());
+          userGroupService.addUser(group.getId(), user.getId(), Access.DEVELOPER);
+          logger.info("add user into group, user:{}, group:{}", user.getName(), group.getName());
+        }
       }
     }
   }

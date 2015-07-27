@@ -35,10 +35,8 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.Timer.Context;
 import com.codahale.metrics.annotation.Timed;
@@ -49,33 +47,34 @@ public class CustomRealm extends AuthorizingRealm implements Serializable {
 
   private static final Logger logger = LoggerFactory.getLogger(CustomRealm.class);
 
-  @Autowired
-  UserService userService;
-  @Autowired
-  GroupService groupService;
-  @Autowired
-  UserGroupService userGroupService;
 
   @Autowired
-  UserRoleService userRoleService;
+  transient UserService userService;
   @Autowired
-  GroupRoleService groupRoleService;
+  transient GroupService groupService;
   @Autowired
-  RoleService roleService;
+  transient UserGroupService userGroupService;
 
   @Autowired
-  ProjectService projectService;
+  transient UserRoleService userRoleService;
   @Autowired
-  DependencyService dependencyService;
+  transient GroupRoleService groupRoleService;
   @Autowired
-  ProfileService profileService;
-  @Autowired
-  ConfigService configService;
+  transient RoleService roleService;
 
   @Autowired
-  MetricRegistry metricRegistry;
+  transient ProjectService projectService;
+  @Autowired
+  transient DependencyService dependencyService;
+  @Autowired
+  transient ProfileService profileService;
+  @Autowired
+  transient ConfigService configService;
 
-  Timer timer;
+  @Autowired
+  transient MetricRegistry metricRegistry;
+
+  transient Timer timer;
 
   @PostConstruct
   public void init2() {
