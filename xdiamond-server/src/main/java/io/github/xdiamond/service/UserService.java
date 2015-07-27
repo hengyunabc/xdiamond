@@ -94,9 +94,8 @@ public class UserService {
     Filter filter = new EqualsFilter("cn", userName);
     LdapQuery query = LdapQueryBuilder.query().filter(filter);
 
-    // 到数据库里查找用户是否已存在
+    // 用户在数据库中不存在，插入用户
     User user = new User();
-    // 用户不存在，插入用户
     user = new User();
     user.setName(userName);
     user.setNickName(userName);

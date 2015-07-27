@@ -43,7 +43,7 @@ public class PackageInfoConfig {
       byte[] pomData = FileCopyUtils.copyToByteArray(pomResource.getInputStream());
       packageProperties.load(new ByteArrayInputStream(pomData));
 
-      BufferedReader br = new BufferedReader(new StringReader(new String(pomData)));
+      BufferedReader br = new BufferedReader(new StringReader(new String(pomData, "utf-8")));
       List<String> lines = new ArrayList<String>();
       for (String line = br.readLine(); line != null; line = br.readLine()) {
         lines.add(line);

@@ -21,7 +21,7 @@ import org.slf4j.MDC;
  */
 public class UserServletFilter implements Filter {
 
-  private final String USER_KEY = "userName";
+  private final static String USER_KEY = "userName";
 
   public void destroy() {}
 
