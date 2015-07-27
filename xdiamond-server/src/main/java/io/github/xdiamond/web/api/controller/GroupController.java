@@ -41,7 +41,7 @@ public class GroupController {
   @Timed
   @RequestMapping(value = "/groups/{groupId}", method = RequestMethod.GET)
   public ResponseEntity<RestResult> get(@PathVariable Integer groupId) {
-    PermissionHelper.checkProfileControll(groupId);
+    PermissionHelper.checkGroupRead(groupId);
 
     Group group = groupService.select(groupId);
     return RestResult.success().withResult("group", group).build();
