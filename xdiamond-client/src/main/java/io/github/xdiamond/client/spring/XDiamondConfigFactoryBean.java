@@ -238,7 +238,6 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
             wrapper.setxDiamondConfig(xDiamondConfig);
             wrapper.setListenerClassName(io.github.xdiamond.client.event.AllKeyListener.class
                 .getName());
-            wrapper.setKey(oneKeyListener.key());
             wrapper.setTargetObject(object);
             wrapper.setTargetMethod(method.getName());
             wrapper.init();
