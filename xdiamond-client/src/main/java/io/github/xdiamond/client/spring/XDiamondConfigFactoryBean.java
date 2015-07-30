@@ -24,7 +24,7 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextStartedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.Resource;
@@ -40,7 +40,7 @@ import org.springframework.util.StringUtils;
  *
  */
 public class XDiamondConfigFactoryBean implements ApplicationContextAware,
-    ApplicationListener<ContextStartedEvent>, PriorityOrdered, BeanFactoryPostProcessor,
+    ApplicationListener<ContextRefreshedEvent>, PriorityOrdered, BeanFactoryPostProcessor,
     InitializingBean, FactoryBean<XDiamondConfig> {
   private static final Log logger = LogFactory.getLog(XDiamondConfigFactoryBean.class);
   PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper("${", "}", ":", true);
@@ -204,6 +204,10 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
 
   private void scanListenerAnnotation() throws ClassNotFoundException, NoSuchMethodException {
     logger.info("scan XDiamond Listener Annotation...");
+    // 在特殊情况可能spring ContextRefreshedEvent会有多次，所以要请理掉上次扫描到的Listener
+    xDiamondConfig.clearAllKeyListener();
+    xDiamondConfig.clearOneKeyListener();
+
     Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(Service.class);
     for (Entry<String, Object> entry : beansWithAnnotation.entrySet()) {
       Object object = entry.getValue();
@@ -380,7 +384,7 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
   }
 
   @Override
-  public void onApplicationEvent(ContextStartedEvent event) {
+  public void onApplicationEvent(ContextRefreshedEvent event) {
     // scan annotation 必须要放到这里，不然会出现构造函数里传进来String不能正确地处理${}表达式
     if (bScanListenerAnnotation) {
       try {

@@ -309,8 +309,22 @@ public class XDiamondConfig {
     }
   }
 
-  public void addAllKeyListener(AllKeyListener listener) {
+  /**
+   * 删除所有的OneKeyListener
+   */
+  public synchronized void clearOneKeyListener() {
+    oneKeyListenerMap.clear();
+  }
+
+  public synchronized void addAllKeyListener(AllKeyListener listener) {
     allKeyListenerList.add(listener);
+  }
+
+  /**
+   * 删除所有的AllKeyListener
+   */
+  public synchronized void clearAllKeyListener() {
+    allKeyListenerList.clear();
   }
 
   public String getProperty(String key) {
