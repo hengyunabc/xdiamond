@@ -1,5 +1,7 @@
 package io.xdiamond.common.net;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * <pre>
  *   version + length + type +  data(request/response)
@@ -25,6 +27,72 @@ public class Message {
   short type;
 
   byte[] data;
+
+  public static MessageBuilder oneway() {
+    return builder().type(ONEWAY);
+  }
+
+  public static MessageBuilder request() {
+    return builder().type(REQUEST);
+  }
+
+  public static MessageBuilder response() {
+    return builder().type(RESPONSE);
+  }
+
+  public static MessageBuilder builder() {
+    return new MessageBuilder();
+  }
+
+  public static class MessageBuilder {
+    Message message;
+
+    public MessageBuilder() {
+      message = new Message();
+    }
+
+    public MessageBuilder version(short version) {
+      message.setVersion(version);
+      return this;
+    }
+
+    public MessageBuilder type(short type) {
+      message.setType(type);
+      return this;
+    }
+
+    public MessageBuilder data(byte[] data) {
+      message.setData(data);
+      return this;
+    }
+
+    /**
+     * 对象会被转为json byte[]
+     * 
+     * @param object
+     * @return
+     */
+    public MessageBuilder jsonData(Object object) {
+      message.setData(JSON.toJSONBytes(object));
+      return this;
+    }
+
+    public Message build() {
+      return message;
+    }
+  }
+
+  public Response dataToResponse() {
+    return JSON.parseObject(data, Response.class);
+  }
+
+  public Request dataToRequest() {
+    return JSON.parseObject(data, Request.class);
+  }
+
+  public Oneway dataToOneway() {
+    return JSON.parseObject(data, Oneway.class);
+  }
 
   public short getType() {
     return type;
