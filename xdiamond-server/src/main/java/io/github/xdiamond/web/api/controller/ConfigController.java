@@ -1,13 +1,24 @@
 package io.github.xdiamond.web.api.controller;
 
 import io.github.xdiamond.domain.Config;
+import io.github.xdiamond.domain.Dependency;
+import io.github.xdiamond.domain.Profile;
+import io.github.xdiamond.domain.Project;
 import io.github.xdiamond.domain.vo.ResolvedConfig;
+import io.github.xdiamond.net.XDiamondServerHandler;
 import io.github.xdiamond.service.ConfigService;
+import io.github.xdiamond.service.DependencyService;
+import io.github.xdiamond.service.ProfileService;
+import io.github.xdiamond.service.ProjectService;
 import io.github.xdiamond.web.RestResult;
 import io.github.xdiamond.web.shiro.PermissionHelper;
+import io.xdiamond.common.util.ThreadFactoryBuilder;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.validation.Valid;
 
@@ -23,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.Maps;
 
 @Controller
 @RequestMapping(value = "/api")
@@ -30,6 +42,51 @@ import com.codahale.metrics.annotation.Timed;
 public class ConfigController {
   @Autowired
   ConfigService configService;
+
+  @Autowired
+  ProfileService profileService;
+
+  @Autowired
+  ProjectService projectService;
+
+  @Autowired
+  DependencyService dependencyService;
+
+  ExecutorService executorService = Executors
+      .newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat(
+          "xdiamond-notifyConfigChanged-thread-%d").build());
+
+  /**
+   * 异步通知Client配置有更新
+   * 
+   * @param config
+   */
+  private void notifyConfigChanged(final Config config) {
+    executorService.execute(new Runnable() {
+      @Override
+      public void run() {
+        Profile profile = profileService.select(config.getProfileId());
+        // 用一个Map来做去重处理
+        Map<Integer, Project> projectMap = Maps.newLinkedHashMap();
+        notifyConfigChanged(profile.getProjectId(), projectMap);
+
+        for (Project project : projectMap.values()) {
+          XDiamondServerHandler.notifyConfigChanged(project.getGroupId(), project.getArtifactId(),
+              project.getVersion());
+        }
+      }
+    });
+  }
+
+  private void notifyConfigChanged(int projectId, Map<Integer, Project> projectMap) {
+    Project project = projectService.select(projectId);
+    projectMap.put(projectId, project);
+    // 要递归查出所有的下游的项目。上游的项目配置修改了，则要通知所有下游的项目
+    List<Dependency> dependencies = dependencyService.selectByDependencyProjectId(projectId);
+    for (Dependency dependency : dependencies) {
+      notifyConfigChanged(dependency.getProjectId(), projectMap);
+    }
+  }
 
   @RequestMapping(value = "/projects/{projectId}/profiles/{profileId}/configs",
       method = RequestMethod.GET)
@@ -55,6 +112,7 @@ public class ConfigController {
     config.setVersion(0);
 
     configService.insert(config);
+    notifyConfigChanged(config);
     return RestResult.success().withResult("message", "创建config成功").build();
   }
 
@@ -78,6 +136,9 @@ public class ConfigController {
       configService.insert(config);
     }
 
+    if (!configList.isEmpty()) {
+      notifyConfigChanged(configList.get(0));
+    }
     return RestResult.success().withResult("message", "创建config成功").build();
   }
 
@@ -89,6 +150,7 @@ public class ConfigController {
     PermissionHelper.checkProfileControll(config.getProfileId());
 
     configService.delete(configId);
+    notifyConfigChanged(config);
     return RestResult.success().withResult("message", "删除configId成功").build();
   }
 
@@ -109,6 +171,7 @@ public class ConfigController {
     }
 
     configService.patch(config);
+    notifyConfigChanged(config);
     return RestResult.success().withResult("message", "更新config成功").build();
   }
 

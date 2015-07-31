@@ -100,7 +100,7 @@ public class XDiamondConfig {
   public void init() {
     boolean bShouldLoadLocalConfig = true;
     xDiamondClient =
-        new XDiamondClient(serverHost, serverPort, bBackOffRetryInterval, maxRetryTimes,
+        new XDiamondClient(this, serverHost, serverPort, bBackOffRetryInterval, maxRetryTimes,
             retryIntervalSeconds, maxRetryIntervalSeconds);
     // 首先尝试连接服务器
     ChannelFuture future = xDiamondClient.init();
@@ -144,27 +144,46 @@ public class XDiamondConfig {
       }
     }
 
-    timer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        Future<List<ResolvedConfigVO>> future =
-            xDiamondClient.getConfigs(groupId, artifactId, version, profile, secretKey);
-        try {
-          List<ResolvedConfigVO> resolvedConfigVOs = future.get(10, TimeUnit.SECONDS);
-          loadConfig(resolvedConfigVOs);
-        } catch (ConnectException e) {
-          // 对于连接错误，这里不打印错误信息，因为会在重试任务里打印
-          return;
-        } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
-          if (e instanceof ExecutionException) {
-            if (e.getCause() instanceof ConnectException) {
-              return;
-            }
+    timer.schedule(new GetConfigTask(this), 30 * 1000, 30 * 1000);
+  }
+
+  /**
+   * only call by XDiamondClient，服务器通知Client配置有更新
+   * 
+   * @return
+   */
+  public void notifyConfigChanged() {
+    timer.schedule(new GetConfigTask(this), 0);
+  }
+
+  static class GetConfigTask extends TimerTask {
+    XDiamondConfig xDiamondConfig;
+
+    public GetConfigTask(XDiamondConfig xDiamondConfig) {
+      this.xDiamondConfig = xDiamondConfig;
+    }
+
+    @Override
+    public void run() {
+      Future<List<ResolvedConfigVO>> future =
+          xDiamondConfig.xDiamondClient.getConfigs(xDiamondConfig.groupId,
+              xDiamondConfig.artifactId, xDiamondConfig.version, xDiamondConfig.profile,
+              xDiamondConfig.secretKey);
+      try {
+        List<ResolvedConfigVO> resolvedConfigVOs = future.get(10, TimeUnit.SECONDS);
+        xDiamondConfig.loadConfig(resolvedConfigVOs);
+      } catch (ConnectException e) {
+        // 对于连接错误，这里不打印错误信息，因为会在重试任务里打印
+        return;
+      } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
+        if (e instanceof ExecutionException) {
+          if (e.getCause() instanceof ConnectException) {
+            return;
           }
-          logger.error("timer to get xdiamond config error!", e);
         }
+        logger.error("timer to get xdiamond config error!", e);
       }
-    }, 10 * 1000, 10 * 1000);
+    }
   }
 
   public void destory() {

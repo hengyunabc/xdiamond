@@ -1,5 +1,6 @@
 package io.github.xdiamond.client.net;
 
+import io.github.xdiamond.client.XDiamondConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -45,9 +46,13 @@ public class XDiamondClient {
   // 当前已经重试的次数
   int currentRetryTimes = 0;
 
-  public XDiamondClient(String serverAddress, int port, boolean bBackOffRetryInterval,
-      int maxRetryTimes, int retryIntervalSeconds, int maxRetryIntervalSeconds) {
+  XDiamondConfig xDiamondConfig;
+
+  public XDiamondClient(XDiamondConfig xDiamondConfig, String serverAddress, int port,
+      boolean bBackOffRetryInterval, int maxRetryTimes, int retryIntervalSeconds,
+      int maxRetryIntervalSeconds) {
     super();
+    this.xDiamondConfig = xDiamondConfig;
     this.serverAddress = serverAddress;
     this.port = port;
     this.bBackOffRetryInterval = bBackOffRetryInterval;
@@ -141,6 +146,15 @@ public class XDiamondClient {
         });
       }
     }, currentRetryInterval, TimeUnit.SECONDS);
+  }
+
+  /**
+   * only call by ClientHandler，服务器通知Client配置有更新
+   * 
+   * @return
+   */
+  void notifyConfigChanged() {
+    xDiamondConfig.notifyConfigChanged();
   }
 
   public String getServerAddress() {

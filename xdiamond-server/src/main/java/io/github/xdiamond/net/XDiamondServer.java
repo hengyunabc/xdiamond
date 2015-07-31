@@ -40,8 +40,7 @@ public class XDiamondServer {
   @PostConstruct
   public void init() throws InterruptedException {
     ServerBootstrap b = new ServerBootstrap();
-    b.childOption(ChannelOption.SO_KEEPALIVE, true).childOption(ChannelOption.TCP_NODELAY, true)
-        .childOption(ChannelOption.SO_TIMEOUT, 5);
+    b.childOption(ChannelOption.SO_KEEPALIVE, true).childOption(ChannelOption.TCP_NODELAY, true);
 
     b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
         .childHandler(new XDiamondServerInitializer(projectService, profileService, configService));

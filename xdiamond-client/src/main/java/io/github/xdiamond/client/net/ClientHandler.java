@@ -18,6 +18,7 @@ import io.netty.util.concurrent.Promise;
 import io.xdiamond.common.ResolvedConfigVO;
 import io.xdiamond.common.net.Commands;
 import io.xdiamond.common.net.Message;
+import io.xdiamond.common.net.Oneway;
 import io.xdiamond.common.net.Request;
 import io.xdiamond.common.net.Response;
 
@@ -77,7 +78,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
     if (msg.getType() == Message.RESPONSE) {
-      Response response = JSON.parseObject(msg.getData(), Response.class);
+      Response response = msg.dataToResponse();
 
       // 统一处理Response是失败的情况
       if (!response.isSuccess()) {
@@ -94,11 +95,19 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
               JSON.toJavaObject((JSONObject) object, ResolvedConfigVO.class);
           ResolvedConfigVOList.add(ResolvedConfigVO);
         }
+        @SuppressWarnings("unchecked")
         Promise<List<ResolvedConfigVO>> promise =
             (Promise<List<ResolvedConfigVO>>) idPromiseMap.get(response.getId());
         if (promise != null && !promise.isDone()) {
           promise.setSuccess(ResolvedConfigVOList);
         }
+      }
+    }
+
+    if (msg.getType() == Message.ONEWAY) {
+      Oneway oneway = msg.dataToOneway();
+      if (oneway.getCommand() == Commands.CONFIG_CHANGED) {
+        xDiamondClient.notifyConfigChanged();
       }
     }
   }
@@ -111,19 +120,17 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
           new ConnectException("channel is not available"));
     }
 
-    Message msg = new Message();
-    msg.setType(Message.REQUEST);
     final Request request =
-        Request.builder().type(Message.REQUEST).command(Commands.GET_CONFIG)
+        Request.builder().command(Commands.GET_CONFIG)
             .withData("groupId", groupId).withData("artifactId", artifactId)
             .withData("version", version).withData("profile", profile)
             .withData("secretKey", secretKey).build();
 
+    @SuppressWarnings("unchecked")
     Promise<List<ResolvedConfigVO>> promise =
         (Promise<List<ResolvedConfigVO>>) this.createRequestPromise(channel, request);
 
-    msg.setData(JSON.toJSONBytes(request));
-    channel.writeAndFlush(msg);
+    channel.writeAndFlush(Message.request().jsonData(request).build());
     // 这里返回promise，让调用者等待？
     return promise;
   }
@@ -169,12 +176,9 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
     // 当空闲时，发心跳包
     IdleStateEvent e = (IdleStateEvent) evt;
     if (e.state() == IdleState.WRITER_IDLE) {
-      Message msg = new Message();
-      msg.setType(Message.REQUEST);
       final Request request =
-          Request.builder().type(Message.REQUEST).command(Commands.HEARTBEAT).build();
-      msg.setData(JSON.toJSONBytes(request));
-      ctx.write(msg);
+          Request.builder().command(Commands.HEARTBEAT).build();
+      ctx.write(Message.request().jsonData(request).build());
     } else if (e.state() == IdleState.READER_IDLE) {
       // 长时间没有收到服务器的回应，说明网络出现问题
       logger.error("long time do not reveive data from server, please check network.");
