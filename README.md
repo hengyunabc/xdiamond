@@ -108,6 +108,32 @@ JAVA_OPTS="$JAVA_OPTS -Dxdiamond.server.host=product.xdiamond.com -Dxdiamond.pro
 
 ### 高级配置
 
+#### 配置Listener，侦听配置修改事件
+如果是````@Service````, ````@Component````这样的bean，可以直接在一个函数上用````@OneKeyListener````或者````@AllKeyListener````来获取到最新的配置值。例如：
+
+```java
+@Service
+public class ListenerExampleService {
+
+  @OneKeyListener(key = "testOneKeyListener")
+  public void testOneKeyListener(ConfigEvent event) {
+    System.err.println("ListenerExampleService, testOneKeyListener, event :" + event);
+  }
+
+  @AllKeyListener
+  public void testAllKeyListener(ConfigEvent event) {
+    System.err.println("ListenerExampleService, testAllKeyListener, event :" + event);
+  }
+}
+```
+在````ConfigEvent````里，可以获取到一个key是新增/修改/删除的信息。用户可以自行处理。
+
+如果是在spring xml里配置的bean，则需要在bean上增加一个````@EnableConfigListener````的注解，以便于spring ````context:component-scan ````能扫描到这个类。
+
+
+
+具体的例子代码在````xdiamond-client-example````里。
+
 #### 把配置同步到system properties
 ````bSyncToSystemProperties````可以把配置同步到System Properties里，默认值是false。这样可以实现在*.properties文件里引用xdiamond里的配置。比如在一个test.properties文件里：
 ```

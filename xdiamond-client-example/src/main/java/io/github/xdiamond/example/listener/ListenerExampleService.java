@@ -11,11 +11,11 @@ public class ListenerExampleService {
 
   @OneKeyListener(key = "testOneKeyListener")
   public void testOneKeyListener(ConfigEvent event) {
-    System.err.println("testOneKeyListener, event :" + event);
+    System.err.println("ListenerExampleService, testOneKeyListener, event :" + event);
   }
 
   @AllKeyListener
   public void testAllKeyListener(ConfigEvent event) {
-    System.err.println("testAllKeyListener, event :" + event);
+    System.err.println("ListenerExampleService, testAllKeyListener, event :" + event);
   }
 }

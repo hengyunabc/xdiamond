@@ -2,6 +2,7 @@ package io.github.xdiamond.client.spring;
 
 import io.github.xdiamond.client.XDiamondConfig;
 import io.github.xdiamond.client.annotation.AllKeyListener;
+import io.github.xdiamond.client.annotation.EnableConfigListener;
 import io.github.xdiamond.client.annotation.OneKeyListener;
 import io.github.xdiamond.client.event.ObjectListenerMethodInvokeWrapper;
 
@@ -28,7 +29,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -208,7 +209,9 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
     xDiamondConfig.clearAllKeyListener();
     xDiamondConfig.clearOneKeyListener();
 
-    Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(Service.class);
+    // 处理@Service, @Component这样的bean，同时要处理@EnableConfigListener这样在Spring xml里配置的bean
+    Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(Component.class);
+    beansWithAnnotation.putAll(context.getBeansWithAnnotation(EnableConfigListener.class));
     for (Entry<String, Object> entry : beansWithAnnotation.entrySet()) {
       Object object = entry.getValue();
       Method[] methods = ReflectionUtils.getAllDeclaredMethods(object.getClass());

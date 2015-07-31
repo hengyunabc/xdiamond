@@ -41,5 +41,7 @@
 		<property name="memcachedAddress" value="${memcached.serverlist}"></property>
 		<property name="zookeeperAddress" value="${zookeeper.address}"></property>
 	</bean>
+	
+	<bean class="io.github.xdiamond.example.listener.ListenerXmlBean"></bean>
 
 </beans>
