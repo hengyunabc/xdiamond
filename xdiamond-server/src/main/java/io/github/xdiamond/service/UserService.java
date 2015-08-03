@@ -8,6 +8,7 @@ import io.github.xdiamond.domain.UserGroup;
 import io.github.xdiamond.persistence.GroupMapper;
 import io.github.xdiamond.persistence.UserGroupMapper;
 import io.github.xdiamond.persistence.UserMapper;
+import io.github.xdiamond.web.RestResult;
 import io.github.xdiamond.web.shiro.PasswordUtil;
 
 import java.util.Date;
@@ -121,22 +122,26 @@ public class UserService {
       }
     }
     int result = this.insert(user);
-    if(result == 1){
+    if (result == 1) {
       return user;
-    }else{
+    } else {
       return null;
     }
   }
 
-  public boolean login(String userName, String password, String provider) {
+  public RestResult login(String userName, String password, String provider) {
     if (StringUtils.equals("standard", provider)) {
       // 普通的用户，非第三方渠道的
       User user = query(userName);
       if (user != null) {
         String salt = user.getPasswordSalt();
-        return PasswordUtil.checkPassword(password, salt, user.getPassword());
+        if (PasswordUtil.checkPassword(password, salt, user.getPassword())) {
+          return RestResult.success().buildRestResult();
+        } else {
+          return RestResult.fail().withErrorMessage("password error!").buildRestResult();
+        }
       } else {
-        return false;
+        return RestResult.fail().withErrorMessage("user do not exist!").buildRestResult();
       }
     } else if (provider.equalsIgnoreCase("ldap")) {
       // LDAP登陆的用户
@@ -145,14 +150,18 @@ public class UserService {
         // 通过认证，到数据库里查找用户是否已存在
         User user = query(userName);
         if (user == null) {
-          return insertLdapUser(userName) != null;
+          if (insertLdapUser(userName) != null) {
+            return RestResult.success().buildRestResult();
+          } else {
+            return RestResult.fail().withErrorMessage("insert ldap user error!").buildRestResult();
+          }
         }
-        return true;
+        return RestResult.success().buildRestResult();
       } else {
-        return false;
+        return RestResult.fail().withErrorMessage("ldap authenticate error!").buildRestResult();
       }
 
     }
-    return false;
+    return RestResult.fail().withErrorMessage("unknow error.").buildRestResult();
   }
 }

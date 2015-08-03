@@ -45,16 +45,15 @@ public class LoginController {
     }
 
     // TODO 这里的验证实际上和shiro里的验证重复了，是否去掉？
-    boolean bLogin = userService.login(user.getName(), user.getPassword(), user.getProvider());
-    if (bLogin) {
+    RestResult restResult =
+        userService.login(user.getName(), user.getPassword(), user.getProvider());
+    if (restResult.isSuccess()) {
       UsernamePasswordToken token =
           new UsernamePasswordToken(user.getName(), user.getPassword(), false,
               request.getRemoteHost());
       subject.login(token);
-      return RestResult.success().build();
-    } else {
-      return RestResult.fail().build();
     }
+    return restResult.toResponseEntity();
   }
 
   @RequestMapping("/logout")

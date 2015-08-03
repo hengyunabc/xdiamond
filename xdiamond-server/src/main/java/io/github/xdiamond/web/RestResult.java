@@ -26,22 +26,31 @@ public class RestResult {
     return new RestResultBuilder().fail();
   }
 
+  public ResponseEntity<RestResult> toResponseEntity() {
+    if (success) {
+      return ResponseEntity.ok(this);
+    } else {
+      return ResponseEntity.badRequest().body(this);
+    }
+  }
+
   public static class RestResultBuilder {
     int status;
     RestResult result = new RestResult();
-    
-    public RestResultBuilder status(int status){
+
+    public RestResultBuilder status(int status) {
       this.status = status;
       return this;
     }
+
     public RestResultBuilder success() {
       result.setSuccess(true);
-      return  status(HttpServletResponse.SC_OK);
+      return status(HttpServletResponse.SC_OK);
     }
 
     public RestResultBuilder fail() {
       result.setSuccess(false);
-      return  status(HttpServletResponse.SC_BAD_REQUEST);
+      return status(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     public RestResultBuilder withErrorCode(int code) {
@@ -72,11 +81,11 @@ public class RestResult {
     public ResponseEntity<RestResult> build() {
       return ResponseEntity.status(status).body(result);
     }
-    
+
     public RestResult buildRestResult() {
       return result;
     }
-    
+
   }
 
   public void putResult(String key, Object value) {
