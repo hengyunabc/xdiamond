@@ -207,7 +207,7 @@
         <td ng-hide="bOnlyShowKeyValue">
             <div ng-hide="resolvedConfig.config.profileId != profile.id">
                 <button class="btn btn-default" ng-click="popUpdateConfigModal(resolvedConfig.config)">修改</button>
-                <button class="btn btn-danger danger" ng-really-click="delete(resolvedConfig.config.id)">Delete</button>
+                <button class="btn btn-danger danger" ng-really-message="删除Key: {{resolvedConfig.config.key}} ?" ng-really-click="delete(resolvedConfig.config.id)">Delete</button>
             </div>
         </td>
 

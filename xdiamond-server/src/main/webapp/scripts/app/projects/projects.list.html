@@ -58,7 +58,7 @@
             </button>
         </td>
         <td ng-hide="bShowProjectDeatil">
-            <button class="btn btn-danger danger" ng-really-click="delete(project.id)">Delete</button>
+            <button class="btn btn-danger danger" ng-really-message="删除Project: {{project.groupId}}/{{project.artifactId}}/{{project.version}} ?" ng-really-click="delete(project.id)">Delete</button>
         </td>
 
     </tr>

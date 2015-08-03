@@ -91,7 +91,7 @@
         <td><a ui-sref="projects.profiles.list({projectId:project.id})">查看profile</a></td>
         <td><a ui-sref="projects.dependencies.list({projectId:project.id})">查看Dependency</a></td>
         <td>
-            <button class="btn btn-danger danger" ng-really-click="delete(project.dependencyId)">Delete</button>
+            <button class="btn btn-danger danger" ng-really-message="删除Dependency: {{project.groupId}}/{{project.artifactId}}/{{project.version}} ?" ng-really-click="delete(project.dependencyId)">Delete</button>
         </td>
 
     </tr>
