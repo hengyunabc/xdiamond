@@ -161,4 +161,13 @@ public abstract class PermissionHelper {
   static public void checkGroupUser(int groupId) {
     SecurityUtils.getSubject().checkPermission("group:user:" + groupId);
   }
+
+  // ------------- user ------------------------
+  static public void addUserRead(SimpleAuthorizationInfo auth, int userId) {
+    auth.addStringPermission("user:read:" + userId);
+  }
+
+  static public void checkUserRead(int userId) {
+    SecurityUtils.getSubject().checkPermission("user:read:" + userId);
+  }
 }

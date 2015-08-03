@@ -63,6 +63,17 @@
 * 使用````propertiesArray````和````util:properties````
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="propertiesArray">
 			<util:list>
@@ -79,7 +90,7 @@
 ```
 * 在本地配置一个````local.properties````
 
-在resources目录下增加一个````local.properties```文件，然后这样配置：
+在resources目录下增加一个````local.properties````文件，然后这样配置：
 ```xml
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

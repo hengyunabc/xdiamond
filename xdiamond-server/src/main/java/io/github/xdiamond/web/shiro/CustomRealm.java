@@ -90,6 +90,9 @@ public class CustomRealm extends AuthorizingRealm implements Serializable {
 
       if (null != user) {
         SimpleAuthorizationInfo authorization = new SimpleAuthorizationInfo();
+        //加上用户对自己的权限
+        PermissionHelper.addUserRead(authorization, user.getId());
+        
         // 查询用户本身的role，还有role有的permission
         List<Role> roles = userRoleService.getRoles(user.getId());
         for (Role role : roles) {

@@ -1,5 +1,25 @@
-<span>principal: {{authenticateInfo.authc.principal}}</span>
+<h3>Principal</h3>
+{{authenticateInfo.authc.principal}}
 
+<h3>UserGroups</h3>
+<table class="table table-striped">
+
+    <thead>
+    <tr>
+        <th>groupId</th>
+        <th>groupName</th>
+        <th>access</th>
+    </tr>
+    </thead>
+
+    <tr ng-repeat="userGroup in authenticateInfo.authz.userGroups">
+        <td>{{userGroup.groupId}}</td>
+        <td>{{userGroup.groupName}}</td>
+        <td>{{userGroup.access | accessFilter}}</td>
+    </tr>
+</table>
+
+<h3>Roles</h3>
 <table class="table table-striped">
 
     <thead>
@@ -13,6 +33,7 @@
     </tr>
 </table>
 
+<h3>Permissions</h3>
 <table class="table table-striped">
 
     <thead>

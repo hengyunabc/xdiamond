@@ -55,7 +55,6 @@ public class XDiamondConfig {
   // default config path is: /home/username/.xidamond
   String localConfigPath = System.getProperty("user.home") + File.separator + ".xdiamond";
 
-  // volatile Map<String, ConfigVO> configMap = new HashMap<>();
   volatile Map<String, ResolvedConfigVO> resolvedConfigVOMap = new HashMap<>();
 
   String groupId;

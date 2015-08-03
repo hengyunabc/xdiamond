@@ -8,5 +8,6 @@ angular.module('xdiamondApp').controller("UserProfileController",
     ['$scope', '$modal', '$state', 'authenticateInfo',
         function ($scope, $modal, $state, authenticateInfo) {
             console.log('UserProfileController....')
+            console.log('authenticateInfo:' + authenticateInfo)
             $scope.authenticateInfo = authenticateInfo;
         }]);
