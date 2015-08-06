@@ -6,6 +6,7 @@
         <ul class="nav nav-pills nav-stacked" ui-view="navbar">
             <li><a ui-sref="main">Home</a></li>
             <li ng-class="{ active: $state.includes('projects') }"><a ui-sref="projects.list">项目管理</a></li>
+            <li ng-class="{ active: $state.includes('allconfig') }"><a ui-sref="allconfig">全部Config</a></li>
             <li ng-class="{ active: $state.includes('users') }"><a ui-sref="users.list">用户管理</a></li>
             <li ng-class="{ active: $state.includes('groups') }"><a ui-sref="groups.list">组管理</a></li>
             <li ng-class="{ active: $state.includes('roles') }"><a ui-sref="roles.list">角色管理</a></li>

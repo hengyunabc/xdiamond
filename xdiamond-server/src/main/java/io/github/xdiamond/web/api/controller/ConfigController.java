@@ -25,6 +25,7 @@ import javax.validation.Valid;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @Controller
@@ -186,4 +188,30 @@ public class ConfigController {
         .withResult("resolvedConfigs", resolvedConfigs).build();
   }
 
+  /**
+   * 获取到所有的Config，便于查找，统一分析
+   * 
+   * @return
+   */
+  @RequestMapping(value = "/configs/all", method = RequestMethod.GET)
+  @Timed
+  public ResponseEntity<RestResult> list() {
+    // 只有admin才有查看全部Config的权限
+    PermissionHelper.checkAdmin();
+    // 获取所有的Config，再获取它们的Profile，再获取Project，最终合到一起
+    List<Map<String, Object>> resultList = Lists.newLinkedList();
+    List<Config> allConfigs = configService.list();
+    for (Config config : allConfigs) {
+      Map<String, Object> result = Maps.newLinkedHashMap();
+      result.put("config", config);
+      Profile profile = profileService.select(config.getProfileId());
+      result.put("profile", profile);
+      if (profile != null) {
+        Project project = projectService.select(profile.getProjectId());
+        result.put("project", project);
+      }
+      resultList.add(result);
+    }
+    return RestResult.success().withResult("configs", resultList).build();
+  }
 }

@@ -1,0 +1,38 @@
+<h3>All Config</h3>
+
+<form role="form">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            <input type="text" class="form-control" placeholder="Search" ng-model="search.$">
+        </div>
+    </div>
+
+    <table class="table table-striped">
+
+        <thead>
+        <tr>
+            <th>key</th>
+            <th>value</th>
+            <th>profile</th>
+            <th>groupId</th>
+            <th>artifactId</th>
+            <th>version</th>
+            <th>profileDescription</th>
+            <th>projectDescription</th>
+        </tr>
+        </thead>
+
+        <tr ng-repeat="row in configs | filter:search | orderBy:'config.key'">
+            <td>{{row.config.key}}</td>
+            <td>{{row.config.value}}</td>
+            <td>{{row.profile.name}}</td>
+            <td>{{row.project.groupId}}</td>
+            <td>{{row.project.artifactId}}</td>
+            <td>{{row.project.version}}</td>
+            <td>{{row.profile.description}}</td>
+            <td>{{row.project.description}}</td>
+        </tr>
+    </table>
+
+</form>

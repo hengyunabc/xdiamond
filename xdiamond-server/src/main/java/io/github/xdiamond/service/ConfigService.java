@@ -63,6 +63,10 @@ public class ConfigService {
         metricRegistry.timer(MetricRegistry.name(this.getClass(), "listResolvedConfig"));
   }
 
+  public List<Config> list() {
+    return configMapper.selectByExample(new ConfigExample());
+  }
+
   public List<Config> list(int profileId) {
     ConfigExample configExample = new ConfigExample();
     configExample.createCriteria().andProfileIdEqualTo(profileId);

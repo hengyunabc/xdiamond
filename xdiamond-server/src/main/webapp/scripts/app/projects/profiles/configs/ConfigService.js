@@ -8,6 +8,17 @@ angular.module('xdiamondApp')
     .factory('ConfigService', ['$http', '$log', function ($http, $log) {
         var service = {};
 
+        service.all = function () {
+            return $http.get('api/configs/all').then(function (response) {
+                console.log('allconfigs:' + response.data);
+
+                if (response.data.success) {
+                    console.log(response.data.result.configs);
+                    return response.data.result.configs;
+                }
+            })
+        }
+
         service.list = function (projectId, profileId) {
             return $http.get('api/projects/' + projectId + '/profiles/' + profileId + '/configs').then(function (response) {
                 console.log('configs:' + response.data);
