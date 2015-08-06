@@ -121,6 +121,7 @@
 
 				/api/metrics = customRoles[admin]
 				/api/threadinfo = customRoles[admin]
+				/api/systemproperties = customRoles[admin]
 				/api/logs = customRoles[admin]
 				/api/connections = customRoles[admin]
 
