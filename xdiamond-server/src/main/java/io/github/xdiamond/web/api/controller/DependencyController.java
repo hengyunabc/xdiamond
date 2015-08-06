@@ -34,6 +34,15 @@ public class DependencyController {
   @Autowired
   ProjectService projectService;
 
+  @RequestMapping(value = "/dependencies", method = RequestMethod.GET)
+  @Timed
+  public Object list() {
+    // 只有admin权限才可以查看所有的依赖
+    PermissionHelper.checkAdmin();
+    List<Dependency> dependencies = dependencyService.list();
+    return RestResult.success().withResult("dependencies", dependencies).build();
+  }
+
   @RequestMapping(value = "/projects/{projectId}/dependencies", method = RequestMethod.GET)
   @Timed
   public Object list(@PathVariable Integer projectId) {

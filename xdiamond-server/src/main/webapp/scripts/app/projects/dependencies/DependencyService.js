@@ -8,6 +8,17 @@ angular.module('xdiamondApp')
     .factory('DependencyService', ['$http', '$log', function ($http, $log) {
         var service = {};
 
+        service.all = function () {
+            return $http.get('api/dependencies').then(function (response) {
+                console.log('dependencies:' + response.data);
+
+                if (response.data.success) {
+                    console.log(response.data.result.dependencies);
+                    return response.data.result.dependencies;
+                }
+            })
+        };
+
         service.list = function (projectId) {
             return $http.get('api/projects/' + projectId + '/dependencies').then(function (response) {
                 console.log('dependencies:' + response.data);

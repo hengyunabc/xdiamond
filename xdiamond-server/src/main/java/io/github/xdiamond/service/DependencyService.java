@@ -23,6 +23,10 @@ public class DependencyService {
   @Autowired
   ProjectService projectService;
 
+  public List<Dependency> list() {
+    return dependencyMapper.selectByExample(new DependencyExample());
+  }
+
   public List<Dependency> list(int projectId) {
     DependencyExample example = new DependencyExample();
     example.createCriteria().andProjectIdEqualTo(projectId);
@@ -95,6 +99,7 @@ public class DependencyService {
 
   /**
    * 据被依赖的项目ID，查找出依赖
+   * 
    * @param dependencyProjectId
    * @return
    */
