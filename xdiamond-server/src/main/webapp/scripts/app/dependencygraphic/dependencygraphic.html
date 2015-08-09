@@ -1,2 +1,46 @@
+<form name="myForm" role="form">
+    <div class="form-group">
+        <label>
+            图宽度：
+            <input type="number" class="form-control" name="width" ng-model="echartConfig.width"
+                   ng-change="changeDivConfig()" required>
+        </label>
+        <label>
+            图高度：
+            <input type="number" class="form-control" name="height" ng-model="echartConfig.height"
+                   ng-change="changeDivConfig()" required>
+        </label>
+        <label>
+            左边距：
+            <input type="number" class="form-control" name="leftBorder" ng-model="echartConfig.leftBorder"
+                   ng-change="changeDivConfig()"
+                   required>
+        </label>
+        <label>
+            上边距：
+            <input type="number" class="form-control" name="topBorder" ng-model="echartConfig.topBorder"
+                   ng-change="changeDivConfig()"
+                   required>
+        </label>
+    </div>
 
-<div id="dependenciesechart" style="height:600px"></div>
+    <div class="form-group">
+        <label>
+            <input type="checkbox" class="form-group" ng-model="echartConfig.bShowLabel" ng-change="changeDivConfig()">
+            显示node标签
+        </label>
+        <label>
+            <input type="checkbox" class="form-group" ng-model="echartConfig.bForceNodePos"
+                   ng-change="changeDivConfig()">
+            固定node坐标
+        </label>
+    </div>
+</form>
+
+
+<div id="parentChart" style="width:auto" style="height:auto">
+
+    <div id="testechart" style="width:auto" style="height:auto"></div>
+
+
+</div>
