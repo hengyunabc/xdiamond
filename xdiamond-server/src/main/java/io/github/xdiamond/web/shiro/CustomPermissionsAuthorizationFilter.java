@@ -1,7 +1,6 @@
 package io.github.xdiamond.web.shiro;
 
 import java.io.IOException;
-import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -9,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.CollectionUtils;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -20,7 +18,7 @@ import org.apache.shiro.web.util.WebUtils;
  * @author hengyunabc
  *
  */
-public class CustomRolesAuthorizationFilter extends AuthorizationFilter {
+public class CustomPermissionsAuthorizationFilter extends AuthorizationFilter {
 
   String unauthorizedJSONString =
       "{\"success\":false,\"error\":{\"message\":\"unauthorized! need login\"}}";
@@ -64,16 +62,13 @@ public class CustomRolesAuthorizationFilter extends AuthorizationFilter {
       Object mappedValue) throws IOException {
 
     Subject subject = getSubject(request, response);
-    String[] rolesArray = (String[]) mappedValue;
+    String[] permissionsArray = (String[]) mappedValue;
 
-    if (rolesArray == null || rolesArray.length == 0) {
+    if (permissionsArray == null || permissionsArray.length == 0) {
       // no roles specified, so nothing to check - allow access.
       return true;
     }
-
-    Set<String> roles = CollectionUtils.asSet(rolesArray);
-    return subject.hasAllRoles(roles);
+    return subject.isPermittedAll(permissionsArray);
   }
-
 
 }

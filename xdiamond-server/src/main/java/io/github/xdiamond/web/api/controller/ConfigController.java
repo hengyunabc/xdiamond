@@ -196,8 +196,7 @@ public class ConfigController {
   @RequestMapping(value = "/configs/all", method = RequestMethod.GET)
   @Timed
   public ResponseEntity<RestResult> list() {
-    // 只有admin才有查看全部Config的权限
-    PermissionHelper.checkAdmin();
+    // 这里的权限检查在shiro-web配置文件里
     // 获取所有的Config，再获取它们的Profile，再获取Project，最终合到一起
     List<Map<String, Object>> resultList = Lists.newLinkedList();
     List<Config> allConfigs = configService.list();

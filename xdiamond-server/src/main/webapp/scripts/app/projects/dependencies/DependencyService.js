@@ -9,7 +9,7 @@ angular.module('xdiamondApp')
         var service = {};
 
         service.all = function () {
-            return $http.get('api/dependencies').then(function (response) {
+            return $http.get('api/dependencies/all').then(function (response) {
                 console.log('dependencies:' + response.data);
 
                 if (response.data.success) {

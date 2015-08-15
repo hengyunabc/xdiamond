@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
@@ -19,8 +18,7 @@
 		<property name="storedCredentialsHexEncoded" value="true" />
 	</bean>
 
-	<bean id="allowAllCredentialsMatcher"
-		class="org.apache.shiro.authc.credential.AllowAllCredentialsMatcher"></bean>
+	<bean id="allowAllCredentialsMatcher" class="org.apache.shiro.authc.credential.AllowAllCredentialsMatcher"></bean>
 
 	<!-- 数据库有更改，权限有改变时，清除shiro authorizationCache -->
 	<bean id="shiroCacheCleanFilter" class="io.github.xdiamond.web.shiro.ShiroCacheCleanFilter" />
@@ -36,8 +34,7 @@
 	</bean>
 
 	<!-- 会话ID生成器,用于SessionDAO缓冲相关 -->
-	<bean id="sessionIdGenerator"
-		class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+	<bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
 
 	<!-- 会话Cookie模板,用于rememberMe 功能 -->
 	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
@@ -47,24 +44,20 @@
 	</bean>
 
 	<!-- Shiro本身提供SessionDAO的实现用以保存企业级/分布式的缓存数据.EnterpriseCacheSessionDAO,可以在CacheManager中配置它来实现缓存机制 -->
-	<bean id="sessionDAO"
-		class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+	<bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
 		<property name="activeSessionsCacheName" value="shiro-activeSessionCache" />
 		<property name="sessionIdGenerator" ref="sessionIdGenerator" />
 	</bean>
 
-	<!-- Shiro提供了会话验证调度器,用于定期的验证会话是否已过期,如果过期将停止会话;出 于性能考虑,一般情况下都是获取会话时来验证会话是否过期并停止会话的;但是如在web 
-		环境中,如果用户不主动退出是不知道会话是否过期的,因此需要定期的检测会话是否过 期.下方配置是使用Quartz会话验证调度器 -->
-	<bean id="sessionValidationScheduler"
-		class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
+	<!-- Shiro提供了会话验证调度器,用于定期的验证会话是否已过期,如果过期将停止会话;出 于性能考虑,一般情况下都是获取会话时来验证会话是否过期并停止会话的;但是如在web 环境中,如果用户不主动退出是不知道会话是否过期的,因此需要定期的检测会话是否过 期.下方配置是使用Quartz会话验证调度器 -->
+	<bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
 		<property name="sessionValidationInterval" value="1800000" />
 		<property name="sessionManager" ref="sessionManager" />
 	</bean>
 
 	<!-- 会话管理器 -->
 	<!-- 用于Web 环境的实现， 可以替代 ServletContainerSessionManager，自己维护着会话，直接废弃了Servlet容器的会话管理。 -->
-	<bean id="sessionManager"
-		class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+	<bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
 		<property name="globalSessionTimeout" value="1800000" />
 		<property name="deleteInvalidSessions" value="true" />
 		<property name="sessionDAO" ref="sessionDAO" />
@@ -82,10 +75,8 @@
 	</bean>
 
 	<!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
-	<bean
-		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-		<property name="staticMethod"
-			value="org.apache.shiro.SecurityUtils.setSecurityManager" />
+	<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager" />
 		<property name="arguments" ref="securityManager" />
 	</bean>
 
@@ -93,8 +84,8 @@
 	<bean id="customAuthenticationFilter" class="io.github.xdiamond.web.shiro.CustomAuthenticationFilter"></bean>
 
 	<!-- 自定义的role filter，对于ajjax，json请求返回JSON结果，非ajax，json请求重定向到一个登陆URL -->
-	<bean id="customRolesAuthorizationFilter"
-		class="io.github.xdiamond.web.shiro.CustomRolesAuthorizationFilter"></bean>
+	<bean id="customRolesAuthorizationFilter" class="io.github.xdiamond.web.shiro.CustomRolesAuthorizationFilter"></bean>
+	<bean id="customPermissionsAuthorizationFilter" class="io.github.xdiamond.web.shiro.CustomPermissionsAuthorizationFilter"></bean>
 
 	<!-- Shiro的Web过滤器 -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
@@ -105,6 +96,7 @@
 			<util:map>
 				<entry key="authc" value-ref="customAuthenticationFilter" />
 				<entry key="customRoles" value-ref="customRolesAuthorizationFilter" />
+				<entry key="customPerms" value-ref="customPermissionsAuthorizationFilter" />
 			</util:map>
 		</property>
 		<property name="filterChainDefinitions">
@@ -115,17 +107,23 @@
 				/api/authenticate = anon
 				/api/session = anon
 
-				/api/ldap/** = customRoles[admin]
-				/api/roles = customRoles[admin]
-				/api/permissions = customRoles[admin]
+				/api/roles = customPerms[admin]
+				/api/permissions = customPerms[admin]
 
-				/api/metrics = customRoles[admin]
-				/api/threadinfo = customRoles[admin]
-				/api/systemproperties = customRoles[admin]
-				/api/logs = customRoles[admin]
-				/api/connections = customRoles[admin]
+				/api/dependencies/all = customPerms[manager]
+				/api/configs/all = customPerms[manager]
 
-				/druid/** = customRoles[admin]
+				/api/ldap/** = customPerms[manager]
+
+				/api/metrics = customPerms[manager]
+				/api/threadinfo = customPerms[manager]
+				/api/systemproperties = customPerms[manager]
+				/api/logs = customPerms[manager]
+				/api/connections = customPerms[manager]
+
+				/api/crash/token = customPerms[manager]
+
+				/druid/** = customPerms[manager]
 
 				/api/** = authc
 

@@ -34,11 +34,10 @@ public class DependencyController {
   @Autowired
   ProjectService projectService;
 
-  @RequestMapping(value = "/dependencies", method = RequestMethod.GET)
+  @RequestMapping(value = "/dependencies/all", method = RequestMethod.GET)
   @Timed
   public Object list() {
-    // 只有admin权限才可以查看所有的依赖
-    PermissionHelper.checkAdmin();
+    // 这里的权限检查在shiro-web配置文件里
     List<Dependency> dependencies = dependencyService.list();
     return RestResult.success().withResult("dependencies", dependencies).build();
   }

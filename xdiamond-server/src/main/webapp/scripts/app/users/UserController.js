@@ -49,3 +49,26 @@ angular.module('xdiamondApp').controller("UserController", ['$scope', '$state', 
         }
 
     }]);
+
+
+angular.module('xdiamondApp').controller("UserUpdateController",
+    ['$scope', '$state', '$modal', '$modalInstance', 'UserService', 'user',
+        function ($scope, $state, $modal, $modalInstance, UserService, user) {
+            $scope.user = user;
+
+            $scope.update = function () {
+                UserService.patch(user).then(function () {
+                    $state.reload();
+                })
+                $modalInstance.close();
+            }
+
+            $scope.ok = function () {
+                $modalInstance.close();
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+
+        }]);

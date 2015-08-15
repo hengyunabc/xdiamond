@@ -30,8 +30,6 @@ public class CrashController {
   @RequestMapping(value = "/crash/token", method = RequestMethod.GET)
   @Timed
   public ResponseEntity<RestResult> token() {
-    PermissionHelper.checkAdmin();
-
     String token = RandomStringUtils.randomAlphanumeric(16);
     crashTokenCache.put(token, new Object());
     return RestResult.success().withResult("token", token).build();
