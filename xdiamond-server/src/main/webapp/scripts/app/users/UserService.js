@@ -62,9 +62,9 @@ angular.module('xdiamondApp')
             },
 
             patch: function (user) {
-                return $http.patch('api/users/' + user.id, user).then(function (response) {
+                return $http.patch('api/users/', user).then(function (response) {
                     if (response.data.success) {
-                        $log.info('patch user success, id:' + user.id);
+                        $log.info('patch user success');
                     }
                 })
             }

@@ -3,12 +3,14 @@ package io.github.xdiamond.web.api.controller;
 import io.github.xdiamond.domain.User;
 import io.github.xdiamond.service.UserService;
 import io.github.xdiamond.web.RestResult;
+import io.github.xdiamond.web.shiro.PasswordUtil;
 import io.github.xdiamond.web.shiro.PermissionHelper;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -66,6 +68,14 @@ public class UserController {
   public Object update(@Valid @RequestBody User user) {
     // 修改用户需要Admin权限
     PermissionHelper.checkAdmin();
+
+    // 如果是修改密码，则要计算salt值
+    if (user.getPassword() != null) {
+      Pair<String, String> saltAndSaltedPassword =
+          PasswordUtil.generateSaltedPassword(user.getPassword());
+      user.setPasswordSalt(saltAndSaltedPassword.getLeft());
+      user.setPassword(saltAndSaltedPassword.getRight());
+    }
     userService.patch(user);
     return RestResult.success().withResult("message", "更新user成功").build();
   }

@@ -78,9 +78,15 @@
         <td>{{user.provider}}</td>
 
         <td>
-            <button class="btn btn-default" ng-click="">修改
+            <button class="btn btn-default" ng-click="popUpdateUserModal(user)">修改信息
             </button>
         </td>
+
+        <td>
+            <button class="btn btn-default" ng-click="popUpdateUserPasswordModal(user)">修改密码
+            </button>
+        </td>
+
         <td>
             <button class="btn btn-danger danger" ng-really-click="delete(user.id)">Delete</button>
         </td>

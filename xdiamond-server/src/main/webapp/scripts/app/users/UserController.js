@@ -34,7 +34,7 @@ angular.module('xdiamondApp').controller("UserController", ['$scope', '$state', 
             });
         };
 
-        $scope.popUpdateUserModal = function (index, size) {
+        $scope.popUpdateUserModal = function (user, size) {
             var modalInstance = $modal.open({
                 animation: true,
                 templateUrl: 'scripts/app/users/users.update.html',
@@ -42,7 +42,22 @@ angular.module('xdiamondApp').controller("UserController", ['$scope', '$state', 
                 size: size,
                 resolve: {
                     user: function () {
-                        return $scope.users[index];
+                        return user;
+                    }
+                }
+            });
+        }
+
+        $scope.popUpdateUserPasswordModal = function (user, size) {
+            var modalInstance = $modal.open({
+                animation: true,
+                templateUrl: 'scripts/app/users/users.updatepassword.html',
+                controller: 'UserUpdateController',
+                size: size,
+                resolve: {
+                    user: function () {
+                        var u = {id: user.id};
+                        return u;
                     }
                 }
             });
@@ -52,6 +67,29 @@ angular.module('xdiamondApp').controller("UserController", ['$scope', '$state', 
 
 
 angular.module('xdiamondApp').controller("UserUpdateController",
+    ['$scope', '$state', '$modal', '$modalInstance', 'UserService', 'user',
+        function ($scope, $state, $modal, $modalInstance, UserService, user) {
+            user.password = undefined;
+            $scope.user = user;
+
+            $scope.update = function () {
+                UserService.patch(user).then(function () {
+                    $state.reload();
+                })
+                $modalInstance.close();
+            }
+
+            $scope.ok = function () {
+                $modalInstance.close();
+            };
+
+            $scope.cancel = function () {
+                $modalInstance.dismiss('cancel');
+            };
+
+        }]);
+
+angular.module('xdiamondApp').controller("UserUpdatePasswordController",
     ['$scope', '$state', '$modal', '$modalInstance', 'UserService', 'user',
         function ($scope, $state, $modal, $modalInstance, UserService, user) {
             $scope.user = user;
