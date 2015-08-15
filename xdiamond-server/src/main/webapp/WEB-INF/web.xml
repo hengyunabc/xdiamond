@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-	version="3.0">
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 
 	<display-name>XDiamond Server</display-name>
 
@@ -22,6 +21,19 @@
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>crash.mountpointconfig.conf</param-name>
+		<param-value>war:/WEB-INF/crash/;classpath:/crash/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>crash.mountpointconfig.cmd</param-name>
+		<!-- load base command from crash.shell.jar /crash/commands/base -->
+		<param-value>war:/WEB-INF/crash/commands/;classpath:/crash/commands/</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.crsh.plugin.WebPluginLifeCycle</listener-class>
 	</listener>
 
 	<!-- <servlet-mapping> -->

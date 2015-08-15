@@ -1,0 +1,15 @@
+{
+  "name": "jquery.terminal",
+  "homepage": "https://github.com/jcubic/jquery.terminal",
+  "version": "0.8.8",
+  "_release": "0.8.8",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.8.8",
+    "commit": "8f5407975498807076a76b83424d295091cf9600"
+  },
+  "_source": "git://github.com/jcubic/jquery.terminal.git",
+  "_target": "~0.8.8",
+  "_originalSource": "jquery.terminal",
+  "_direct": true
+}
