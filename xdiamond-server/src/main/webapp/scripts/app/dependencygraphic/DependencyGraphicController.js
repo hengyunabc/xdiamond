@@ -10,7 +10,7 @@ angular.module('xdiamondApp').controller("DependencyGraphicController",
         var echartConfig = {
             width: 800,
             height: 800,
-            leftBorder: 80,
+            leftBorder: 0,
             topBorder: 80,
             bShowLabel: true,
             bForceNodePos: true
@@ -74,7 +74,7 @@ angular.module('xdiamondApp').controller("DependencyGraphicController",
                 if (maxLevel in levelNodeSizeMap) {
                     levelNodeSizeMap[maxLevel] = levelNodeSizeMap[maxLevel] + 1;
                 } else {
-                    levelNodeSizeMap[maxLevel] = 0;
+                    levelNodeSizeMap[maxLevel] = 1;
                 }
             })
 
@@ -87,7 +87,7 @@ angular.module('xdiamondApp').controller("DependencyGraphicController",
                 }
 
                 //计算出当前这一行的结点的平均距离，再计算出这个结点的具体X坐标
-                var x = echartConfig.leftBorder + (echartElement.clientWidth - echartConfig.leftBorder * 2) / levelNodeSizeMap[projectMaxLevel] * currentLevelNodeSize[projectMaxLevel];
+                var x = echartConfig.leftBorder + (echartElement.clientWidth - echartConfig.leftBorder * 2) / (levelNodeSizeMap[projectMaxLevel] + 1) * (currentLevelNodeSize[projectMaxLevel] + 1);
                 currentLevelNodeSize[projectMaxLevel] = currentLevelNodeSize[projectMaxLevel] + 1;
 
                 var y = (echartElement.clientHeight - echartConfig.topBorder * 2) / treeLevel * projectMaxLevel + echartConfig.topBorder;
