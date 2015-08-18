@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<!-- product环境 -->
 	<beans profile="product">
-		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
-			init-method="init" destroy-method="close">
+		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 			<property name="url" value="${jdbc.url}" />
 			<property name="username" value="${jdbc.username}" />
 			<property name="password" value="${jdbc.password}" />
@@ -22,8 +20,7 @@
 
 	<!-- local dev环境 -->
 	<beans profile="dev">
-		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
-			init-method="init" destroy-method="close">
+		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 			<property name="url" value="${jdbc.url}" />
 			<property name="username" value="${jdbc.username}" />
 			<property name="password" value="${jdbc.password}" />
@@ -33,18 +30,11 @@
 			<property name="testWhileIdle" value="true" />
 			<property name="poolPreparedStatements" value="true" />
 		</bean>
-
-		<jdbc:initialize-database>
-			<jdbc:script location="classpath:database/schema-dev.sql" />
-			<jdbc:script location="classpath:database/data-dev.sql" />
-		</jdbc:initialize-database>
-
 	</beans>
 
 	<!-- test环境 -->
 	<beans profile="test">
-		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
-			init-method="init" destroy-method="close">
+		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 			<property name="url" value="${jdbc.url}" />
 			<property name="username" value="${jdbc.username}" />
 			<property name="password" value="${jdbc.password}" />
@@ -55,4 +45,12 @@
 			<property name="poolPreparedStatements" value="true" />
 		</bean>
 	</beans>
+
+	<beans>
+		<jdbc:initialize-database enabled="${xdiamond.initDatabase:false}">
+			<jdbc:script location="classpath:database/schema-dev.sql" />
+			<jdbc:script location="classpath:database/data-dev.sql" />
+		</jdbc:initialize-database>
+	</beans>
+
 </beans>
