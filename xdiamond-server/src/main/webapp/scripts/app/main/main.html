@@ -16,7 +16,8 @@
             <li ng-class="{ active: $state.includes('dependencygraphic') }"><a ui-sref="dependencygraphic">依赖图</a></li>
             <li ng-class="{ active: $state.includes('metrics') }"><a ui-sref="metrics">Metrics</a></li>
             <li ng-class="{ active: $state.includes('threadinfo') }"><a ui-sref="threadinfo">ThreadDump</a></li>
-            <li ng-class="{ active: $state.includes('systemproperties') }"><a ui-sref="systemproperties">SystemProperties</a></li>
+            <li ng-class="{ active: $state.includes('systemproperties') }"><a ui-sref="systemproperties">SystemProperties</a>
+            </li>
             <li ng-class="{ active: $state.includes('crash') }"><a ui-sref="crash">WebConsole</a></li>
             <li ng-class="{ active: $state.includes('druid') }"><a ui-sref="druid">DruidStat</a></li>
             <li ng-class="{ active: $state.includes('health') }"><a ui-sref="health">Health</a></li>
@@ -30,8 +31,19 @@
 
     <div ui-view class="col-md-10">
         <div id="main">
+            <ul>
+
+                <li>
+                    项目地址：
+                    <a href="https://github.com/hengyunabc/xdiamond">https://github.com/hengyunabc/xdiamond</a>
+                </li>
+                <li>
+                    Wiki：
+                    <a href="https://github.com/hengyunabc/xdiamond/wiki">https://github.com/hengyunabc/xdiamond/wiki</a>
+                </li>
+            </ul>
+            
         </div>
     </div>
 
-    <hr>
 </div>
