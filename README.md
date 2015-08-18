@@ -4,6 +4,10 @@
 
 全局配置中心，存储应用的配置项，解决配置混乱分散的问题。名字来源于淘宝的开源项目[diamond](http://code.taobao.org/p/diamond/src/ "")，前面加上一个字母X以示区别。
 
+[wiki](https://github.com/hengyunabc/xdiamond/wiki "")
+
+[设计思路](https://github.com/hengyunabc/xdiamond/wiki/%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF "")
+
 ## 在线演示
 地址：[xdiamond.coding.io](http://xdiamond.coding.io/ "")，登陆**选择standard**，用户名密码：admin/admin
 

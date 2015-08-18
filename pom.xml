@@ -6,7 +6,7 @@
 	<groupId>io.github.xdiamond</groupId>
 	<artifactId>xdiamond-rootpom</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
