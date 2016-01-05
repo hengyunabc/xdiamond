@@ -8,6 +8,8 @@
 
 [设计思路](https://github.com/hengyunabc/xdiamond/wiki/%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF "")
 
+* 交流QQ群 450548123
+
 ## 在线演示
 地址：[xdiamond.coding.io](http://xdiamond.coding.io/ "")，登陆**选择standard**，用户名密码：admin/admin
 
