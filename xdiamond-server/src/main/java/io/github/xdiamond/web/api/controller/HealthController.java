@@ -2,6 +2,7 @@ package io.github.xdiamond.web.api.controller;
 
 import io.github.xdiamond.web.RestResult;
 
+import java.lang.management.ManagementFactory;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
@@ -34,6 +35,7 @@ public class HealthController {
   public ResponseEntity<RestResult> authenticate() {
     Map<String, Object> process = Maps.newLinkedHashMap();
     process.put("startTime", startTime);
+    process.put("jvmStartTime", ManagementFactory.getRuntimeMXBean().getStartTime());
     process.put("runningSeconds", (System.currentTimeMillis() - startTime.getTime()) / 1000);
 
     return RestResult.success().withResult("package", packageProperties)
