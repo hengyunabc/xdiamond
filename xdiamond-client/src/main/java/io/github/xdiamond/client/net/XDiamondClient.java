@@ -122,7 +122,11 @@ public class XDiamondClient {
 
     int currentRetryInterval = retryIntervalSeconds;
     if (bBackOffRetryInterval) {
-      currentRetryInterval = retryIntervalSeconds * (1 << currentRetryTimes);
+      // 注意currentRetryInterval 可能会溢出
+      currentRetryInterval = retryIntervalSeconds * (currentRetryTimes >= 30 ? 1 << 30 : 1 << currentRetryTimes);
+      if (currentRetryInterval <= 0) {
+        currentRetryInterval = maxRetryIntervalSeconds;
+      }
     }
     if (currentRetryInterval > maxRetryIntervalSeconds) {
       currentRetryInterval = maxRetryIntervalSeconds;
