@@ -5,11 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.github.xdiamond</groupId>
+		<groupId>io.github.hengyunabc.xdiamond</groupId>
 		<artifactId>xdiamond-rootpom</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 
+	<name>xdiamond-client</name>
 	<artifactId>xdiamond-client</artifactId>
 
 	<properties>
@@ -19,7 +20,7 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>io.github.xdiamond</groupId>
+			<groupId>io.github.hengyunabc.xdiamond</groupId>
 			<artifactId>xdiamond-common</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>

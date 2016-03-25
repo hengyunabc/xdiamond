@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<parent>
-		<groupId>io.github.xdiamond</groupId>
+		<groupId>io.github.hengyunabc.xdiamond</groupId>
 		<artifactId>xdiamond-rootpom</artifactId>
 		<version>1.0.1-SNAPSHOT</version>
 	</parent>
@@ -11,6 +11,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>xdiamond-server</artifactId>
 	<packaging>war</packaging>
+
+	<name>xdiamond-server</name>
 
 	<properties>
 		<spring.version>4.1.6.RELEASE</spring.version>
@@ -23,7 +25,7 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>io.github.xdiamond</groupId>
+			<groupId>io.github.hengyunabc.xdiamond</groupId>
 			<artifactId>xdiamond-common</artifactId>
 			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
@@ -288,7 +290,7 @@
 		<dependency>
 			<groupId>io.github.hengyunabc</groupId>
 			<artifactId>mybatis-ehcache-spring</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>net.sf.ehcache</groupId>
