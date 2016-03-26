@@ -79,3 +79,15 @@ mvn exec:exec -Dexec.executable="java" -Dexec.args="-Dxdiamond.project.profile=d
 * 演示结果
 
 client启动时会打印获取到的配置，另外在web界面上connections里可以看到当前连接的客户端信息。
+
+## maven dependency
+
+maven依赖已经发布到中央仓库：http://search.maven.org/#search%7Cga%7C1%7Cxdiamond
+
+```xml
+<dependency>
+    <groupId>io.github.hengyunabc.xdiamond</groupId>
+    <artifactId>xdiamond-client</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
