@@ -7,12 +7,12 @@
 		http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util 
-        http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+        http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<!-- dev环境 -->
 	<beans profile="dev">
 		<bean id="xdiamondServerHost" class="java.lang.String">
-			<constructor-arg value="192.168.66.61" />
+			<constructor-arg value="localhost" />
 		</bean>
 		<bean id="projectProfile" class="java.lang.String">
 			<constructor-arg value="dev" />
@@ -25,7 +25,7 @@
 	<!-- test环境 -->
 	<beans profile="test">
 		<bean id="xdiamondServerHost" class="java.lang.String">
-			<constructor-arg value="192.168.66.61" />
+			<constructor-arg value="localhost" />
 		</bean>
 		<bean id="projectProfile" class="java.lang.String">
 			<constructor-arg value="test" />
