@@ -1,27 +1,5 @@
 package io.github.xdiamond.client.net;
 
-import io.github.xdiamond.common.ResolvedConfigVO;
-import io.github.xdiamond.common.net.Commands;
-import io.github.xdiamond.common.net.Message;
-import io.github.xdiamond.common.net.Oneway;
-import io.github.xdiamond.common.net.Request;
-import io.github.xdiamond.common.net.Response;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.HashedWheelTimer;
-import io.netty.util.Timeout;
-import io.netty.util.Timer;
-import io.netty.util.TimerTask;
-import io.netty.util.concurrent.DefaultPromise;
-import io.netty.util.concurrent.FailedFuture;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.FutureListener;
-import io.netty.util.concurrent.GlobalEventExecutor;
-import io.netty.util.concurrent.Promise;
-
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,17 +16,44 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import io.github.xdiamond.common.ResolvedConfigVO;
+import io.github.xdiamond.common.net.Commands;
+import io.github.xdiamond.common.net.Message;
+import io.github.xdiamond.common.net.Oneway;
+import io.github.xdiamond.common.net.Request;
+import io.github.xdiamond.common.net.Response;
+import io.github.xdiamond.common.util.ThreadFactoryBuilder;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timeout;
+import io.netty.util.Timer;
+import io.netty.util.TimerTask;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.DefaultPromise;
+import io.netty.util.concurrent.FailedFuture;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
+import io.netty.util.concurrent.Promise;
+
 /**
  * ClientHandler is not a @Sharable handler, so can't be added or removed multiple times.
- * 
+ *
  * @author hengyunabc
- * 
+ *
  */
 public class ClientHandler extends SimpleChannelInboundHandler<Message> {
 
   static final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
 
-  static Timer timer = new HashedWheelTimer();
+  static Timer timer = new HashedWheelTimer(new ThreadFactoryBuilder().setNameFormat(
+          "xdiamond-clientHandler-timer-thread-%d").setDaemon(true).build());
+
+  static DefaultEventExecutorGroup eventExecutorGroup = new DefaultEventExecutorGroup(1, new ThreadFactoryBuilder().setNameFormat(
+	          "xdiamond-ExecutorGroup-thread-%d").setDaemon(true).build());
 
   AtomicInteger msgIdGenerator = new AtomicInteger(1);
 
@@ -116,7 +121,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
       String version, String profile, String secretKey) {
     // 如果没有连接上，或者可能网络中断等，直接返回FailedFuture。
     if (channel == null || !channel.isActive()) {
-      return new FailedFuture<List<ResolvedConfigVO>>(GlobalEventExecutor.INSTANCE,
+      return new FailedFuture<List<ResolvedConfigVO>>(eventExecutorGroup.next(),
           new ConnectException("channel is not available"));
     }
 
@@ -137,7 +142,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
 
   /**
    * 给request设置id，并返回一个与这个request关联的Promise，promise会自动清理
-   * 
+   *
    * @param channel
    * @param request
    * @return

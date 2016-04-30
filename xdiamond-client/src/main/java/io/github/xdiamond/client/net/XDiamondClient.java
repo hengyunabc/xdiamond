@@ -4,6 +4,7 @@ import io.github.xdiamond.client.XDiamondConfig;
 import io.github.xdiamond.common.ResolvedConfigVO;
 import io.github.xdiamond.common.net.MessageDecoder;
 import io.github.xdiamond.common.net.MessageEncoder;
+import io.github.xdiamond.common.util.ThreadFactoryBuilder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,6 +35,8 @@ public class XDiamondClient {
   int readTimeout = 15;
   int writeTimeout = 5;
 
+  boolean daemon = true;
+
   // 指数退避的方式增加
   boolean bBackOffRetryInterval = true;
   // 失败重试的次数
@@ -48,9 +51,12 @@ public class XDiamondClient {
 
   XDiamondConfig xDiamondConfig;
 
+  public XDiamondClient() {
+  }
+
   public XDiamondClient(XDiamondConfig xDiamondConfig, String serverAddress, int port,
       boolean bBackOffRetryInterval, int maxRetryTimes, int retryIntervalSeconds,
-      int maxRetryIntervalSeconds) {
+      int maxRetryIntervalSeconds, boolean daemon) {
     super();
     this.xDiamondConfig = xDiamondConfig;
     this.serverAddress = serverAddress;
@@ -59,10 +65,12 @@ public class XDiamondClient {
     this.maxRetryTimes = maxRetryTimes;
     this.retryIntervalSeconds = retryIntervalSeconds;
     this.maxRetryIntervalSeconds = maxRetryIntervalSeconds;
+    this.daemon = daemon;
   }
 
   // TODO 改为一个线程？
-  EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+  EventLoopGroup eventLoopGroup = new NioEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat(
+          "xdiamond-clientNioEventLoop-thread-%d").setDaemon(daemon).build());
   Bootstrap bootstrap = new Bootstrap();
 
   ClientHandler clientHandler = new ClientHandler(this);
@@ -154,7 +162,7 @@ public class XDiamondClient {
 
   /**
    * only call by ClientHandler，服务器通知Client配置有更新
-   * 
+   *
    * @return
    */
   void notifyConfigChanged() {
@@ -192,4 +200,12 @@ public class XDiamondClient {
   public void setWriteTimeout(int writeTimeout) {
     this.writeTimeout = writeTimeout;
   }
+
+	public boolean isDaemon() {
+		return daemon;
+	}
+
+	public void setDaemon(boolean daemon) {
+		this.daemon = daemon;
+	}
 }

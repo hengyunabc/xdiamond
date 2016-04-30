@@ -20,13 +20,13 @@ public class XDiamondConfigTest {
 		String artifactId = "sss";
 		String groupId = "sss";
 		String secretKey = "";
-		
+
 		String serverHost = "127.0.0.1";
 		int port = 5678;
-		
-		XDiamondConfig config = new XDiamondConfig(serverHost, port, groupId, artifactId, version, profile, secretKey);
+
+		XDiamondConfig config = new XDiamondConfig(serverHost, port, groupId, artifactId, version, profile, secretKey, true);
 		config.init();
-		
+
 //		config.addOneKeyListener("test", new OneKeyListener() {
 //			@Override
 //			public void onConfigEvent(ConfigEvent event) {
@@ -39,18 +39,18 @@ public class XDiamondConfigTest {
 //				System.err.println("all key event:" + event);
 //			}
 //		});
-		
+
 //		TimeUnit.SECONDS.sleep(5);
-		
+
 		for(int i = 0; i < 100000; ++i) {
 			String property = config.getProperty("test");
 			System.err.println("property:" + property);
 			TimeUnit.SECONDS.sleep(2);
 		}
-		
-		
+
+
 		config.destory();
-		
+
 		//		XDiamondClient client = new XDiamondClient();
 //		client.setServerAddress("localhost");
 //		client.setPort(5678);

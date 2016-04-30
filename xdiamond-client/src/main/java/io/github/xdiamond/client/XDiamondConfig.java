@@ -37,7 +37,7 @@ import com.alibaba.fastjson.JSON;
 
 /**
  * @author hengyunabc
- * 
+ *
  */
 public class XDiamondConfig {
   static private final Logger logger = LoggerFactory.getLogger(XDiamondConfig.class);
@@ -46,7 +46,7 @@ public class XDiamondConfig {
 
   ExecutorService listenerExecutorService = Executors
       .newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat(
-          "xdiamond-listener-thread-%d").build());
+          "xdiamond-listener-thread-%d").setDaemon(true).build());
 
   Map<String, List<OneKeyListener>> oneKeyListenerMap =
       new ConcurrentHashMap<String, List<OneKeyListener>>();
@@ -65,6 +65,9 @@ public class XDiamondConfig {
 
   String serverHost;
   int serverPort = 5678;
+
+  // 是否daemon线程
+  boolean daemon = true;
 
   // 启动时，是否打印获取到的配置信息
   boolean bPrintConfigWhenBoot = true;
@@ -86,21 +89,27 @@ public class XDiamondConfig {
 
   public XDiamondConfig(String serverHost, int serverPort, String groupId, String artifactId,
       String version, String profile, String secretKey) {
-    super();
-    this.serverHost = serverHost;
-    this.serverPort = serverPort;
-    this.groupId = groupId;
-    this.artifactId = artifactId;
-    this.version = version;
-    this.profile = profile;
-    this.secretKey = secretKey;
+    this(serverHost, serverPort, groupId, artifactId, version, profile, secretKey, true);
   }
+
+  public XDiamondConfig(String serverHost, int serverPort, String groupId, String artifactId,
+	      String version, String profile, String secretKey, boolean daemon) {
+	    super();
+	    this.serverHost = serverHost;
+	    this.serverPort = serverPort;
+	    this.groupId = groupId;
+	    this.artifactId = artifactId;
+	    this.version = version;
+	    this.profile = profile;
+	    this.secretKey = secretKey;
+	    this.daemon = daemon;
+	  }
 
   public void init() {
     boolean bShouldLoadLocalConfig = true;
     xDiamondClient =
         new XDiamondClient(this, serverHost, serverPort, bBackOffRetryInterval, maxRetryTimes,
-            retryIntervalSeconds, maxRetryIntervalSeconds);
+            retryIntervalSeconds, maxRetryIntervalSeconds, daemon);
     // 首先尝试连接服务器
     ChannelFuture future = xDiamondClient.init();
     try {
@@ -148,7 +157,7 @@ public class XDiamondConfig {
 
   /**
    * only call by XDiamondClient，服务器通知Client配置有更新
-   * 
+   *
    * @return
    */
   public void notifyConfigChanged() {
