@@ -1,7 +1,6 @@
 package io.github.xdiamond.springboot.example;
 
 import io.github.xdiamond.example.ClientExampleAnnotationConfig;
-import io.github.xdiamond.example.listener.ListenerExampleService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

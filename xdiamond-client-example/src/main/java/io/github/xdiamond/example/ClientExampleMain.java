@@ -33,10 +33,7 @@ public class ClientExampleMain {
         ctx.getBean("clientExampleConfig", ClientExampleConfig.class);
 
     System.err.println(clientExampleConfig);
-    
-
 
     Thread.sleep(300 * 1000);
-    System.exit(0);
   }
 }
