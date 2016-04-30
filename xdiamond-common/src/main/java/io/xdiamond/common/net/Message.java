@@ -1,17 +1,18 @@
 package io.xdiamond.common.net;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 /**
  * <pre>
  *   version + length + type +  data(request/response)
  *    2 + 4 + 2,   length = data.length + 2
- *    
+ *
  *   type: REQUEST|RESPONSE|ONEWAY
  * </pre>
- * 
+ *
  * @author hengyunabc
- * 
+ *
  */
 public class Message {
   public static final int MAX_MESSAGE_LENGTH = 20 * 1024 * 1024;
@@ -68,12 +69,12 @@ public class Message {
 
     /**
      * 对象会被转为json byte[]
-     * 
+     *
      * @param object
      * @return
      */
     public MessageBuilder jsonData(Object object) {
-      message.setData(JSON.toJSONBytes(object));
+      message.setData(JSON.toJSONBytes(object, SerializerFeature.DisableCircularReferenceDetect));
       return this;
     }
 

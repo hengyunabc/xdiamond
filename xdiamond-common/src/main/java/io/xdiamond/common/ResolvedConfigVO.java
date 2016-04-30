@@ -1,12 +1,13 @@
 package io.xdiamond.common;
 
-import io.xdiamond.common.util.Native2ascii;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+
+import io.xdiamond.common.util.Native2ascii;
 
 
 public class ResolvedConfigVO {
@@ -77,7 +78,7 @@ public class ResolvedConfigVO {
   }
 
   static public String toJSONString(List<ResolvedConfigVO> resolvedConfigVOs) {
-    return JSON.toJSONString(resolvedConfigVOs, true);
+    return JSON.toJSONString(resolvedConfigVOs, SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.PrettyFormat);
   }
 
   static public Map<String, ResolvedConfigVO> listToMap(List<ResolvedConfigVO> resolvedConfigVOList) {
