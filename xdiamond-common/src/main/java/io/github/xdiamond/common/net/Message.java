@@ -1,4 +1,4 @@
-package io.xdiamond.common.net;
+package io.github.xdiamond.common.net;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;

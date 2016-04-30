@@ -1,6 +1,4 @@
-package io.xdiamond.common;
-
-import io.xdiamond.common.util.Native2ascii;
+package io.github.xdiamond.common;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+
+import io.github.xdiamond.common.util.Native2ascii;
 
 public class ConfigVO {
   // 在数据库的原始ID，便于查错？

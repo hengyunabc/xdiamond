@@ -1,4 +1,4 @@
-package io.xdiamond.common;
+package io.github.xdiamond.common;
 
 public class ProjectVO {
   String version;

@@ -1,5 +1,11 @@
 package io.github.xdiamond.client.net;
 
+import io.github.xdiamond.common.ResolvedConfigVO;
+import io.github.xdiamond.common.net.Commands;
+import io.github.xdiamond.common.net.Message;
+import io.github.xdiamond.common.net.Oneway;
+import io.github.xdiamond.common.net.Request;
+import io.github.xdiamond.common.net.Response;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -15,12 +21,6 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import io.netty.util.concurrent.Promise;
-import io.xdiamond.common.ResolvedConfigVO;
-import io.xdiamond.common.net.Commands;
-import io.xdiamond.common.net.Message;
-import io.xdiamond.common.net.Oneway;
-import io.xdiamond.common.net.Request;
-import io.xdiamond.common.net.Response;
 
 import java.net.ConnectException;
 import java.util.ArrayList;

@@ -1,5 +1,6 @@
 package io.github.xdiamond.web.api.controller;
 
+import io.github.xdiamond.common.util.ThreadFactoryBuilder;
 import io.github.xdiamond.domain.Config;
 import io.github.xdiamond.domain.Dependency;
 import io.github.xdiamond.domain.Profile;
@@ -12,7 +13,6 @@ import io.github.xdiamond.service.ProfileService;
 import io.github.xdiamond.service.ProjectService;
 import io.github.xdiamond.web.RestResult;
 import io.github.xdiamond.web.shiro.PermissionHelper;
-import io.xdiamond.common.util.ThreadFactoryBuilder;
 
 import java.util.Date;
 import java.util.List;

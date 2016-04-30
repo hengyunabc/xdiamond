@@ -1,4 +1,4 @@
-package io.xdiamond.common.net;
+package io.github.xdiamond.common.net;
 
 import java.util.HashMap;
 import java.util.Map;

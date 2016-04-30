@@ -12,7 +12,7 @@
  * the License.
  */
 
-package io.xdiamond.common.util;
+package io.github.xdiamond.common.util;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.Executors;

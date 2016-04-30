@@ -1,4 +1,4 @@
-package io.xdiamond.common.net;
+package io.github.xdiamond.common.net;
 
 public class Commands {
   public static final int ERROR = -1;

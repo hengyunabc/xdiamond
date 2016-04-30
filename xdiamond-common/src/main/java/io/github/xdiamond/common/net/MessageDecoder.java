@@ -1,4 +1,4 @@
-package io.xdiamond.common.net;
+package io.github.xdiamond.common.net;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

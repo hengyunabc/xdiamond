@@ -1,6 +1,9 @@
 package io.github.xdiamond.client.net;
 
 import io.github.xdiamond.client.XDiamondConfig;
+import io.github.xdiamond.common.ResolvedConfigVO;
+import io.github.xdiamond.common.net.MessageDecoder;
+import io.github.xdiamond.common.net.MessageEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,9 +19,6 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
-import io.xdiamond.common.ResolvedConfigVO;
-import io.xdiamond.common.net.MessageDecoder;
-import io.xdiamond.common.net.MessageEncoder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

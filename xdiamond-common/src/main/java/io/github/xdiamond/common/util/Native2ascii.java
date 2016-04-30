@@ -1,4 +1,4 @@
-package io.xdiamond.common.util;
+package io.github.xdiamond.common.util;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;

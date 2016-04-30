@@ -5,10 +5,10 @@ import io.github.xdiamond.client.event.ConfigEvent;
 import io.github.xdiamond.client.event.EventType;
 import io.github.xdiamond.client.event.OneKeyListener;
 import io.github.xdiamond.client.net.XDiamondClient;
+import io.github.xdiamond.common.ResolvedConfigVO;
+import io.github.xdiamond.common.util.ThreadFactoryBuilder;
 import io.netty.channel.ChannelFuture;
 import io.netty.util.concurrent.Future;
-import io.xdiamond.common.ResolvedConfigVO;
-import io.xdiamond.common.util.ThreadFactoryBuilder;
 
 import java.io.File;
 import java.io.FileInputStream;

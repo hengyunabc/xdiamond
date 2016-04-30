@@ -1,4 +1,4 @@
-package io.xdiamond.common;
+package io.github.xdiamond.common;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
-import io.xdiamond.common.util.Native2ascii;
+import io.github.xdiamond.common.util.Native2ascii;
 
 
 public class ResolvedConfigVO {

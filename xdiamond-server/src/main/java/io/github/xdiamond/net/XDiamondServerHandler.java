@@ -1,5 +1,12 @@
 package io.github.xdiamond.net;
 
+import io.github.xdiamond.common.net.Commands;
+import io.github.xdiamond.common.net.Message;
+import io.github.xdiamond.common.net.Oneway;
+import io.github.xdiamond.common.net.Request;
+import io.github.xdiamond.common.net.Response;
+import io.github.xdiamond.common.net.Message.MessageBuilder;
+import io.github.xdiamond.common.net.Response.ResponseBuilder;
 import io.github.xdiamond.domain.Profile;
 import io.github.xdiamond.domain.Project;
 import io.github.xdiamond.domain.vo.ResolvedConfig;
@@ -16,13 +23,6 @@ import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import io.xdiamond.common.net.Commands;
-import io.xdiamond.common.net.Message;
-import io.xdiamond.common.net.Message.MessageBuilder;
-import io.xdiamond.common.net.Oneway;
-import io.xdiamond.common.net.Request;
-import io.xdiamond.common.net.Response;
-import io.xdiamond.common.net.Response.ResponseBuilder;
 
 import java.util.Date;
 import java.util.Iterator;

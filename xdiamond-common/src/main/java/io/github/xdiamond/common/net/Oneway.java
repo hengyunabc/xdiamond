@@ -1,52 +1,52 @@
-package io.xdiamond.common.net;
+package io.github.xdiamond.common.net;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Request {
-  int type = Message.REQUEST;
+public class Oneway {
+  int type = Message.ONEWAY;
   int id;
   int command;
 
   Map<String, Object> data;
 
-  public static RequestBuilder builder() {
-    return new RequestBuilder();
+  public static OnewayBuilder builder() {
+    return new OnewayBuilder();
   }
 
-  public static class RequestBuilder {
-    Request request;
+  public static class OnewayBuilder {
+    Oneway oneway;
 
-    public RequestBuilder() {
-      request = new Request();
+    public OnewayBuilder() {
+      oneway = new Oneway();
     }
 
-    public Request build() {
-      return request;
+    public Oneway build() {
+      return oneway;
     }
 
-    public RequestBuilder id(int id) {
-      request.setId(id);
+    public OnewayBuilder id(int id) {
+      oneway.setId(id);
       return this;
     }
 
-    public RequestBuilder type(int type) {
-      request.setType(type);
+    public OnewayBuilder type(int type) {
+      oneway.setType(type);
       return this;
     }
 
-    public RequestBuilder command(int command) {
-      request.setCommand(command);
+    public OnewayBuilder command(int command) {
+      oneway.setCommand(command);
       return this;
     }
 
-    public RequestBuilder data(Map<String, Object> data) {
-      request.setData(data);
+    public OnewayBuilder data(Map<String, Object> data) {
+      oneway.setData(data);
       return this;
     }
 
-    public RequestBuilder withData(String key, Object value) {
-      request.putData(key, value);
+    public OnewayBuilder withData(String key, Object value) {
+      oneway.putData(key, value);
       return this;
     }
   }

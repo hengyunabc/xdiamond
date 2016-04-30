@@ -1,5 +1,7 @@
 package io.github.xdiamond.net;
 
+import io.github.xdiamond.common.net.MessageDecoder;
+import io.github.xdiamond.common.net.MessageEncoder;
 import io.github.xdiamond.service.ConfigService;
 import io.github.xdiamond.service.ProfileService;
 import io.github.xdiamond.service.ProjectService;
@@ -9,8 +11,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
-import io.xdiamond.common.net.MessageDecoder;
-import io.xdiamond.common.net.MessageEncoder;
 
 public class XDiamondServerInitializer extends ChannelInitializer<SocketChannel> {
 
