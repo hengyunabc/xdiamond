@@ -1,10 +1,18 @@
 package io.github.xdiamond.springprofile.example;
 
-import io.github.xdiamond.example.ClientExampleAnnotationConfig;
-import io.github.xdiamond.example.ClientExampleConfig;
-
 import org.springframework.context.support.GenericXmlApplicationContext;
 
+import io.github.xdiamond.example.ClientExampleConfig;
+
+/**
+ * 演示利用spring profiles的特性，来切换不同环境的xdiamond client配置。
+ *
+ * 比如，在测试环境使用的xdiamond server和生产环境使用的xidamond server的域名不一样，则可以通过spring
+ * profiles很方便地切换。
+ *
+ * @author hengyunabc
+ *
+ */
 public class SpringProfileMain {
   public static void main(String[] args) throws InterruptedException {
     // 这些变量可以通过命令行或者在tomcat的setenv.sh文件里传递进来，这里简单起见，直接设置到system properties里

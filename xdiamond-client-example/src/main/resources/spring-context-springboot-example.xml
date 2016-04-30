@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="xDiamondConfig"
+		class="io.github.xdiamond.client.spring.XDiamondConfigFactoryBean">
+		<property name="serverHost" value="${xdiamond.server.host:localhost}" />
+		<property name="serverPort" value="5678" />
+		<property name="groupId" value="io.github.xdiamond" />
+		<property name="artifactId" value="xdiamond-client-example" />
+		<property name="version" value="0.0.1-SNAPSHOT" />
+		<property name="profile" value="${xdiamond.project.profile:dev}" />
+		<property name="secretKey" value="${xdiamond.project.secretkey:123456}"></property>
+	</bean>
+
+	<bean class="io.github.xdiamond.client.spring.PropertySourcesAdderBean">
+		<property name="properties">
+			<bean class="java.util.Properties" factory-bean="xDiamondConfig"
+				factory-method="getProperties">
+			</bean>
+		</property>
+	</bean>
+
+	<context:component-scan base-package="io.github.xdiamond.example">
+	</context:component-scan>
+
+	<bean id="clientExampleConfig" class="io.github.xdiamond.example.ClientExampleConfig">
+		<property name="memcachedAddress" value="${memcached.serverlist}"></property>
+		<property name="zookeeperAddress" value="${zookeeper.address}"></property>
+	</bean>
+
+	<bean class="io.github.xdiamond.example.listener.ListenerXmlBean"></bean>
+
+</beans>
