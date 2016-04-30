@@ -1,17 +1,10 @@
 package io.github.xdiamond.client.spring;
 
-import io.github.xdiamond.client.XDiamondConfig;
-import io.github.xdiamond.client.annotation.AllKeyListener;
-import io.github.xdiamond.client.annotation.EnableConfigListener;
-import io.github.xdiamond.client.annotation.OneKeyListener;
-import io.github.xdiamond.client.event.ObjectListenerMethodInvokeWrapper;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -21,28 +14,30 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.PropertyPlaceholderHelper;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import io.github.xdiamond.client.XDiamondConfig;
+import io.github.xdiamond.client.annotation.AllKeyListener;
+import io.github.xdiamond.client.annotation.OneKeyListener;
+import io.github.xdiamond.client.event.ObjectListenerMethodInvokeWrapper;
+
 /**
  * 支持${value:default}方式的配置； 支持在locations参数里，配置properties； 优先从System.getPropeties()里加载配置；
- * 
+ *
  * @author hengyunabc
  *
  */
-public class XDiamondConfigFactoryBean implements ApplicationContextAware,
-    ApplicationListener<ContextRefreshedEvent>, PriorityOrdered, BeanFactoryPostProcessor,
-    InitializingBean, FactoryBean<XDiamondConfig> {
+public class XDiamondConfigFactoryBean implements ApplicationContextAware, PriorityOrdered, BeanFactoryPostProcessor,
+    InitializingBean, FactoryBean<XDiamondConfig>, BeanPostProcessor {
   private static final Log logger = LogFactory.getLog(XDiamondConfigFactoryBean.class);
   PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper("${", "}", ":", true);
 
@@ -203,53 +198,6 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
     xDiamondConfig.init();
   }
 
-  private void scanListenerAnnotation() throws ClassNotFoundException, NoSuchMethodException {
-    logger.info("scan XDiamond Listener Annotation...");
-    // 在特殊情况可能spring ContextRefreshedEvent会有多次，所以要请理掉上次扫描到的Listener
-    xDiamondConfig.clearAllKeyListener();
-    xDiamondConfig.clearOneKeyListener();
-
-    // 处理@Service, @Component这样的bean，同时要处理@EnableConfigListener这样在Spring xml里配置的bean
-    Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(Component.class);
-    beansWithAnnotation.putAll(context.getBeansWithAnnotation(EnableConfigListener.class));
-    for (Entry<String, Object> entry : beansWithAnnotation.entrySet()) {
-      Object object = entry.getValue();
-      Method[] methods = ReflectionUtils.getAllDeclaredMethods(object.getClass());
-      if (methods != null) {
-        for (Method method : methods) {
-          OneKeyListener oneKeyListener =
-              AnnotationUtils.findAnnotation(method, OneKeyListener.class);
-          if (oneKeyListener != null) {
-            logger.debug("XDaimond add Annotation Method Listener, class:"
-                + object.getClass().getName() + ", method:" + method.getName());
-            ObjectListenerMethodInvokeWrapper wrapper = new ObjectListenerMethodInvokeWrapper();
-            wrapper.setxDiamondConfig(xDiamondConfig);
-            wrapper.setListenerClassName(io.github.xdiamond.client.event.OneKeyListener.class
-                .getName());
-            wrapper.setKey(oneKeyListener.key());
-            wrapper.setTargetObject(object);
-            wrapper.setTargetMethod(method.getName());
-            wrapper.init();
-          }
-
-          AllKeyListener allKeyListener =
-              AnnotationUtils.findAnnotation(method, AllKeyListener.class);
-          if (allKeyListener != null) {
-            logger.debug("XDaimond add Annotation Method Listener, class:"
-                + object.getClass().getName() + ", method:" + method.getName());
-            ObjectListenerMethodInvokeWrapper wrapper = new ObjectListenerMethodInvokeWrapper();
-            wrapper.setxDiamondConfig(xDiamondConfig);
-            wrapper.setListenerClassName(io.github.xdiamond.client.event.AllKeyListener.class
-                .getName());
-            wrapper.setTargetObject(object);
-            wrapper.setTargetMethod(method.getName());
-            wrapper.init();
-          }
-        }
-      }
-    }
-  }
-
   @Override
   public XDiamondConfig getObject() throws Exception {
     return xDiamondConfig;
@@ -385,15 +333,45 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware,
     this.maxRetryIntervalSeconds = maxRetryIntervalSeconds;
   }
 
-  @Override
-  public void onApplicationEvent(ContextRefreshedEvent event) {
-    // scan annotation 必须要放到这里，不然会出现构造函数里传进来String不能正确地处理${}表达式
-    if (bScanListenerAnnotation) {
-      try {
-        scanListenerAnnotation();
-      } catch (ClassNotFoundException | NoSuchMethodException e) {
-        throw new RuntimeException("xdiamond scan annotation error!", e);
-      }
-    }
-  }
+	@Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		return bean;
+	}
+
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		if (bScanListenerAnnotation) {
+			Method[] methods = ReflectionUtils.getAllDeclaredMethods(bean.getClass());
+			if (methods != null) {
+				for (Method method : methods) {
+					OneKeyListener oneKeyListener = AnnotationUtils.findAnnotation(method, OneKeyListener.class);
+					if (oneKeyListener != null) {
+						logger.debug("XDaimond add Annotation Method Listener, class:" + bean.getClass().getName()
+								+ ", method:" + method.getName());
+						ObjectListenerMethodInvokeWrapper wrapper = new ObjectListenerMethodInvokeWrapper();
+						wrapper.setxDiamondConfig(xDiamondConfig);
+						wrapper.setListenerClassName(io.github.xdiamond.client.event.OneKeyListener.class.getName());
+						wrapper.setKey(oneKeyListener.key());
+						wrapper.setTargetObject(bean);
+						wrapper.setTargetMethod(method.getName());
+						wrapper.init();
+					}
+
+					AllKeyListener allKeyListener = AnnotationUtils.findAnnotation(method, AllKeyListener.class);
+					if (allKeyListener != null) {
+						logger.debug("XDaimond add Annotation Method Listener, class:" + bean.getClass().getName()
+								+ ", method:" + method.getName());
+						ObjectListenerMethodInvokeWrapper wrapper = new ObjectListenerMethodInvokeWrapper();
+						wrapper.setxDiamondConfig(xDiamondConfig);
+						wrapper.setListenerClassName(io.github.xdiamond.client.event.AllKeyListener.class.getName());
+						wrapper.setTargetObject(bean);
+						wrapper.setTargetMethod(method.getName());
+						wrapper.init();
+					}
+				}
+			}
+		}
+
+		return bean;
+	}
 }

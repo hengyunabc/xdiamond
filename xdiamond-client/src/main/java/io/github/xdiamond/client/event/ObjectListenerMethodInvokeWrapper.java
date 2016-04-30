@@ -10,7 +10,7 @@ import org.springframework.util.MethodInvoker;
 
 /**
  * 用于回调一个对象的函数的Listener的包装类
- * 
+ *
  * @author hengyunabc
  *
  */
@@ -27,7 +27,7 @@ public class ObjectListenerMethodInvokeWrapper extends MethodInvoker {
 	String key;
 	XDiamondConfig xDiamondConfig;
 
-	public void init() throws ClassNotFoundException, NoSuchMethodException {
+	public void init() {
 		if (listenerClassName.equals(OneKeyListener.class.getName())) {
 			xDiamondConfig.addOneKeyListener(key, new OneKeyListener() {
 				@Override
