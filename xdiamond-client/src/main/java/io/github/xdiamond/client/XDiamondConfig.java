@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +84,10 @@ public class XDiamondConfig {
   int retryIntervalSeconds = 5;
   // 最大的重试时间间隔
   int maxRetryIntervalSeconds = 2 * 60;
+
+  // 当保存配置失败时，重试的最多次数
+  int maxTrySaveTimes = 20;
+  int trySaveIntervalMs = 100;
 
   XDiamondClient xDiamondClient;
 
@@ -319,10 +325,37 @@ public class XDiamondConfig {
       fos = new FileOutputStream(tempFile);
       fos.write(jsonConfigString.getBytes("UTF-8"));
       fos.flush();
-      tempFile.renameTo(new File(configFilePath));
+      // 要先close再move，否则在windows下会提示文件被占用
+      fos.close();
+
+		int trySaveTimes = 0;
+		while (true) {
+			try {
+				Files.move(tempFile.toPath(), new File(configFilePath).toPath(),
+						StandardCopyOption.REPLACE_EXISTING);
+				logger.debug("save xdiamond config file success. path:" + new File(configFilePath).getAbsolutePath());
+				break;
+			} catch (IOException e) {
+				trySaveTimes++;
+				logger.error("save xdiamond config file error! trySaveTimes:{}, path:{}", trySaveTimes, configFilePath, e);
+				if (trySaveTimes > this.maxTrySaveTimes) {
+					throw e;
+				}
+
+				try {
+					Thread.sleep(this.trySaveIntervalMs);
+				} catch (InterruptedException e1) {
+					// ignore
+				}
+			}
+		}
+
     } finally {
       if (fos != null) {
         fos.close();
+        if(tempFile.exists()) {
+        	tempFile.delete();
+        }
       }
     }
   }
@@ -482,6 +515,22 @@ public class XDiamondConfig {
   public void setMaxRetryIntervalSeconds(int maxRetryIntervalSeconds) {
     this.maxRetryIntervalSeconds = maxRetryIntervalSeconds;
   }
+
+	public int getMaxTrySaveTimes() {
+		return maxTrySaveTimes;
+	}
+
+	public void setMaxTrySaveTimes(int maxTrySaveTimes) {
+		this.maxTrySaveTimes = maxTrySaveTimes;
+	}
+
+	public int getTrySaveIntervalMs() {
+		return trySaveIntervalMs;
+	}
+
+	public void setTrySaveIntervalMs(int trySaveIntervalMs) {
+		this.trySaveIntervalMs = trySaveIntervalMs;
+	}
 
   private String toProjectInfoString() {
     return this.groupId + "|" + artifactId + "|" + version + "|" + profile;
