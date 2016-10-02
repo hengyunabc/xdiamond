@@ -167,17 +167,17 @@ public class XDiamondConfigFactoryBean implements ApplicationContextAware, Prior
 
     if (!StringUtils.isEmpty(bPrintConfigWhenBoot)) {
       bPrintConfigWhenBoot = helper.replacePlaceholders(bPrintConfigWhenBoot, properties);
-      xDiamondConfig.setbPrintConfigWhenBoot(Boolean.getBoolean(bPrintConfigWhenBoot));
+      xDiamondConfig.setbPrintConfigWhenBoot(Boolean.parseBoolean(bPrintConfigWhenBoot));
     }
 
     if (!StringUtils.isEmpty(bSyncToSystemProperties)) {
       bSyncToSystemProperties = helper.replacePlaceholders(bSyncToSystemProperties, properties);
-      xDiamondConfig.setbSyncToSystemProperties(Boolean.getBoolean(bSyncToSystemProperties));
+      xDiamondConfig.setbSyncToSystemProperties(Boolean.parseBoolean(bSyncToSystemProperties));
     }
 
     if (!StringUtils.isEmpty(bBackOffRetryInterval)) {
       bBackOffRetryInterval = helper.replacePlaceholders(bBackOffRetryInterval, properties);
-      xDiamondConfig.setbBackOffRetryInterval(Boolean.getBoolean(bBackOffRetryInterval));
+      xDiamondConfig.setbBackOffRetryInterval(Boolean.parseBoolean(bBackOffRetryInterval));
     }
 
     if (!StringUtils.isEmpty(maxRetryTimes)) {
