@@ -27,6 +27,21 @@
 * 以secret key防止非法获取配置
 * 丰富的metrics, connection统计
 
+## 使用技术
+
+* netty
+* mybatis
+* spring mvc
+* shiro
+* ehcache
+* dropwizard metrics
+* crash shell
+* swagger
+* angularjs
+* bootstrap
+* bower
+
+
 ## 工作原理
 
 * 每个项目有groupId，artifactId，version，然后在不同的环境里对应不同的profile，比如：test, dev, product。
