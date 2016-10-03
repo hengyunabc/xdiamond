@@ -103,6 +103,6 @@ maven依赖已经发布到中央仓库：http://search.maven.org/#search%7Cga%7C
 <dependency>
     <groupId>io.github.hengyunabc.xdiamond</groupId>
     <artifactId>xdiamond-client</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ```
