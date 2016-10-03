@@ -11,7 +11,7 @@
 	<groupId>io.github.hengyunabc.xdiamond</groupId>
 	<artifactId>xdiamond-rootpom</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.4</version>
+	<version>1.0.5-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
