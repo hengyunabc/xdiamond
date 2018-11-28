@@ -127,6 +127,7 @@ public class XDiamondConfig {
         List<ResolvedConfigVO> resolvedConfigs = configFuture.get(10, TimeUnit.SECONDS);
         if (configFuture.isSuccess()) {
           loadConfig(resolvedConfigs);
+          XDConfigData.getIns().transData(this.resolvedConfigVOMap);
           logger.info("load config from xdiamond server success. " + toProjectInfoString());
           bShouldLoadLocalConfig = false;
 
@@ -147,6 +148,7 @@ public class XDiamondConfig {
       try {
         List<ResolvedConfigVO> resolvedConfigVOList = loadLocalConfig();
         this.resolvedConfigVOMap = ResolvedConfigVO.listToMap(resolvedConfigVOList);
+        XDConfigData.getIns().transData(this.resolvedConfigVOMap);
         logger.info("load xdiamond config " + toProjectInfoString() + " from localConfigPath:"
             + localConfigPath);
 
