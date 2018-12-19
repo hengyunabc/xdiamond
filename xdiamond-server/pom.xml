@@ -421,6 +421,17 @@
 			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
+                
+                <dependency>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                    <version>2.2.12</version>
+                </dependency>
+	 <dependency>
+	  <groupId>javax.annotation</groupId>
+	  <artifactId>javax.annotation-api</artifactId>
+	  <version>1.3.1</version>
+	 </dependency>
 	</dependencies>
 
 	<build>
@@ -437,4 +448,14 @@
 			</plugin>
 		</plugins>
 	</build>
+        <pluginRepositories>
+            <pluginRepository>
+                <id>tomcat-github</id>
+                <url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
+                <snapshots>
+                    <enabled>true</enabled>
+                    <updatePolicy>daily</updatePolicy>
+                </snapshots>
+            </pluginRepository>
+        </pluginRepositories>
 </project>
